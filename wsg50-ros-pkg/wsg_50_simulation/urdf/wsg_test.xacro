@@ -1,0 +1,9 @@
+<?xml version='1.0'?>
+<robot name='wsg_test' xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <link name="footprint" />
+  <xacro:include filename="$(find wsg_50_simulation)/urdf/wsg_50.urdf.xacro" />
+  <xacro:wsg_50_xacro name="wsg50" parent="footprint" gripperHwInterface="EffortJointInterface">
+  <!-- <xacro:wsg_50_xacro name="wsg50" parent="footprint" gripperHwInterface="PositionJointInterface"> -->
+    <pose xyz="0 0 0.05" rpy= "0 0 0"/>
+  </xacro:wsg_50_xacro>
+</robot>

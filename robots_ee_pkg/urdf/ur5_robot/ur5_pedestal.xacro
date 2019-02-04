@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<robot name="ur5" xmlns:xacro="http://ros.org/wiki/xacro">
+    <!--Import the lbr iiwa macro -->
+    <xacro:include filename="$(find ur_description)/urdf/ur5_toplayer.urdf.xacro"/>
+    <xacro:include filename="$(find robots_ee_pkg)/urdf/table/add_table.urdf.xacro" />
+
+    <xacro:arg name="origin_xyz" default="0 0 0" />
+    <xacro:arg name="origin_rpy" default="0 0 0" />
+    <xacro:arg name="table_origin_xyz" default="0 0 0.9967"/>
+    <xacro:arg name="table_origin_rpy" default="0 0 0"/>
+    <xacro:arg name="table_ee" default="ur5_table_ee"/>
+    <xacro:arg name="modelDir" default="/home/iwt-ros/catkin_framework_ws/src/robots_ee_pkg"/>
+    <xacro:arg name="robot_name" default="ur5" />
+
+    <link name="world" />
+    <!-- Table joint -->
+    <xacro:add_table robot_name="$(arg robot_name)" table_ee="$(arg table_ee)" modelDir="$(arg modelDir)"  parent="world">
+      <origin xyz="$(arg table_origin_xyz)" rpy="$(arg table_origin_rpy)" />
+    </xacro:add_table>
+    <!-- ur5 robot interface -->
+    <xacro:ur5_robot_toplayer parent="$(arg table_ee)">
+      <origin xyz="$(arg origin_xyz)" rpy="$(arg origin_rpy)" />
+    </xacro:ur5_robot_toplayer>
+
+</robot>

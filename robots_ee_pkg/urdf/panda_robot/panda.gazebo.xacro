@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="panda_ga">
+
+  <xacro:macro name="panda_gazebo" params="arm_name robot_param_name">
+
+    <!-- Load Gazebo lib and set the robot namespace -->
+    <gazebo>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotParam>${robot_param_name}</robotParam>
+      </plugin>
+    </gazebo>
+
+    <!-- Link0 -->
+    <gazebo reference="${arm_name}_link0">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+    <!-- Link1 -->
+    <gazebo reference="${arm_name}_link1">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+    <!-- Link2 -->
+    <gazebo reference="${arm_name}_link2">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+    <!-- Link3 -->
+    <gazebo reference="${arm_name}_link3">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+
+    <!-- Link4 -->
+    <gazebo reference="${arm_name}_link4">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+    <!-- Link5 -->
+    <gazebo reference="${arm_name}_link5">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+    <!-- Link6 -->
+    <gazebo reference="${arm_name}_link6">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+    <!-- Link7 -->
+    <gazebo reference="${arm_name}_link7">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>

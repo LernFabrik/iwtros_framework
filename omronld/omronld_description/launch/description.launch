@@ -1,0 +1,6 @@
+<launch>
+
+    <param name="/omronld/omronld_description"
+        command="$(find xacro)/xacro --inorder '$(find omronld_description)/urdf/omronld.urdf.xacro'  robot_description:=/omronld/omronld_description"/>
+
+</launch>

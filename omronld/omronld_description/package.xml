@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+    <name>omronld_description</name>
+    <version>0.3.1</version>
+    <description>omron ld URDF description</description>
+
+    <author email="felix.goetz-tfs16@mb.dhbw-ravensurg.de">Felix Goetz</author>
+    <maintainer email="felix.goetz-tfs16@mb.dhbw-ravensurg.de">Felix Goetz</maintainer>
+
+    <license>BSD</license>
+
+    <buildtool_depend>catkin</buildtool_depend>
+  
+    <build_depend>roslaunch</build_depend>
+  
+    <run_depend>urdf</run_depend>
+    <run_depend>xacro</run_depend>
+    <run_depend>lms1xx</run_depend>
+    <run_depend>joint_state_publisher</run_depend>
+    <run_depend>robot_state_publisher</run_depend>
+    <run_depend>rviz</run_depend>
+
+</package>
+
+

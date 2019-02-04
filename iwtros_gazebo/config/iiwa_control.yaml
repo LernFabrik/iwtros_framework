@@ -1,0 +1,35 @@
+###################################################################################
+## This config file copied from iiwa_stack/iiwa_control/config/iiwa_control.yaml ##
+## Edited by: Vishnuprasad Prachandabhanu                                        ##
+###################################################################################
+#kuka iiwa7 control parameters:
+  # Publish all the joint states
+  iiwa_joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+
+  # Since system is using Posistion control other two configuration are not important !
+  # Forward Position Controllers ---------------------------------------
+  PositionJointInterface_iiwa_arm_trajectory_controller:
+    type: position_controllers/JointTrajectoryController
+    joints:
+      - iiwa_joint_1
+      - iiwa_joint_2
+      - iiwa_joint_3
+      - iiwa_joint_4
+      - iiwa_joint_5
+      - iiwa_joint_6
+      - iiwa_joint_7
+    constraints:
+      goal_time: 0.5                   # Override default
+      stopped_velocity_tolerance: 0.05
+      iiwa_joint_1: {trajectory: 0.1, goal: 0.05}
+      iiwa_joint_2: {trajectory: 0.1, goal: 0.05}
+      iiwa_joint_3: {trajectory: 0.1, goal: 0.05}
+      iiwa_joint_5: {trajectory: 0.1, goal: 0.05}
+      iiwa_joint_6: {trajectory: 0.1, goal: 0.05}
+      iiwa_joint_7: {trajectory: 0.1, goal: 0.05}
+    state_publish_rate:  25            # Override default
+    action_monitor_rate: 30            # Override default
+    stop_trajectory_duration: 0        # Override default

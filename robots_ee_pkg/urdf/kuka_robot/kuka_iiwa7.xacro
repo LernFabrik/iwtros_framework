@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<robot name="iiwa" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="PI" value="3.1415926535897931" />
+    <!-- Import Rviz colors -->
+    <xacro:include filename="$(find iiwa_description)/urdf/materials.xacro" />
+    <!--Import the lbr iiwa macro -->
+    <xacro:include filename="$(find iiwa_description)/urdf/iiwa7.xacro"/>
+    <xacro:include filename="$(find wsg_50_simulation)/urdf/wsg_50.urdf.xacro" />
+    <xacro:include filename="$(find robots_ee_pkg)/urdf/table/add_table.urdf.xacro" />
+
+    <xacro:arg name="hardware_interface" default="PositionJointInterface"/>
+    <xacro:arg name="gripperHwInterface" default="EffortJointInterface"/>
+    <xacro:arg name="robot_name" default="iiwa"/>
+    <xacro:arg name="origin_xyz" default="0 0 0" />
+    <xacro:arg name="origin_rpy" default="0 0 0" />
+    <xacro:arg name="table_origin_xyz" default="0 0 0.9967"/>
+    <xacro:arg name="table_origin_rpy" default="0 0 0"/>
+    <xacro:arg name="table_ee" default="iiwa_table_ee"/>
+    <xacro:arg name="modelDir" default="/home/vishnu/catkin_ws/src/robots_ee_pkg"/>
+
+    <link name="world" />
+    <!-- Table joint -->
+    <xacro:add_table robot_name="$(arg robot_name)" table_ee="$(arg table_ee)" modelDir="$(arg modelDir)"  parent="world">
+      <origin xyz="$(arg table_origin_xyz)" rpy="$(arg table_origin_rpy)" />
+    </xacro:add_table>
+    <!-- KUKA robot interface -->
+    <xacro:iiwa7 hardware_interface="$(arg hardware_interface)" robot_name="$(arg robot_name)" parent="$(arg table_ee)">
+      <origin xyz="$(arg origin_xyz)" rpy="$(arg origin_rpy)" />
+    </xacro:iiwa7>
+    <!-- schunck greifer -->
+    <xacro:wsg_50_xacro name="wsg50" parent="$(arg robot_name)_link_ee" gripperHwInterface="$(arg gripperHwInterface)">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:wsg_50_xacro>
+
+</robot>

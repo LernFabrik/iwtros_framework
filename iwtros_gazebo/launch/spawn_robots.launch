@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="hardware_interface" default="PositionJointInterface" />
+  <arg name="robot1" default="iiwa" />
+  <arg name="robot2" default="ur5" />
+  <arg name="robot3" default="panda" />
+
+  <group ns="/$(arg robot1)">
+    <param name="tf_prefix" value="$(arg robot1)"/>
+    <param name="/$(arg robot1)/$(arg robot1)_description"
+          command="$(find xacro)/xacro --inorder '$(find robots_ee_pkg)/urdf/kuka_robot/kuka_iiwa7_system.urdf.xacro' robot_name:=$(arg robot1) robot_param:=/$(arg robot1)/$(arg robot1)_description workcell_parent:=world_interface" />
+
+    <include file="$(find iwtros_gazebo)/launch/controllers/kuka_iiwa_control.launch">
+      <arg name="hardware_interface" value="$(arg hardware_interface)"/>
+      <arg name="controllers" value="$(arg robot1)_joint_state_controller $(arg hardware_interface)_$(arg robot1)_arm_trajectory_controller"/>
+      <arg name="robot_name" value="$(arg robot1)"/>
+    </include>
+    <include file="$(find iwtros_gazebo)/launch/controllers/wsg50_gripper_control.launch">
+      <arg name="robot_name" value="wsg50"/>
+    </include>
+    <node name="$(arg robot1)_gazebo_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-unpause -urdf -model iiwa -param $(arg robot1)_description" />
+  </group>
+
+
+  <group ns="/$(arg robot2)">
+    <param name="tf_prefix" value="$(arg robot2)"/>
+    <param name="/$(arg robot2)/$(arg robot2)_description"
+          command="$(find xacro)/xacro --inorder '$(find robots_ee_pkg)/urdf/ur5_robot/ur5_system.urdf.xacro' robot_prefix:=$(arg robot2)_ robot_param:=/$(arg robot2)/$(arg robot2)_description workcell_parent:=world_interface" />
+
+    <include file="$(find iwtros_gazebo)/launch/controllers/ur5_control.launch">
+      <arg name="hardware_interface" value="$(arg hardware_interface)"/>
+      <arg name="controllers" value="$(arg robot2)_joint_state_controller $(arg hardware_interface)_$(arg robot2)_arm_trajectory_controller"/>
+      <arg name="robot_name" value="$(arg robot2)"/>
+    </include>
+    <node name="$(arg robot2)_gazebo_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-unpause -urdf -model ur5 -param $(arg robot2)_description" />
+  </group>
+
+
+</launch>

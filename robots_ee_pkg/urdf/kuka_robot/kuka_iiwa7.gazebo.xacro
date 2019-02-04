@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<robot name="iiwa_robot_system" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="iiwa_system_gazebo" params="robot_name robot_parameter_name">
+    <!-- refer hrwros  robot_system.gazebo.xacro -->
+    <!-- add here the gripper-->
+    <gazebo reference="${robot_name}_link_0">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <material>Gazebo/Grey</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+    <gazebo reference="${robot_name}_link_1">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <material>Gazebo/Orange</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+    <gazebo reference="${robot_name}_link_2">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <material>Gazebo/Orange</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+    <gazebo reference="${robot_name}_link_3">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <material>Gazebo/Orange</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+    <gazebo reference="${robot_name}_link_4">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <material>Gazebo/Orange</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+    <gazebo reference="${robot_name}_link_5">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <material>Gazebo/Orange</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+    <gazebo reference="${robot_name}_link_6">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <material>Gazebo/Orange</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+    <gazebo reference="${robot_name}_link_7">
+      <turnGravityOff>true</turnGravityOff>
+      <selfCollide>true</selfCollide>
+      <material>Gazebo/Grey</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+    <gazebo>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotParam>${robot_parameter_name}</robotParam>
+      </plugin>
+    </gazebo>
+</xacro:macro>
+
+</robot>

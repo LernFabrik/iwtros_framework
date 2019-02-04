@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="hardware_interface" default="PositionJointInterface"/>
+
+  <!-- Loads the Gazebo world. -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <!--arg name="world_name" value="$(find iwtros_gazebo)/worlds/iwtros.world"/-->
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="headless" value="$(arg headless)" />
+    <arg name="use_sim_time" default="true"/>
+    <arg name="paused" default="false"/>
+    <arg name="debug" default="false"/>
+  </include>
+
+
+  <!-- Conveyor spawner -->
+  <node name="conveyor_spawner" pkg="iwtros_gazebo" type="conveyor_spawn_node" output="screen">
+    <rosparam command="load" file="$(find iwtros_gazebo)/config/conveyor_objects.yaml"/>
+  </node>
+
+  
+
+  
+
+</launch>

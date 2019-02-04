@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<robot name="ur5_table_urdf" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- robot pedestal -->
+  <xacro:macro name = "ur5_table_urdf" params = "table_prefix table_parent *origin">
+    <xacro:include filename="$(find ur_description)/urdf/ur5.urdf.xacro"/>
+    <xacro:include filename="$(find robots_ee_pkg)/urdf/table/add_table.urdf.xacro" />
+
+    <xacro:arg name="robot_prefix" default="ur5_"/>
+    <xacro:arg name="robot_param" default="/ur5/ur5_description"/>
+    <xacro:arg name="origin_xyz" default="0 0 0" />
+    <xacro:arg name="origin_rpy" default="0 0 0" />
+    <xacro:arg name="modelDir" default="/home/iwt-ros/catkin_framework_ws/src/robots_ee_pkg"/>
+
+    <xacro:ur5_robot prefix="$(arg robot_prefix)" joint_limited="true"/>
+    <xacro:include filename="$(find robots_ee_pkg)/urdf/ur5_robot/ur5.gazebo.xacro"/>
+    <xacro:ur5_system_gazebo robot_prefix="$(arg robot_prefix)" robot_parameter_name="$(arg robot_param)"/>
+
+    <xacro:add_table robot_arm_name="${table_prefix}" table_ee="${table_prefix}_table_ee" modelDir="$(arg modelDir)"  parent="${table_parent}">
+      <xacro:insert_block name="origin" />
+    </xacro:add_table>
+
+    <joint name="ur5_to_table_ee" type="fixed">
+      <parent link="${table_prefix}_table_ee" />
+      <child link="ur5_base_link"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+  </xacro:macro>
+</robot>

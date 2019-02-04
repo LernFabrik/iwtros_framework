@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="robot_fts" default="omronld" />
+
+    <param name="$(arg robot_fts)_description"
+      command="$(find xacro)xacro --inorder '$(find omronld_description)/urdf/omronld.urdf.xacro' robot_description:=$(arg robot_fts)_description" />
+
+    <node name="omronld_robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" >
+      <param name="publish_frequency" type="double" value="50.0" />
+      <remap from="robot_description" to="omronld_description"/>
+    </node>
+
+    <!--include file="$(find iwtros_gazebo)/launch/controllers/omronld_control.launch">
+      <arg name="controllers" value="omronld_joint_publisher omronld_velocity_controller"/>
+      <arg name="robot_name" value="$(arg robot_fts)"/>
+    </include -->
+
+    <node name="spawn_omronld_model" pkg="gazebo_ros" type="spawn_model"
+      args="-x 0 -y -1.5 -z 0 -unpause -urdf -param $(arg robot_fts)_description -model $(arg robot_fts)" />
+
+</launch>

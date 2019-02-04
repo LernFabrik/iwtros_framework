@@ -1,0 +1,2 @@
+dependent_joints:
+  wsg50_gripper_right_joint: {parent: wsg50_gripper_left_joint, factor: -1 }

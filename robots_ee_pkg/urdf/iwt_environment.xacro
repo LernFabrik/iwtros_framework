@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<robot name="iwt" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- world -->
+  <link name="world" />
+
+
+  <!-- workcell -->
+  <!-- xacro:include filename="$(find robots_ee_pkg)/urdf/workcell/workcell.urdf.xacro"/>
+  <xacro:workcell_urdf workcell_parent="world_interface"/-->
+
+  <!-- uncomment this if above is uncommented -->
+  <link name="world_interface"/>
+
+
+  <!-- Joints -->
+  <joint name="world_interface_to_world" type="fixed">
+    <parent link="world" />
+    <child link="world_interface" />
+  </joint>
+
+  <!-- conveyor belt -->
+  <xacro:include filename="$(find robots_ee_pkg)/urdf/conveyor/conveyor.urdf.xacro" />
+  <xacro:conveyor_system parent="world_interface" >
+    <origin xyz="0 0 1" rpy="0 0 0" />
+  </xacro:conveyor_system>
+
+  <!-- Kuka robot with table -->
+  <!-- Note: No need to define joint to the parent, because it is defined inside the file already -->
+  <xacro:include filename="$(find robots_ee_pkg)/urdf/kuka_robot/kuka_iiwa7.urdf.xacro" />
+  <xacro:kuka_iiwa7_table_urdf table_prefix="iiwa" table_parent="world_interface">
+    <origin xyz="2.25 -0.5 1.0" rpy="0 0 ${pi}" />
+  </xacro:kuka_iiwa7_table_urdf>
+  <!-- Franka Panda-->
+  <!--xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/franka_panda.urdf.xacro" />
+  <xacro:franka_panda_table_urdf table_prefix="panda" table_parent="world_interface">
+    <origin xyz="0.5 0 1.0" rpy="0 0 ${pi/2}" />
+  </xacro:franka_panda_table_urdf-->
+
+  <!-- ur5-->
+  <xacro:include filename="$(find robots_ee_pkg)/urdf/ur5_robot/ur5_pedestal.urdf.xacro" />
+  <xacro:ur5_table_urdf table_prefix="ur5" table_parent="world_interface">
+    <origin xyz="0.8 -0.5 1.0" rpy="0 0 ${pi}" />
+  </xacro:ur5_table_urdf>
+</robot>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- Launching the Omron LD in the empty world -->
+    <include file="$(find omronld_gazebo)/launch/omronld_empty_world.launch"/>
+
+    <!-- Launching Rviz and the configurations -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find omronld_rviz)/rviz_config/omronld_rviz_config.rviz"/>
+
+    <!-- Launching the teleoperation keyboard node -->
+    <node name="teleop_twist_keyboard" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py"/>
+
+    <!-- Launching the minimal distance controller node-->
+    <node name="omronld_mindistance_controller" pkg="omronld_mindistance_controller" type="omronld_mindistance_controller" output="screen">
+        <rosparam file="$(find omronld_mindistance_controller)/config/default_parameters.yaml" command="load" />
+    </node>
+
+</launch>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>omronld_mindistance_controller</name>
+  <version>0.1.0</version>
+  <description>the omronld_mindistance_controller package</description>
+
+  <author email="felix.goetz-tfs16@mb.dhbw-ravensurg.de">Felix Goetz</author>
+  <maintainer email="felix.goetz-tfs16@mb.dhbw-ravensurg.de">Felix Goetz</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>roscpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>visualization_msgs</depend>
+
+  <depend>diff_drive_controller</depend>
+  <depend>rostopic</depend>
+  <depend>teleop_twist_joy</depend>
+
+</package>

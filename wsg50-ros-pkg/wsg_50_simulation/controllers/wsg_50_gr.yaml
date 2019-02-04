@@ -1,0 +1,8 @@
+wsg_50_gr:
+  type: effort_controllers/JointPositionController
+  joint: wsg50_gripper_right_joint
+  pid: {p: 100, i: 0.5, d: 10.0}
+  # type: position_controllers/GripperActionController
+  # joint: wsg50_gripper_right_joint 
+  # pid: {p: 100.0, i: 0.5, d: 10.0}
+

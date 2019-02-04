@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <arg name="world_name" default="worlds/empty.world"/>
+
+    <arg name="robot_namespace" default="/omronld"/>
+
+    <arg name="x" default="0.0"/>
+    <arg name="y" default="0.0"/>
+    <arg name="z" default="0.0"/>
+    <arg name="yaw" default="0.0"/>
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world_name)"/>
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+        <arg name="extra_gazebo_args" value="--verbose"/>
+    </include>
+
+
+
+    <!-- Load robot description -->
+    <!--include file="$(find omronld_description)/launch/description.launch" /-->
+    <param name="omronld_description"
+        command="$(find xacro)/xacro --inorder '$(find omronld_description)/urdf/omronld.urdf.xacro'  robot_description:=omronld_description"/>
+
+
+    <!--to publish the state of a robot to tf from urdf-->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" >
+      <param name="publish_frequency" type="double" value="50.0" />
+      <remap from="robot_description" to="omronld_description"/>
+    </node>
+
+    <!--controll data for controller_manager-->
+    <rosparam command="load" file="$(find omronld_gazebo)/config/control.yaml" />
+
+    <!--The controller manager provides the infrastructure to interact with controllers-->
+    <node name="base_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+      args="omronld_joint_publisher omronld_velocity_controller --shutdown-timeout 2">
+    </node>
+
+    <!--Provides nonlinear state estimation through sensor fusion of an abritrary number of sensors-->
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
+        <rosparam command="load" file="$(find omronld_gazebo)/config/localization.yaml" />
+    </node>
+
+    <!--Interactive Marker for RVIZ to control the robot-->
+    <node pkg="interactive_marker_twist_server" type="marker_server" name="twist_marker_server" output="screen"/>
+
+    <!--When there are more than a single source to move a robot with a geometry_msgs::Twist message-->
+    <node pkg="twist_mux" type="twist_mux" name="twist_mux">
+        <rosparam command="load" file="$(find omronld_gazebo)/config/twist_mux.yaml" />
+        <remap from="cmd_vel_out" to="omronld_velocity_controller/cmd_vel"/>
+    </node>
+    <!-- Spawn robot in gazebo -->
+    <node name="spawn_omronld_model" pkg="gazebo_ros" type="spawn_model"
+         args="-x $(arg x)
+               -y $(arg y)
+               -z $(arg z)
+               -Y $(arg yaw)
+               -unpause
+               -urdf
+               -param omronld_description
+               -model $(arg robot_namespace)" />
+
+
+
+</launch>

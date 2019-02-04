@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="conveyor" value="conveyor_"/>
+  <arg name="conveyor_parent_name" value="world_interface"/>
+
+  <!-- Parameters and nodes in the global namespace. -->
+  <param name="$(arg conveyor)description"
+    command="$(find xacro)/xacro --inorder '$(find robots_ee_pkg)/urdf/conveyor/conveyor.xacro' parent:=$(arg conveyor_parent_name)"/>
+
+
+  <node name="$(arg conveyor)description" pkg="gazebo_ros" type="spawn_model" output="screen"
+    args="-urdf -model conveyor -param $(arg conveyor)description"/>
+
+</launch>

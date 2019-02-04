@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Launch the node for keyboard teleoperation -->
+  <node name="wsg_50_sim_keyboard_teleop" pkg="wsg_50_simulation" type="wsg_50_sim_keyboard_teleop" ns="iiwa">
+  <remap from="/wsg_50_gr/command" to="/iiwa/wsg_50_gr/command" />
+  <remap from="/wsg_50_gl/command" to="/iiwa/wsg_50_gl/command" />
+
+  </node>
+  
+
+</launch>

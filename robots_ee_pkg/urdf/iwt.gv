@@ -1,0 +1,89 @@
+digraph G {
+node [shape=box];
+"world" [label="world"];
+"world_interface" [label="world_interface"];
+"iiwa_table_base" [label="iiwa_table_base"];
+"iiwa_table_ee" [label="iiwa_table_ee"];
+"iiwa_link_0" [label="iiwa_link_0"];
+"iiwa_link_1" [label="iiwa_link_1"];
+"iiwa_link_2" [label="iiwa_link_2"];
+"iiwa_link_3" [label="iiwa_link_3"];
+"iiwa_link_4" [label="iiwa_link_4"];
+"iiwa_link_5" [label="iiwa_link_5"];
+"iiwa_link_6" [label="iiwa_link_6"];
+"iiwa_link_7" [label="iiwa_link_7"];
+"iiwa_link_ee" [label="iiwa_link_ee"];
+"wsg50_base_link" [label="wsg50_base_link"];
+"wsg50_gripper_left" [label="wsg50_gripper_left"];
+"wsg50_gripper_right" [label="wsg50_gripper_right"];
+"conveyor_system_link" [label="conveyor_system_link"];
+"ur5_table_base" [label="ur5_table_base"];
+"ur5_table_ee" [label="ur5_table_ee"];
+"ur5_base_link" [label="ur5_base_link"];
+"ur5_base" [label="ur5_base"];
+"ur5_shoulder_link" [label="ur5_shoulder_link"];
+"ur5_upper_arm_link" [label="ur5_upper_arm_link"];
+"ur5_forearm_link" [label="ur5_forearm_link"];
+"ur5_wrist_1_link" [label="ur5_wrist_1_link"];
+"ur5_wrist_2_link" [label="ur5_wrist_2_link"];
+"ur5_wrist_3_link" [label="ur5_wrist_3_link"];
+"ur5_ee_link" [label="ur5_ee_link"];
+"ur5_tool0" [label="ur5_tool0"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"world" -> "world_interface_to_world" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"world_interface_to_world" -> "world_interface"
+"world_interface" -> "world_iiwa_table_joint" [label="xyz: 2.25 -0.5 1 \nrpy: 0 -0 -3.14159"]
+"world_iiwa_table_joint" -> "iiwa_table_base"
+"iiwa_table_base" -> "iiwa_table_base_top_joint" [label="xyz: 0 0 0.015 \nrpy: 0 -0 0"]
+"iiwa_table_base_top_joint" -> "iiwa_table_ee"
+"iiwa_table_ee" -> "iiwa_table_ee_iiwa_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"iiwa_table_ee_iiwa_joint" -> "iiwa_link_0"
+"iiwa_link_0" -> "iiwa_joint_1" [label="xyz: 0 0 0.15 \nrpy: 0 -0 0"]
+"iiwa_joint_1" -> "iiwa_link_1"
+"iiwa_link_1" -> "iiwa_joint_2" [label="xyz: 0 0 0.19 \nrpy: 1.5708 1.26218e-29 -3.14159"]
+"iiwa_joint_2" -> "iiwa_link_2"
+"iiwa_link_2" -> "iiwa_joint_3" [label="xyz: 0 0.21 0 \nrpy: 1.5708 1.26218e-29 -3.14159"]
+"iiwa_joint_3" -> "iiwa_link_3"
+"iiwa_link_3" -> "iiwa_joint_4" [label="xyz: 0 0 0.19 \nrpy: 1.5708 -0 0"]
+"iiwa_joint_4" -> "iiwa_link_4"
+"iiwa_link_4" -> "iiwa_joint_5" [label="xyz: 0 0.21 0 \nrpy: 1.5708 -2.06823e-13 3.14159"]
+"iiwa_joint_5" -> "iiwa_link_5"
+"iiwa_link_5" -> "iiwa_joint_6" [label="xyz: 0 0.0607 0.19 \nrpy: 1.5708 -0 0"]
+"iiwa_joint_6" -> "iiwa_link_6"
+"iiwa_link_6" -> "iiwa_joint_7" [label="xyz: 0 0.081 0.0607 \nrpy: 1.5708 -2.06823e-13 3.14159"]
+"iiwa_joint_7" -> "iiwa_link_7"
+"iiwa_link_7" -> "iiwa_joint_ee" [label="xyz: 0 0 0.045 \nrpy: 0 -0 0"]
+"iiwa_joint_ee" -> "iiwa_link_ee"
+"iiwa_link_ee" -> "wsg50_anterior_gripper_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"wsg50_anterior_gripper_joint" -> "wsg50_base_link"
+"wsg50_base_link" -> "wsg50_gripper_left_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"wsg50_gripper_left_joint" -> "wsg50_gripper_left"
+"wsg50_base_link" -> "wsg50_gripper_right_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 3.14159"]
+"wsg50_gripper_right_joint" -> "wsg50_gripper_right"
+"world_interface" -> "world_interface_conveyor_joint" [label="xyz: 0 0 1 \nrpy: 0 -0 0"]
+"world_interface_conveyor_joint" -> "conveyor_system_link"
+"world_interface" -> "world_ur5_table_joint" [label="xyz: 0.5 -1.5 1 \nrpy: 0 -0 1.5708"]
+"world_ur5_table_joint" -> "ur5_table_base"
+"ur5_table_base" -> "ur5_table_base_top_joint" [label="xyz: 0 0 0.015 \nrpy: 0 -0 0"]
+"ur5_table_base_top_joint" -> "ur5_table_ee"
+"ur5_table_ee" -> "ur5_to_table_ee" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"ur5_to_table_ee" -> "ur5_base_link"
+"ur5_base_link" -> "ur5_base_link-base_fixed_joint" [label="xyz: 0 0 0 \nrpy: 0 0 3.14159"]
+"ur5_base_link-base_fixed_joint" -> "ur5_base"
+"ur5_base_link" -> "ur5_shoulder_pan_joint" [label="xyz: 0 0 0.089159 \nrpy: 0 -0 0"]
+"ur5_shoulder_pan_joint" -> "ur5_shoulder_link"
+"ur5_shoulder_link" -> "ur5_shoulder_lift_joint" [label="xyz: 0 0.13585 0 \nrpy: 0 1.5708 -0"]
+"ur5_shoulder_lift_joint" -> "ur5_upper_arm_link"
+"ur5_upper_arm_link" -> "ur5_elbow_joint" [label="xyz: 0 -0.1197 0.425 \nrpy: 0 -0 0"]
+"ur5_elbow_joint" -> "ur5_forearm_link"
+"ur5_forearm_link" -> "ur5_wrist_1_joint" [label="xyz: 0 0 0.39225 \nrpy: 0 1.5708 -0"]
+"ur5_wrist_1_joint" -> "ur5_wrist_1_link"
+"ur5_wrist_1_link" -> "ur5_wrist_2_joint" [label="xyz: 0 0.093 0 \nrpy: 0 -0 0"]
+"ur5_wrist_2_joint" -> "ur5_wrist_2_link"
+"ur5_wrist_2_link" -> "ur5_wrist_3_joint" [label="xyz: 0 0 0.09465 \nrpy: 0 -0 0"]
+"ur5_wrist_3_joint" -> "ur5_wrist_3_link"
+"ur5_wrist_3_link" -> "ur5_ee_fixed_joint" [label="xyz: 0 0.0823 0 \nrpy: 0 -0 1.5708"]
+"ur5_ee_fixed_joint" -> "ur5_ee_link"
+"ur5_wrist_3_link" -> "ur5_wrist_3_link-tool0_fixed_joint" [label="xyz: 0 0.0823 0 \nrpy: -1.5708 0 0"]
+"ur5_wrist_3_link-tool0_fixed_joint" -> "ur5_tool0"
+}

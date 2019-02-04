@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="panda_ga">
+
+  <xacro:macro name="panda_hand_gazebo" params="arm_name">
+
+
+
+    <!-- Link0 -->
+    <gazebo reference="${arm_name}_hand">
+      <turnGravityOff>false</turnGravityOff>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+    <!-- Link1 -->
+    <gazebo reference="${arm_name}_leftfinger">
+      <turnGravityOff>false</turnGravityOff>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+    <!-- Link2 -->
+    <gazebo reference="${arm_name}_rightfinger">
+      <turnGravityOff>false</turnGravityOff>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>

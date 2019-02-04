@@ -1,0 +1,8 @@
+<?xml version='1.0'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="conveyor">
+  <xacro:include filename="$(find robots_ee_pkg)/urdf/conveyor/conveyor.urdf.xacro" />
+  <link name="world" />
+  <xacro:conveyor_system parent="world" >
+    <origin xyz="0 0 1" rpy="0 0 0" />
+  </xacro:conveyor_system>
+</robot>
