@@ -29,12 +29,12 @@ DWAPlannerROS:
   latch_xy_goal_tolerance: false
 
 # Forward Simulation Parameters
-  sim_time: 1.0       # 1.7
+  sim_time: 1.7       # 1.7
   sim_granularity: 0.025
   vx_samples: 3       # 3
   vy_samples: 10       # diff drive robot, there is only one sample
   vth_samples: 20  # 20
-  controller_frequency: 50
+  controller_frequency: 20
 
 # Trajectory Scoring Parameters
   path_distance_bias: 32.0      # 32.0   - weighting for how much it should stick to the global path plan
@@ -57,3 +57,5 @@ DWAPlannerROS:
 
 # Differential-drive robot configuration - necessary?
   holonomic_robot: true
+
+  prune_plan: true
