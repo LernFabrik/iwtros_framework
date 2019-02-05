@@ -1,5 +1,5 @@
 <launch>
-  <arg name="use_map_topic"  default="false"/>
+  <arg name="use_map_topic"  default="true"/>
   <arg name="scan_topic"     default="scan"/>
   <arg name="initial_pose_x" default="0.0"/>
   <arg name="initial_pose_y" default="0.0"/>
@@ -16,7 +16,7 @@
     <param name="laser_max_beams"             value="60"/>
     <param name="laser_max_range"           value="15.0"/>
     <param name="min_particles"             value="50"/>
-    <param name="max_particles"             value="800"/>
+    <param name="max_particles"             value="500"/>
     <param name="kld_err"                   value="0.01"/>
     <param name="kld_z"                     value="0.99"/>
     <param name="odom_alpha1"               value="0.4"/>
