@@ -35,14 +35,14 @@
 
 
 
-  <param name="use_gui" value="true"/>
+  <param name="use_gui" value="false"/>
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
     <rosparam param="source_list">[/ur5/joint_states, /iiwa/joint_states]</rosparam>
     <remap from="/joint_states" to="/combined_joint_states"/>
   </node>
 
   <!-- Start the AMCL-->
-  <arg name="map_file" default="$(find iwtros_gazebo)/map/test2.yaml"/>
+  <arg name="map_file" default="$(find iwtros_gazebo)/map/test3.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
   <include file="$(find omronld_gazebo)/launch/amcl.launch" >

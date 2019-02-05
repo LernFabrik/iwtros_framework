@@ -6,16 +6,16 @@ raytrace_range: 1.5
 
 # Obstacle Cost Shaping (http://wiki.ros.org/costmap_2d/hydro/inflation)
 #robot_radius: 0.20  # distance a circular robot should be clear of the obstacle (kobuki: 0.18)
-robot_radius: 0.60 # ArloBot
-#footprint: [[0.175, 0.153], [0.175, -0.153],[-0.375, 0.153],[-0.375, -0.153]]  # if the robot is not circular
+#robot_radius: 0.45 # ArloBot
+footprint: [[0.35, 0.25], [0.35, -0.25],[-0.35, 0.25],[-0.35, -0.25]]  # if the robot is not circular
 #-------- inflation parameters: http://wiki.ros.org/costmap_2d/hydro/inflation ----------
-inflation_radius: 0.05  # max. distance from an obstacle at which costs are incurred for planning paths.
-cost_scaling_factor: 5  # exponential rate at which the obstacle cost drops off (default: 10)
+inflation_radius: 0.1  # max. distance from an obstacle at which costs are incurred for planning paths.
+cost_scaling_factor: 10  # exponential rate at which the obstacle cost drops off (default: 10)
 
 # voxel map configuration; z-voxels 0 are filled by bumpers and 1 by laser scan (kinect)
 
 map_type: costmap
-transform_tolerance: 5 # seconds
+transform_tolerance: 2 # seconds
 
 
 origin_z: 0.0
