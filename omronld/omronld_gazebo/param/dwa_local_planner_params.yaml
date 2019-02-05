@@ -34,7 +34,7 @@ DWAPlannerROS:
   vx_samples: 3       # 3
   vy_samples: 10       # diff drive robot, there is only one sample
   vth_samples: 20  # 20
-  controller_frequency: 20
+  #controller_frequency: 20
 
 # Trajectory Scoring Parameters
   path_distance_bias: 32.0      # 32.0   - weighting for how much it should stick to the global path plan

@@ -13,7 +13,7 @@
 
     <!-- Link0 -->
     <gazebo reference="${arm_name}_link0">
-      <turnGravityOff>true</turnGravityOff>
+      <turnGravityOff>false</turnGravityOff>
       <selfCollide>true</selfCollide>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
@@ -21,7 +21,7 @@
 
     <!-- Link1 -->
     <gazebo reference="${arm_name}_link1">
-      <turnGravityOff>true</turnGravityOff>
+      <turnGravityOff>false</turnGravityOff>
       <selfCollide>true</selfCollide>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
@@ -29,7 +29,7 @@
 
     <!-- Link2 -->
     <gazebo reference="${arm_name}_link2">
-      <turnGravityOff>true</turnGravityOff>
+      <turnGravityOff>false</turnGravityOff>
       <selfCollide>true</selfCollide>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
@@ -37,7 +37,7 @@
 
     <!-- Link3 -->
     <gazebo reference="${arm_name}_link3">
-      <turnGravityOff>true</turnGravityOff>
+      <turnGravityOff>false</turnGravityOff>
       <selfCollide>true</selfCollide>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
@@ -46,7 +46,7 @@
 
     <!-- Link4 -->
     <gazebo reference="${arm_name}_link4">
-      <turnGravityOff>true</turnGravityOff>
+      <turnGravityOff>false</turnGravityOff>
       <selfCollide>true</selfCollide>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
@@ -54,7 +54,7 @@
 
     <!-- Link5 -->
     <gazebo reference="${arm_name}_link5">
-      <turnGravityOff>true</turnGravityOff>
+      <turnGravityOff>false</turnGravityOff>
       <selfCollide>true</selfCollide>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
@@ -62,7 +62,7 @@
 
     <!-- Link6 -->
     <gazebo reference="${arm_name}_link6">
-      <turnGravityOff>true</turnGravityOff>
+      <turnGravityOff>false</turnGravityOff>
       <selfCollide>true</selfCollide>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
@@ -70,7 +70,7 @@
 
     <!-- Link7 -->
     <gazebo reference="${arm_name}_link7">
-      <turnGravityOff>true</turnGravityOff>
+      <turnGravityOff>false</turnGravityOff>
       <selfCollide>true</selfCollide>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
