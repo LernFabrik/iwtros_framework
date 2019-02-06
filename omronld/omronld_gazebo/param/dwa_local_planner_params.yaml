@@ -20,7 +20,7 @@ DWAPlannerROS:
   rot_stopped_vel: 0.4
 
   acc_lim_x: 2.0 # maximum is theoretically 2.0, but we
-  acc_lim_th: 2.0
+  acc_lim_th: 1.0
   acc_lim_y: 0.0      # diff drive robot
 
 # Goal Tolerance Parameters
@@ -30,8 +30,8 @@ DWAPlannerROS:
 
 # Forward Simulation Parameters
   sim_time: 1.7       # 1.7
-  sim_granularity: 0.025
-  vx_samples: 3       # 3
+  sim_granularity: 0.05
+  vx_samples: 10       # 3
   vy_samples: 10       # diff drive robot, there is only one sample
   vth_samples: 20  # 20
   #controller_frequency: 20
