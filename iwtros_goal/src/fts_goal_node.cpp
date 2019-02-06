@@ -24,47 +24,50 @@ enum location{
     CORNER4 = 4
 };
 
-void getLocationValues(location loca, move_base_msgs::MoveBaseGoal& msgs){
+void getLocationValues(location loca, move_base_msgs::MoveBaseActionGoal& msgs){
+    msgs.goal.target_pose.header.frame_id = "world";
+    msgs.goal.target_pose.header.stamp = ros::Time::now();
+    msgs.goal_id.id = "test";
     switch (loca)
     {
         case INIT:
-            msgs.target_pose.pose.position.x = -1.5;
-            msgs.target_pose.pose.position.y = -1.5;
-            msgs.target_pose.pose.orientation.w = 1.0;
+            msgs.goal.target_pose.pose.position.x = -1.5;
+            msgs.goal.target_pose.pose.position.y = -1.5;
+            msgs.goal.target_pose.pose.orientation.w = 1.0;
             break;
 
         case CORNER1:
-            msgs.target_pose.pose.position.x = -14.0;
-            msgs.target_pose.pose.position.y = 1.0;
-            msgs.target_pose.pose.orientation.z = 0.0;
-            msgs.target_pose.pose.orientation.w = 1.0;
+            msgs.goal.target_pose.pose.position.x = -14.0;
+            msgs.goal.target_pose.pose.position.y = 1.0;
+            msgs.goal.target_pose.pose.orientation.z = 0.0;
+            msgs.goal.target_pose.pose.orientation.w = 1.0;
             break;
 
         case CORNER2:
-            msgs.target_pose.pose.position.x = 11.0;
-            msgs.target_pose.pose.position.y = 1.0;
-            msgs.target_pose.pose.orientation.z = 0.0;
-            msgs.target_pose.pose.orientation.w = 1.0;
+            msgs.goal.target_pose.pose.position.x = 11.0;
+            msgs.goal.target_pose.pose.position.y = 1.0;
+            msgs.goal.target_pose.pose.orientation.z = 0.0;
+            msgs.goal.target_pose.pose.orientation.w = 1.0;
             break;
 
         case CORNER3:
-            msgs.target_pose.pose.position.x = -14.0;
-            msgs.target_pose.pose.position.y = -10.0;
-            msgs.target_pose.pose.orientation.z = 0.0;
-            msgs.target_pose.pose.orientation.w = 1.0;
+            msgs.goal.target_pose.pose.position.x = -14.0;
+            msgs.goal.target_pose.pose.position.y = -10.0;
+            msgs.goal.target_pose.pose.orientation.z = 0.0;
+            msgs.goal.target_pose.pose.orientation.w = 1.0;
             break;
         
         case CORNER4:
-            msgs.target_pose.pose.position.x = 11.0;
-            msgs.target_pose.pose.position.y = -10.0;
-            msgs.target_pose.pose.orientation.z = 0.0;
-            msgs.target_pose.pose.orientation.w = 1.0;
+            msgs.goal.target_pose.pose.position.x = 11.0;
+            msgs.goal.target_pose.pose.position.y = -10.0;
+            msgs.goal.target_pose.pose.orientation.z = 0.0;
+            msgs.goal.target_pose.pose.orientation.w = 1.0;
             break;
     
         default:
-            msgs.target_pose.pose.position.x = 0;
-            msgs.target_pose.pose.position.y = -1.5;
-            msgs.target_pose.pose.orientation.w = 1.0;
+            msgs.goal.target_pose.pose.position.x = 0;
+            msgs.goal.target_pose.pose.position.y = -1.5;
+            msgs.goal.target_pose.pose.orientation.w = 1.0;
             break;
     }
 }
@@ -73,53 +76,56 @@ void getLocationValues(location loca, move_base_msgs::MoveBaseGoal& msgs){
 int main(int argc, char** argv){
     ros::init(argc, argv, "simple_goal_node");
     ros::NodeHandle nh;
-    actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base", true);
+
+    actionlib::SimpleActionClient<move_base_msgs::MoveBaseActionGoal> ac("move_base", true);
+    actionlib::SimpleActionClient<actionlib_msgs::GoalID> idAc("move_base", true);
 
     while(!ac.waitForServer(ros::Duration(5.0))) ROS_INFO("Waiting for the move_base server");
 
-    move_base_msgs::MoveBaseGoal goal;
+    move_base_msgs::MoveBaseActionGoal goal;
+    actionlib_msgs::GoalID goalID;
+
     // get initial goal
     getLocationValues(INIT, goal);
-    goal.target_pose.header.frame_id = "world";
-    goal.target_pose.header.stamp = ros::Time::now();
     ac.sendGoal(goal);
     ac.waitForResult();
     location loc = CORNER1;
     while(ros::ok()){
+        location prev_loc = loc;
         switch (loc)
         {
             case CORNER1:
                 getLocationValues(CORNER1, goal);
-                goal.target_pose.header.frame_id = "world";
-                goal.target_pose.header.stamp = ros::Time::now();
+                goal.goal.target_pose.header.frame_id = "world";
+                goal.goal.target_pose.header.stamp = ros::Time::now();
                 loc = CORNER4;
                 break;
 
             case CORNER2:
                 getLocationValues(CORNER2, goal);
-                goal.target_pose.header.frame_id = "world";
-                goal.target_pose.header.stamp = ros::Time::now();
+                goal.goal.target_pose.header.frame_id = "world";
+                goal.goal.target_pose.header.stamp = ros::Time::now();
                 loc = CORNER1;
                 break;
 
             case CORNER3:
                 getLocationValues(CORNER3, goal);
-                goal.target_pose.header.frame_id = "world";
-                goal.target_pose.header.stamp = ros::Time::now();
+                goal.goal.target_pose.header.frame_id = "world";
+                goal.goal.target_pose.header.stamp = ros::Time::now();
                 loc = CORNER2;
                 break;
             
             case CORNER4:
                 getLocationValues(CORNER4, goal);
-                goal.target_pose.header.frame_id = "world";
-                goal.target_pose.header.stamp = ros::Time::now();
+                goal.goal.target_pose.header.frame_id = "world";
+                goal.goal.target_pose.header.stamp = ros::Time::now();
                 loc = CORNER3;
                 break;
             
             default:
                 getLocationValues(INIT, goal);
-                goal.target_pose.header.frame_id = "world";
-                goal.target_pose.header.stamp = ros::Time::now();
+                goal.goal.target_pose.header.frame_id = "world";
+                goal.goal.target_pose.header.stamp = ros::Time::now();
                 loc = CORNER1;
                 break;
         }
@@ -130,6 +136,11 @@ int main(int argc, char** argv){
             ROS_INFO("Reached goal");
         }else{
             ROS_INFO("Fail to reach the goal");
+            ROS_INFO("Requesting to stop");
+            goalID.id = goal.goal_id.id;
+            goalID.stamp = ros::Time::now();
+            idAc.sendGoal(goalID);
+
         }
     }
     return 0;
