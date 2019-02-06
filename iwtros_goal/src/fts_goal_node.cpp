@@ -25,6 +25,8 @@ enum location{
 };
 
 void getLocationValues(location loca, move_base_msgs::MoveBaseGoal& msgs){
+    msgs.target_pose.header.frame_id = "world";
+    msgs.target_pose.header.stamp = ros::Time::now();
     switch (loca)
     {
         case INIT:
@@ -76,51 +78,40 @@ int main(int argc, char** argv){
     
     actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base", true);
 
-    while(!ac.waitForServer(ros::Duration(5.0))) ROS_INFO("Waiting for the move_base server");
+    while(!ac.waitForServer(ros::Duration(10.0))){ROS_INFO("Waiting for the move_base server");} 
 
     move_base_msgs::MoveBaseGoal goal;
     // get initial goal
     getLocationValues(INIT, goal);
-    goal.target_pose.header.frame_id = "world";
-    goal.target_pose.header.stamp = ros::Time::now();
     ac.sendGoal(goal);
     ac.waitForResult();
     location loc = CORNER1;
     while(ros::ok()){
+        location prev_loc = loc;
         switch (loc)
         {
             case CORNER1:
                 getLocationValues(CORNER1, goal);
-                goal.target_pose.header.frame_id = "world";
-                goal.target_pose.header.stamp = ros::Time::now();
                 loc = CORNER4;
                 break;
 
             case CORNER2:
                 getLocationValues(CORNER2, goal);
-                goal.target_pose.header.frame_id = "world";
-                goal.target_pose.header.stamp = ros::Time::now();
                 loc = CORNER1;
                 break;
 
             case CORNER3:
                 getLocationValues(CORNER3, goal);
-                goal.target_pose.header.frame_id = "world";
-                goal.target_pose.header.stamp = ros::Time::now();
                 loc = CORNER2;
                 break;
             
             case CORNER4:
                 getLocationValues(CORNER4, goal);
-                goal.target_pose.header.frame_id = "world";
-                goal.target_pose.header.stamp = ros::Time::now();
                 loc = CORNER3;
                 break;
             
             default:
                 getLocationValues(INIT, goal);
-                goal.target_pose.header.frame_id = "world";
-                goal.target_pose.header.stamp = ros::Time::now();
                 loc = CORNER1;
                 break;
         }
