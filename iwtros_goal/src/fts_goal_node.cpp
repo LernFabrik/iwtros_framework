@@ -139,7 +139,7 @@ int main(int argc, char** argv){
             ROS_INFO("Requesting to stop");
             goalID.id = goal.goal_id.id;
             goalID.stamp = ros::Time::now();
-            idAc.sendGoal(goalID);
+            idAc.cancelAllGoals();
 
         }
     }
