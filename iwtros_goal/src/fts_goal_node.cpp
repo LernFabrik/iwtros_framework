@@ -30,7 +30,7 @@ void getLocationValues(location loca, move_base_msgs::MoveBaseGoal& msgs){
     switch (loca)
     {
         case INIT:
-            msgs.target_pose.pose.position.x = -0;
+            msgs.target_pose.pose.position.x = -1.5;
             msgs.target_pose.pose.position.y = -1.5;
             msgs.target_pose.pose.orientation.w = 1.0;
             break;
