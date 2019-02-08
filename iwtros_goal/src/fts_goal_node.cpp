@@ -130,9 +130,12 @@ int main(int argc, char** argv){
             ac.waitForResult();
 
             vel.linear.x = -0.5;
-            rev_pub.publish(vel);
-            ros::spinOnce();
-
+            ros::Rate r(10);
+            while(ros::ok){
+                rev_pub.publish(vel);
+                ros::spinOnce();
+                r.sleep();
+            }
             ROS_INFO("--- Setting previous goal");
             loc = prev_loc;
         }
