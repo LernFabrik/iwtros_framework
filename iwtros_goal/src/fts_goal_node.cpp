@@ -77,7 +77,7 @@ int main(int argc, char** argv){
     ros::NodeHandle nh;
     
     actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base", true);
-    //actionlib::SimpleActionClient<actionlib_msgs::GoalID> cancelAC("actionlib_msgs", true);
+    //actionlib::SimpleActionClient<actionlib_msgs::GoalID> cancelAC("move_base", true);
 
     while(!ac.waitForServer(ros::Duration(10.0))){ROS_INFO("Waiting for the move_base server");} 
     //while(!cancelAC.waitForServer(ros::Duration(10.0))){ROS_INFO("Waiting for the action server");} 
@@ -126,7 +126,10 @@ int main(int argc, char** argv){
         }else{
             ROS_INFO("Fail to reach the goal");
             ROS_INFO("Cancelling the current goal");
-            //ac.sendGoal(cancelGoal);
+            ac.cancelAllGoals();
+            ac.waitForResult();
+            ROS_INFO("--- Setting previous goal");
+            loc = prev_loc;
         }
     }
     return 0;
