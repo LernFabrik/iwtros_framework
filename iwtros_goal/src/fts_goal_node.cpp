@@ -77,13 +77,13 @@ int main(int argc, char** argv){
     ros::NodeHandle nh;
     
     actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base", true);
-    //actionlib::SimpleActionClient<actionlib_msgs::GoalID> cancelAC("move_base", true);
+    ros::Publisher rev_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 10);
 
     while(!ac.waitForServer(ros::Duration(10.0))){ROS_INFO("Waiting for the move_base server");} 
     //while(!cancelAC.waitForServer(ros::Duration(10.0))){ROS_INFO("Waiting for the action server");} 
 
     move_base_msgs::MoveBaseGoal goal;
-    actionlib_msgs::GoalID cancelGoal;
+    geometry_msgs::Twist vel;
     // get initial goal
     getLocationValues(INIT, goal);
     ac.sendGoal(goal);
@@ -128,6 +128,11 @@ int main(int argc, char** argv){
             ROS_INFO("Cancelling the current goal");
             ac.cancelAllGoals();
             ac.waitForResult();
+
+            vel.linear.x = -0.5;
+            rev_pub.publish(vel);
+            ros::spinOnce();
+
             ROS_INFO("--- Setting previous goal");
             loc = prev_loc;
         }
