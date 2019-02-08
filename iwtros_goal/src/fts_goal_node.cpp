@@ -129,11 +129,13 @@ int main(int argc, char** argv){
             ac.cancelAllGoals();
             ac.waitForResult();
 
-            vel.linear.x = -0.5;
+            vel.linear.x = -0.2;
             ros::Rate r(10);
-            while(ros::ok){
+            int counter = 0;
+            while(ros::ok && counter <= 15){
                 rev_pub.publish(vel);
                 ros::spinOnce();
+                counter ++;
                 r.sleep();
             }
             ROS_INFO("--- Setting previous goal");
