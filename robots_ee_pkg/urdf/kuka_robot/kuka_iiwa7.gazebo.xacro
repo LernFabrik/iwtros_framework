@@ -59,14 +59,7 @@
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
-
-    <gazebo reference="${robot_name}_table_base_primary">
-      <material>Gazebo/Black</material>
-      <turnGravityOff>true</turnGravityOff>
-      <legacyModeNS>true</legacyModeNS>
-      <mu1>0.1</mu1>
-      <mu2>0.1</mu2>
-    </gazebo>
+    
 
     <gazebo>
       <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
