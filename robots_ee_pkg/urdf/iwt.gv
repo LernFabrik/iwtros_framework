@@ -62,7 +62,7 @@ node [shape=ellipse, color=blue, fontcolor=blue];
 "wsg50_gripper_right_joint" -> "wsg50_gripper_right"
 "world_interface" -> "world_interface_conveyor_joint" [label="xyz: 0 0 1 \nrpy: 0 -0 0"]
 "world_interface_conveyor_joint" -> "conveyor_system_link"
-"world_interface" -> "world_ur5_table_joint" [label="xyz: 0.5 -1.5 1 \nrpy: 0 -0 1.5708"]
+"world_interface" -> "world_ur5_table_joint" [label="xyz: 0.8 -0.5 1 \nrpy: 0 -0 -3.14159"]
 "world_ur5_table_joint" -> "ur5_table_base"
 "ur5_table_base" -> "ur5_table_base_top_joint" [label="xyz: 0 0 0.015 \nrpy: 0 -0 0"]
 "ur5_table_base_top_joint" -> "ur5_table_ee"
