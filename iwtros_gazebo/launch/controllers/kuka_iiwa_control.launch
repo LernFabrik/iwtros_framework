@@ -6,12 +6,10 @@
 
   <!-- Load joint controller configuration from YAML file to parameter server -->
   <rosparam file="$(find iwtros_gazebo)/config/iiwa_control.yaml" command="load" />
-  <rosparam file="$(find iwtros_gazebo)/config/iiwa_table_control.yaml" command="load" />
+  <!--rosparam file="$(find iwtros_gazebo)/config/iiwa_table_control.yaml" command="load" /-->
   <!-- Loads the controllers -->
   <node name="$(arg robot_name)_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
         output="screen" args="$(arg controllers) --shutdown-timeout 2" />
-        
-  <node name="$(arg robot_name)_table_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-        output="screen" args="iiwa_table_joint_state_controller iiwa_table_EfforJoint_interface_x iiwa_table_EfforJoint_interface_yaw --shutdown-timeout 2" />
+
 
 </launch>

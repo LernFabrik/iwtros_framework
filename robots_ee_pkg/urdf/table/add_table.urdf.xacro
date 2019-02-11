@@ -7,53 +7,12 @@
 
 
   <xacro:macro name="add_table" params="robot_arm_name table_ee modelDir parent *origin">
-    
-    <joint name="world_${robot_arm_name}_table_primary_x_joint" type="prismatic">
+
+    <joint name="world_${robot_arm_name}_table_joint" type="fixed">
       <xacro:insert_block name="origin"/>
       <parent link="${parent}"/>
-      <child link="${robot_arm_name}_table_base_primary"/>
-      <axis xyz="1 0 0" />
-      <limit effort="10000" lower="-5.0" upper="5.0" velocity="1" />
-    </joint>
-
-    <transmission name="tran1">
-        <type>transmission_interface/SimpleTransmission</type>
-        <joint name="world_${robot_arm_name}_table_primary_x_joint">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        </joint>
-        <actuator name="motor1">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-    </transmission>
-
-     <joint name="${robot_arm_name}_table_joint" type="continuous">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <parent link="${robot_arm_name}_table_base_primary"/>
       <child link="${robot_arm_name}_table_base"/>
-      <axis xyz="0 0 1" />
     </joint>
-
-    <transmission name="tran2">
-        <type>transmission_interface/SimpleTransmission</type>
-        <joint name="${robot_arm_name}_table_joint">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-        </joint>
-        <actuator name="motor2">
-            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            <mechanicalReduction>1</mechanicalReduction>
-        </actuator>
-    </transmission>
-
-    <link name="${robot_arm_name}_table_base_primary" />
-
-    <gazebo reference="${robot_arm_name}_table_base_primary">
-      <material>Gazebo/Black</material>
-      <turnGravityOff>true</turnGravityOff>
-      <legacyModeNS>true</legacyModeNS>
-      <mu1>0.5</mu1>
-      <mu2>0.4</mu2>
-    </gazebo>
 
      <!-- BASE LINK -->
     <link name="${robot_arm_name}_table_base">
@@ -81,7 +40,6 @@
           </geometry>
       </collision>
     </link>
-    
     <gazebo reference="${robot_arm_name}_table_base">
       <material>Gazebo/Grey</material>
       <turnGravityOff>true</turnGravityOff>

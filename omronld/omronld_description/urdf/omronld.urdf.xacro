@@ -71,6 +71,7 @@
 
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <legacyModeNS>false</legacyModeNS>
       <robotParam>/$(arg robot_description)</robotParam>
     </plugin>
   </gazebo>
