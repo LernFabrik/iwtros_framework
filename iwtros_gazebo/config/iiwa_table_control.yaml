@@ -1,0 +1,19 @@
+###################################################################################
+## This config file copied from iiwa_stack/iiwa_control/config/iiwa_control.yaml ##
+## Edited by: Vishnuprasad Prachandabhanu                                        ##
+###################################################################################
+#kuka iiwa7 control parameters:
+  # Publish all the joint states
+  iiwa_table_joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+  
+  iiwa_table_EfforJoint_interface_x:
+    type: effort_controllers/JointPositionController
+    joint: world_iiwa_table_primary_x_joint
+    pid: {p: 1.0, i: 1.0, d: 10.0}
+
+  iiwa_table_EfforJoint_interface_yaw:
+    type: effort_controllers/JointPositionController
+    joint: iiwa_table_joint
+    pid: {p: 1.0, i: 1.0, d: 10.0}

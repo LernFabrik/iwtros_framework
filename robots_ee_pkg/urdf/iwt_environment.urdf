@@ -78,19 +78,46 @@
   <!-- finger_length: Length of finger from gripper base. (was 0.023) -->
   <!-- finger_tip:    Offset of finger tip along fingers' motion direction.
                     Use e.g. for single contact point tip on finger. (default 0) -->
-  <joint name="world_iiwa_table_primary_x_joint" type="planar">
+  <joint name="world_iiwa_table_primary_x_joint" type="prismatic">
     <origin rpy="0 0 3.14159265359" xyz="2.25 -0.5 1.0"/>
     <parent link="world_interface"/>
     <child link="iiwa_table_base_primary"/>
     <axis xyz="1 0 0"/>
+    <limit effort="10000" lower="-5.0" upper="5.0" velocity="1"/>
   </joint>
-  <joint name="world_iiwa_table_joint" type="continuous">
+  <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="world_iiwa_table_primary_x_joint">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <joint name="iiwa_table_joint" type="continuous">
     <origin rpy="0 0 0" xyz="0 0 0"/>
     <parent link="iiwa_table_base_primary"/>
     <child link="iiwa_table_base"/>
     <axis xyz="0 0 1"/>
   </joint>
+  <transmission name="tran2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="iiwa_table_joint">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
   <link name="iiwa_table_base_primary"/>
+  <gazebo reference="iiwa_table_base_primary">
+    <material>Gazebo/Black</material>
+    <turnGravityOff>true</turnGravityOff>
+    <mu1>0.5</mu1>
+    <mu2>0.4</mu2>
+  </gazebo>
   <!-- BASE LINK -->
   <link name="iiwa_table_base">
     <inertial>
@@ -1045,19 +1072,46 @@
       <robotParam>/iiwa/iiwa_description</robotParam>
     </plugin>
   </gazebo>
-  <joint name="world_ur5_table_primary_x_joint" type="planar">
+  <joint name="world_ur5_table_primary_x_joint" type="prismatic">
     <origin rpy="0 0 3.14159265359" xyz="0.8 -0.5 1.0"/>
     <parent link="world_interface"/>
     <child link="ur5_table_base_primary"/>
     <axis xyz="1 0 0"/>
+    <limit effort="10000" lower="-5.0" upper="5.0" velocity="1"/>
   </joint>
-  <joint name="world_ur5_table_joint" type="continuous">
+  <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="world_ur5_table_primary_x_joint">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <joint name="ur5_table_joint" type="continuous">
     <origin rpy="0 0 0" xyz="0 0 0"/>
     <parent link="ur5_table_base_primary"/>
     <child link="ur5_table_base"/>
     <axis xyz="0 0 1"/>
   </joint>
+  <transmission name="tran2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="ur5_table_joint">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
   <link name="ur5_table_base_primary"/>
+  <gazebo reference="ur5_table_base_primary">
+    <material>Gazebo/Black</material>
+    <turnGravityOff>true</turnGravityOff>
+    <mu1>0.5</mu1>
+    <mu2>0.4</mu2>
+  </gazebo>
   <!-- BASE LINK -->
   <link name="ur5_table_base">
     <inertial>

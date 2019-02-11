@@ -2,6 +2,7 @@ digraph G {
 node [shape=box];
 "world" [label="world"];
 "world_interface" [label="world_interface"];
+"iiwa_table_base_primary" [label="iiwa_table_base_primary"];
 "iiwa_table_base" [label="iiwa_table_base"];
 "iiwa_table_ee" [label="iiwa_table_ee"];
 "iiwa_link_0" [label="iiwa_link_0"];
@@ -17,6 +18,7 @@ node [shape=box];
 "wsg50_gripper_left" [label="wsg50_gripper_left"];
 "wsg50_gripper_right" [label="wsg50_gripper_right"];
 "conveyor_system_link" [label="conveyor_system_link"];
+"ur5_table_base_primary" [label="ur5_table_base_primary"];
 "ur5_table_base" [label="ur5_table_base"];
 "ur5_table_ee" [label="ur5_table_ee"];
 "ur5_base_link" [label="ur5_base_link"];
@@ -32,8 +34,10 @@ node [shape=box];
 node [shape=ellipse, color=blue, fontcolor=blue];
 "world" -> "world_interface_to_world" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
 "world_interface_to_world" -> "world_interface"
-"world_interface" -> "world_iiwa_table_joint" [label="xyz: 2.25 -0.5 1 \nrpy: 0 -0 -3.14159"]
-"world_iiwa_table_joint" -> "iiwa_table_base"
+"world_interface" -> "world_iiwa_table_primary_x_joint" [label="xyz: 2.25 -0.5 1 \nrpy: 0 -0 -3.14159"]
+"world_iiwa_table_primary_x_joint" -> "iiwa_table_base_primary"
+"iiwa_table_base_primary" -> "iiwa_table_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"iiwa_table_joint" -> "iiwa_table_base"
 "iiwa_table_base" -> "iiwa_table_base_top_joint" [label="xyz: 0 0 0.015 \nrpy: 0 -0 0"]
 "iiwa_table_base_top_joint" -> "iiwa_table_ee"
 "iiwa_table_ee" -> "iiwa_table_ee_iiwa_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
@@ -62,8 +66,10 @@ node [shape=ellipse, color=blue, fontcolor=blue];
 "wsg50_gripper_right_joint" -> "wsg50_gripper_right"
 "world_interface" -> "world_interface_conveyor_joint" [label="xyz: 0 0 1 \nrpy: 0 -0 0"]
 "world_interface_conveyor_joint" -> "conveyor_system_link"
-"world_interface" -> "world_ur5_table_joint" [label="xyz: 0.8 -0.5 1 \nrpy: 0 -0 -3.14159"]
-"world_ur5_table_joint" -> "ur5_table_base"
+"world_interface" -> "world_ur5_table_primary_x_joint" [label="xyz: 0.8 -0.5 1 \nrpy: 0 -0 -3.14159"]
+"world_ur5_table_primary_x_joint" -> "ur5_table_base_primary"
+"ur5_table_base_primary" -> "ur5_table_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"ur5_table_joint" -> "ur5_table_base"
 "ur5_table_base" -> "ur5_table_base_top_joint" [label="xyz: 0 0 0.015 \nrpy: 0 -0 0"]
 "ur5_table_base_top_joint" -> "ur5_table_ee"
 "ur5_table_ee" -> "ur5_to_table_ee" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
