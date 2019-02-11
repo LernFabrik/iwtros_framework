@@ -78,48 +78,59 @@
   <!-- finger_length: Length of finger from gripper base. (was 0.023) -->
   <!-- finger_tip:    Offset of finger tip along fingers' motion direction.
                     Use e.g. for single contact point tip on finger. (default 0) -->
-  <joint name="world_iiwa_table_primary_x_joint" type="prismatic">
+  <joint name="world_iiwa_table_joint" type="fixed">
     <origin rpy="0 0 3.14159265359" xyz="2.25 -0.5 1.0"/>
     <parent link="world_interface"/>
-    <child link="iiwa_table_base_primary"/>
+    <child link="iiwa_table_fixed_link"/>
+  </joint>
+  <joint name="iiwa_table_x_joint" type="prismatic">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="iiwa_table_fixed_link"/>
+    <child link="iiwa_table_x_link"/>
     <axis xyz="1 0 0"/>
     <limit effort="10000" lower="-5.0" upper="5.0" velocity="1"/>
   </joint>
-  <transmission name="tran1">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="world_iiwa_table_primary_x_joint">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="motor1">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <joint name="iiwa_table_joint" type="continuous">
+  <joint name="iiwa_table_yaw_joint" type="continuous">
     <origin rpy="0 0 0" xyz="0 0 0"/>
-    <parent link="iiwa_table_base_primary"/>
-    <child link="iiwa_table_base"/>
+    <parent link="iiwa_table_x_link"/>
+    <child link="iiwa_table_yaw_link"/>
     <axis xyz="0 0 1"/>
   </joint>
-  <transmission name="tran2">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="iiwa_table_joint">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="motor2">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <link name="iiwa_table_base_primary"/>
-  <gazebo reference="iiwa_table_base_primary">
-    <material>Gazebo/Black</material>
-    <turnGravityOff>true</turnGravityOff>
-    <mu1>0.5</mu1>
-    <mu2>0.4</mu2>
-  </gazebo>
+  <!-- Extra links-->
+  <link name="iiwa_table_fixed_link">
+    <inertial>
+      <mass value="1"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="1" ixy="0.0" ixz="0.0" iyy="1" iyz="0.0" izz="1"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="iiwa_table_x_link">
+    <inertial>
+      <mass value="1"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="1" ixy="0.0" ixz="0.0" iyy="1" iyz="0.0" izz="1"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+  </link>
   <!-- BASE LINK -->
-  <link name="iiwa_table_base">
+  <link name="iiwa_table_yaw_link">
     <inertial>
       <mass value="80"/>
       <origin xyz="0 0 -0.5"/>
@@ -142,7 +153,7 @@
       </geometry>
     </collision>
   </link>
-  <gazebo reference="iiwa_table_base">
+  <gazebo reference="iiwa_table_yaw_link">
     <material>Gazebo/Grey</material>
     <turnGravityOff>true</turnGravityOff>
     <mu1>0.5</mu1>
@@ -150,7 +161,7 @@
   </gazebo>
   <joint name="iiwa_table_base_top_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.0 0 0.015"/>
-    <parent link="iiwa_table_base"/>
+    <parent link="iiwa_table_yaw_link"/>
     <child link="iiwa_table_ee"/>
   </joint>
   <!-- Table Plate LINK -->
@@ -183,6 +194,40 @@
     <mu1>0.5</mu1>
     <mu2>0.4</mu2>
   </gazebo>
+  <gazebo reference="iiwa_table_fixed_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>false</selfCollide>
+    <turnGravityOff>true</turnGravityOff>
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+  </gazebo>
+  <gazebo reference="iiwa_table_x_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>false</selfCollide>
+    <turnGravityOff>true</turnGravityOff>
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+  </gazebo>
+  <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="iiwa_table_x_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="tran2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="iiwa_table_yaw_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
   <!--joint between {parent} and link_0-->
   <joint name="iiwa_table_ee_iiwa_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -438,10 +483,10 @@
     <robotNamespace>/iiwa</robotNamespace>
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="iiwa_joint_1">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </joint>
     <actuator name="iiwa_motor_1">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -449,10 +494,10 @@
     <robotNamespace>/iiwa</robotNamespace>
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="iiwa_joint_2">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </joint>
     <actuator name="iiwa_motor_2">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -460,10 +505,10 @@
     <robotNamespace>/iiwa</robotNamespace>
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="iiwa_joint_3">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </joint>
     <actuator name="iiwa_motor_3">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -471,10 +516,10 @@
     <robotNamespace>/iiwa</robotNamespace>
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="iiwa_joint_4">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </joint>
     <actuator name="iiwa_motor_4">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -482,10 +527,10 @@
     <robotNamespace>/iiwa</robotNamespace>
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="iiwa_joint_5">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </joint>
     <actuator name="iiwa_motor_5">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -493,10 +538,10 @@
     <robotNamespace>/iiwa</robotNamespace>
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="iiwa_joint_6">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </joint>
     <actuator name="iiwa_motor_6">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -504,10 +549,10 @@
     <robotNamespace>/iiwa</robotNamespace>
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="iiwa_joint_7">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
     </joint>
     <actuator name="iiwa_motor_7">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
@@ -572,6 +617,7 @@
   <gazebo>
     <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
       <robotParam>/iiwa/iiwa_description</robotParam>
+      <legacyModeNS>false</legacyModeNS>
     </plugin>
   </gazebo>
   <joint name="wsg50_anterior_gripper_joint" type="fixed">
@@ -1070,50 +1116,62 @@
   <gazebo>
     <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
       <robotParam>/iiwa/iiwa_description</robotParam>
+      <legacyModeNS>false</legacyModeNS>
     </plugin>
   </gazebo>
-  <joint name="world_ur5_table_primary_x_joint" type="prismatic">
+  <joint name="world_ur5_table_joint" type="fixed">
     <origin rpy="0 0 3.14159265359" xyz="0.8 -0.5 1.0"/>
     <parent link="world_interface"/>
-    <child link="ur5_table_base_primary"/>
+    <child link="ur5_table_fixed_link"/>
+  </joint>
+  <joint name="ur5_table_x_joint" type="prismatic">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="ur5_table_fixed_link"/>
+    <child link="ur5_table_x_link"/>
     <axis xyz="1 0 0"/>
     <limit effort="10000" lower="-5.0" upper="5.0" velocity="1"/>
   </joint>
-  <transmission name="tran1">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="world_ur5_table_primary_x_joint">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="motor1">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <joint name="ur5_table_joint" type="continuous">
+  <joint name="ur5_table_yaw_joint" type="continuous">
     <origin rpy="0 0 0" xyz="0 0 0"/>
-    <parent link="ur5_table_base_primary"/>
-    <child link="ur5_table_base"/>
+    <parent link="ur5_table_x_link"/>
+    <child link="ur5_table_yaw_link"/>
     <axis xyz="0 0 1"/>
   </joint>
-  <transmission name="tran2">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="ur5_table_joint">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="motor2">
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-  <link name="ur5_table_base_primary"/>
-  <gazebo reference="ur5_table_base_primary">
-    <material>Gazebo/Black</material>
-    <turnGravityOff>true</turnGravityOff>
-    <mu1>0.5</mu1>
-    <mu2>0.4</mu2>
-  </gazebo>
+  <!-- Extra links-->
+  <link name="ur5_table_fixed_link">
+    <inertial>
+      <mass value="1"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="1" ixy="0.0" ixz="0.0" iyy="1" iyz="0.0" izz="1"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="ur5_table_x_link">
+    <inertial>
+      <mass value="1"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="1" ixy="0.0" ixz="0.0" iyy="1" iyz="0.0" izz="1"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.0 0 0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+  </link>
   <!-- BASE LINK -->
-  <link name="ur5_table_base">
+  <link name="ur5_table_yaw_link">
     <inertial>
       <mass value="80"/>
       <origin xyz="0 0 -0.5"/>
@@ -1136,7 +1194,7 @@
       </geometry>
     </collision>
   </link>
-  <gazebo reference="ur5_table_base">
+  <gazebo reference="ur5_table_yaw_link">
     <material>Gazebo/Grey</material>
     <turnGravityOff>true</turnGravityOff>
     <mu1>0.5</mu1>
@@ -1144,7 +1202,7 @@
   </gazebo>
   <joint name="ur5_table_base_top_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.0 0 0.015"/>
-    <parent link="ur5_table_base"/>
+    <parent link="ur5_table_yaw_link"/>
     <child link="ur5_table_ee"/>
   </joint>
   <!-- Table Plate LINK -->
@@ -1177,6 +1235,40 @@
     <mu1>0.5</mu1>
     <mu2>0.4</mu2>
   </gazebo>
+  <gazebo reference="ur5_table_fixed_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>false</selfCollide>
+    <turnGravityOff>true</turnGravityOff>
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+  </gazebo>
+  <gazebo reference="ur5_table_x_link">
+    <material>Gazebo/Grey</material>
+    <selfCollide>false</selfCollide>
+    <turnGravityOff>true</turnGravityOff>
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+  </gazebo>
+  <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="ur5_table_x_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="tran2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="ur5_table_yaw_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
   <joint name="ur5_to_table_ee" type="fixed">
     <parent link="ur5_table_ee"/>
     <child link="ur5_base_link"/>
