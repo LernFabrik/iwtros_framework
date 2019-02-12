@@ -106,3 +106,12 @@ target_link_libraries(conveyor_spawn_node
   ${catkin_LIBRARIES}  
   conveyor_spawner
 )
+
+# Make plugin libraries #############################################################
+list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
+
+set(ros_table_control_plugins_name ROSTableControlPlugin)
+add_library(${ros_table_control_plugins_name}  src/plugins/ROSTableControlPlugin.cc)
+target_link_libraries(${ros_table_control_plugins_name} ${GAZEBO_LIBRARIES})
+
+#####################################################################################

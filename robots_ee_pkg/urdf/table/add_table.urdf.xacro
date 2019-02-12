@@ -11,10 +11,12 @@
     <joint name="world_${robot_arm_name}_table_joint" type="fixed">
       <xacro:insert_block name="origin"/>
       <parent link="${parent}"/>
-      <child link="${robot_arm_name}_table_fixed_link"/>
+      <!--child link="${robot_arm_name}_table_fixed_link"/ -->
+      <!--child link="${robot_arm_name}_table_yaw_link"/-->
+      <child link="${robot_arm_name}_table_base"/>
     </joint>
 
-    <joint name="${robot_arm_name}_table_x_joint" type="prismatic">
+    <!--joint name="${robot_arm_name}_table_x_joint" type="prismatic">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <parent link="${robot_arm_name}_table_fixed_link"/>
       <child link="${robot_arm_name}_table_x_link"/>
@@ -27,10 +29,10 @@
       <parent link="${robot_arm_name}_table_x_link"/>
       <child link="${robot_arm_name}_table_yaw_link"/>
       <axis xyz="0 0 1" />
-    </joint>
+    </joint-->
 
     <!-- Extra links-->
-    <link name="${robot_arm_name}_table_fixed_link">
+    <!--link name="${robot_arm_name}_table_fixed_link">
       <inertial>
         <mass value="1"/>
           <origin xyz="0 0 0" />
@@ -62,9 +64,10 @@
           <color rgba="0.5 0.5 0.5 1"/>
         </material>
       </visual>
-    </link>
+    </link-->                        
+    
      <!-- BASE LINK -->
-    <link name="${robot_arm_name}_table_yaw_link">
+    <link name="${robot_arm_name}_table_base">
       <inertial>
         <mass value="80"/>
           <origin xyz="0 0 -${0.5}" />
@@ -89,7 +92,7 @@
           </geometry>
       </collision>
     </link>
-    <gazebo reference="${robot_arm_name}_table_yaw_link">
+    <gazebo reference="${robot_arm_name}_table_base">
       <material>Gazebo/Grey</material>
       <turnGravityOff>true</turnGravityOff>
       <mu1>0.5</mu1>
@@ -98,7 +101,7 @@
 
     <joint name="${robot_arm_name}_table_base_top_joint" type="fixed">
       <origin rpy="0 0 0" xyz="0.0 0 0.015"/>
-      <parent link="${robot_arm_name}_table_yaw_link"/>
+      <parent link="${robot_arm_name}_table_base"/>
       <child link="${table_ee}"/>
     </joint>
 
@@ -135,7 +138,7 @@
       <mu2>0.4</mu2>
     </gazebo>
 
-    <gazebo reference="${robot_arm_name}_table_fixed_link">
+    <!--gazebo reference="${robot_arm_name}_table_fixed_link">
       <material>Gazebo/Grey</material>
       <selfCollide>false</selfCollide>
       <turnGravityOff>true</turnGravityOff>
@@ -171,6 +174,6 @@
             <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
-    </transmission>
+    </transmission -->
   </xacro:macro>
 </robot>
