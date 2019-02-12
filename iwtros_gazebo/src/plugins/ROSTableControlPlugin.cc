@@ -59,7 +59,13 @@ void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, flo
 
     this->model->SetLinearVel(ignition::math::Vector3d(lin_x, lin_y, lin_z));
     this->model->SetAngularVel(ignition::math::Vector3d(ang_x, ang_y, ang_z));
+    math::Pose current_pose = this->model->GetWorldPose();
+    current_pose.pos.z = 0;
+    current_pose.rot.x = 0;
+    current_pose.rot.y = 0;
 
+    this->model->SetWorldPose(current_pose);
+    
     ROS_DEBUG("Moving Table = %s .... END", model_name.c_str());
 }
 

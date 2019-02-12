@@ -3,8 +3,12 @@
 
 #include<functional>
 #include<gazebo/gazebo.hh>
+#include<gazebo/util/system.hh>
 #include<gazebo/physics/physics.hh>
+#include<gazebo/physics/PhysicsTypes.hh>
 #include<gazebo/common/common.hh>
+#include<gazebo/common/Plugin.hh>
+#include<gazebo/common/UpdateInfo.hh>
 #include<ignition/math2/ignition/math/Vector3.hh>
 #include<thread>
 #include<ros/ros.h>
@@ -13,7 +17,10 @@
 #include<std_msgs/Float32.h>
 #include<geometry_msgs/Twist.h>
 #include<gazebo/transport/transport.hh>
+#include<gazebo/transport/Node.hh>
+#include<gazebo/transport/Publisher.hh>
 #include<gazebo/msgs/msgs.hh>
+
 
 namespace gazebo{
     class ROSTableControlPlugin : public ModelPlugin{
