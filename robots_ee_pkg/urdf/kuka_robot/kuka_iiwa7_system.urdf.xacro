@@ -14,5 +14,11 @@
   <xacro:kuka_iiwa7_table_urdf table_prefix="$(arg robot_name)" table_parent="$(arg workcell_parent)">
     <origin xyz="2.25 -0.5 1.0" rpy="0 0 ${pi}" />
   </xacro:kuka_iiwa7_table_urdf>
+  
+  <gazebo>
+      <plugin name="ROSTableControlPlugin" filename="libROSTableControlPlugin.so">
+        <table_cmd_vel>table_vel</table_cmd_vel>
+      </plugin>
+    </gazebo>
 
 </robot>

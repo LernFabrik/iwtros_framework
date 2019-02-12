@@ -20,7 +20,7 @@ void ROSTableControlPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf
     this->model = _parent;
     this->updateConnection = event::Events::ConnectWorldUpdateBegin(std::bind(&ROSTableControlPlugin::OnUpdate, this));
     this->old_sec = ros::Time::now().toSec();
-
+    
     if(_sdf->HasElement("table_cmd_vel"))
         this->table_cmd_vel = _sdf->Get<std::string>("table_cmd_vel");
     
