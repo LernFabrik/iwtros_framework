@@ -64,6 +64,8 @@ namespace gazebo{
         howver it is not visible in the gazebo
         therefore this offset*/
         private: std::float_t yawValue;
+        private: std::float_t lin_X;
+        private: std::float_t lin_Y;
         private: std::float_t off_yaw;
         private: std::string table_base_link;
 

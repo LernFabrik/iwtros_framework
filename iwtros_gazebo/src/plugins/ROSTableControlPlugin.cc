@@ -79,6 +79,8 @@ void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, flo
     this->model->SetLinearVel(ignition::math::Vector3d(lin_x, lin_y, lin_z));
     this->model->SetAngularVel(ignition::math::Vector3d(ang_x, ang_y, ang_z));
     this->yawValue = ang_z;
+    this->lin_X = lin_x;
+    this->lin_Y = lin_y;
     math::Pose current_pose = this->model->GetWorldPose();
     current_pose.pos.z = 0;
     current_pose.rot.x = 0;
@@ -115,13 +117,20 @@ void ROSTableControlPlugin::tfBroadCater(geometry_msgs::Transform crnt_pose){
     stampedTransforms.header.stamp = ros::Time::now();
     stampedTransforms.header.frame_id = "world";
     stampedTransforms.child_frame_id = this->table_base_link;
-    if(this->yawValue != 0){
+    if(this->yawValue != 0 && this->lin_Y == 0){
         stampedTransforms.transform.translation.x = this->prev_offsets.translation.x;
         stampedTransforms.transform.translation.y = this->prev_offsets.translation.y;
         stampedTransforms.transform.translation.z = this->prev_offsets.translation.z;
-    }else{
+    }
+    if(this->yawValue == 0  && this->lin_Y != 0 ){
         stampedTransforms.transform.translation.x = crnt_pose.translation.x + this->offsets.translation.x;
         stampedTransforms.transform.translation.y = crnt_pose.translation.y + this->offsets.translation.y;
+        stampedTransforms.transform.translation.z = crnt_pose.translation.z + this->offsets.translation.z;
+    }
+    if(this->yawValue != 0 &&  this->lin_Y != 0){
+        float r = sqrt((this->offsets.translation.x * this->offsets.translation.x) + (this->offsets.translation.y * this->offsets.translation.y));
+        stampedTransforms.transform.translation.x = crnt_pose.translation.x + r * cos(this->yawValue);
+        stampedTransforms.transform.translation.y = crnt_pose.translation.y + r * sin(this->yawValue);
         stampedTransforms.transform.translation.z = crnt_pose.translation.z + this->offsets.translation.z;
     }
     
