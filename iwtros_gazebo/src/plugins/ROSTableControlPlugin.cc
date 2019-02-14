@@ -48,14 +48,6 @@ void ROSTableControlPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf
         this->off_yaw = (float)atof(yaw.c_str());
     }
 
-    /*Load quaternion offset values*/
-    tf2::Quaternion q;
-    q.setRPY(0, 0, this->off_yaw);
-    this->offsets.rotation.x = q.x();
-    this->offsets.rotation.y = q.y();
-    this->offsets.rotation.z = q.z();
-    this->offsets.rotation.w = q.w();
-
     if(!ros::isInitialized){
         int argc = 0;
         char **argv = NULL;
@@ -121,6 +113,9 @@ void ROSTableControlPlugin::tfBroadCater(geometry_msgs::Transform crnt_pose){
     stampedTransforms.transform.translation.x = crnt_pose.translation.x + this->offsets.translation.x;
     stampedTransforms.transform.translation.y = crnt_pose.translation.y + this->offsets.translation.y;
     stampedTransforms.transform.translation.z = crnt_pose.translation.z + this->offsets.translation.z;
+
+    tf2::Quaternion q;
+    
     stampedTransforms.transform.rotation.x = crnt_pose.rotation.x + this->offsets.rotation.x;
     stampedTransforms.transform.rotation.y = crnt_pose.rotation.y + this->offsets.rotation.y;
     stampedTransforms.transform.rotation.z = crnt_pose.rotation.z + this->offsets.rotation.z;
