@@ -59,8 +59,7 @@ void ROSTableControlPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf
     //ROS Subcriber table pose
     ros::SubscribeOptions so = 
         ros::SubscribeOptions::create<geometry_msgs::Twist>(this->table_cmd_vel,
-        1,  
-        boost::bind(&ROSTableControlPlugin::OnRosMsg_Pos, this, _1),
+        1,  boost::bind(&ROSTableControlPlugin::OnRosMsg_Pos, this, _1),
         ros::VoidPtr(), &this->rosQueue);
     this->rosSub = this->rosNode->subscribe(so);
     //Spin up the queue helper thread
@@ -93,11 +92,15 @@ void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, flo
     crnt_pose2.translation.x = current_pose2.pos.x; 
     crnt_pose2.translation.y = current_pose2.pos.y;
     crnt_pose2.translation.z = current_pose2.pos.z;
-    crnt_pose2.rotation.x = current_pose2.rot.x;
-    crnt_pose2.rotation.y = current_pose2.rot.y;
-    crnt_pose2.rotation.z = current_pose2.rot.z;
-    crnt_pose2.rotation.w = current_pose2.rot.w;
 
+    float yaw = (float)current_pose2.rot.GetYaw() + this->off_yaw;
+    tf2::Quaternion q;
+    q.setRPY(current_pose2.rot.GetRoll(), current_pose2.rot.GetPitch(), yaw);
+    crnt_pose2.rotation.x = q.x();
+    crnt_pose2.rotation.y = q.y();
+    crnt_pose2.rotation.z = q.z();
+    crnt_pose2.rotation.w = q.w();
+    
     this->tfBroadCater(crnt_pose2);
                                             
     ROS_DEBUG("Moving Table = %s .... END", model_name.c_str());
@@ -113,13 +116,10 @@ void ROSTableControlPlugin::tfBroadCater(geometry_msgs::Transform crnt_pose){
     stampedTransforms.transform.translation.x = crnt_pose.translation.x + this->offsets.translation.x;
     stampedTransforms.transform.translation.y = crnt_pose.translation.y + this->offsets.translation.y;
     stampedTransforms.transform.translation.z = crnt_pose.translation.z + this->offsets.translation.z;
-
-    tf2::Quaternion q;
-    
-    stampedTransforms.transform.rotation.x = crnt_pose.rotation.x + this->offsets.rotation.x;
-    stampedTransforms.transform.rotation.y = crnt_pose.rotation.y + this->offsets.rotation.y;
-    stampedTransforms.transform.rotation.z = crnt_pose.rotation.z + this->offsets.rotation.z;
-    stampedTransforms.transform.rotation.w = crnt_pose.rotation.w + this->offsets.rotation.w;
+    stampedTransforms.transform.rotation.x = crnt_pose.rotation.x;
+    stampedTransforms.transform.rotation.y = crnt_pose.rotation.y;
+    stampedTransforms.transform.rotation.z = crnt_pose.rotation.z;
+    stampedTransforms.transform.rotation.w = crnt_pose.rotation.w;
     br.sendTransform(stampedTransforms);
 }
 
