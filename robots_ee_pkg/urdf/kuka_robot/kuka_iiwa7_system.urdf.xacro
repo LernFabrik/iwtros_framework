@@ -19,6 +19,6 @@
       <plugin name="ROSTableControlPlugin" filename="libROSTableControlPlugin.so">
         <table_cmd_vel>/iiwa/tbl_cmd_vel</table_cmd_vel>
       </plugin>
-    </gazebo>
+  </gazebo>
 
 </robot>
