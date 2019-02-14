@@ -63,10 +63,12 @@ namespace gazebo{
         /*These offset are for the URDF reference
         howver it is not visible in the gazebo
         therefore this offset*/
+        private: std::float_t yawValue;
         private: std::float_t off_yaw;
         private: std::string table_base_link;
 
         private: geometry_msgs::Transform offsets;
+        private: geometry_msgs::Transform prev_offsets;
 
         //brief a node use for ROS transport
         private: std::unique_ptr<ros::NodeHandle> rosNode;

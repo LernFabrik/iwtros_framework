@@ -78,6 +78,7 @@ void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, flo
 
     this->model->SetLinearVel(ignition::math::Vector3d(lin_x, lin_y, lin_z));
     this->model->SetAngularVel(ignition::math::Vector3d(ang_x, ang_y, ang_z));
+    this->yawValue = ang_z;
     math::Pose current_pose = this->model->GetWorldPose();
     current_pose.pos.z = 0;
     current_pose.rot.x = 0;
@@ -110,17 +111,29 @@ void ROSTableControlPlugin::tfBroadCater(geometry_msgs::Transform crnt_pose){
     static tf2_ros::TransformBroadcaster br;
     geometry_msgs::TransformStamped stampedTransforms;
 
+    /*Dirty coding --------:(---------*/
     stampedTransforms.header.stamp = ros::Time::now();
     stampedTransforms.header.frame_id = "world";
     stampedTransforms.child_frame_id = this->table_base_link;
-    stampedTransforms.transform.translation.x = crnt_pose.translation.x + this->offsets.translation.x;
-    stampedTransforms.transform.translation.y = crnt_pose.translation.y + this->offsets.translation.y;
-    stampedTransforms.transform.translation.z = crnt_pose.translation.z + this->offsets.translation.z;
+    if(this->yawValue != 0){
+        stampedTransforms.transform.translation.x = this->prev_offsets.translation.x;
+        stampedTransforms.transform.translation.y = this->prev_offsets.translation.y;
+        stampedTransforms.transform.translation.z = this->prev_offsets.translation.z;
+    }else{
+        stampedTransforms.transform.translation.x = crnt_pose.translation.x + this->offsets.translation.x;
+        stampedTransforms.transform.translation.y = crnt_pose.translation.y + this->offsets.translation.y;
+        stampedTransforms.transform.translation.z = crnt_pose.translation.z + this->offsets.translation.z;
+    }
+    
     stampedTransforms.transform.rotation.x = crnt_pose.rotation.x;
     stampedTransforms.transform.rotation.y = crnt_pose.rotation.y;
     stampedTransforms.transform.rotation.z = crnt_pose.rotation.z;
     stampedTransforms.transform.rotation.w = crnt_pose.rotation.w;
     br.sendTransform(stampedTransforms);
+
+    this->prev_offsets.translation.x = stampedTransforms.transform.translation.x;
+    this->prev_offsets.translation.y = stampedTransforms.transform.translation.y;
+    this->prev_offsets.translation.z = stampedTransforms.transform.translation.z;
 }
 
 void ROSTableControlPlugin::OnUpdate(){

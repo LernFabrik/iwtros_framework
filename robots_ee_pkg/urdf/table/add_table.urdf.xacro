@@ -95,8 +95,8 @@
     <gazebo reference="${robot_arm_name}_table_base">
       <material>Gazebo/Grey</material>
       <turnGravityOff>true</turnGravityOff>
-      <mu1>0.5</mu1>
-      <mu2>0.4</mu2>
+      <mu1>0.3</mu1>
+      <mu2>0.3</mu2>
     </gazebo>
 
     <joint name="${robot_arm_name}_table_base_top_joint" type="fixed">
