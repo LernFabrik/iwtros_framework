@@ -24,9 +24,37 @@ void ROSTableControlPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf
     if(_sdf->HasElement("table_cmd_vel"))
         this->table_cmd_vel = _sdf->Get<std::string>("table_cmd_vel");
     
+     if(_sdf->HasElement("table_base_link"))
+        this->table_base_link = _sdf->Get<std::string>("table_base_link");
+    
     if(_sdf->HasElement("robot_namespace")){
         this->robotNamespace_ = _sdf->GetElement("robot_namespace")->Get<std::string>() + "/";
     }
+
+    if(_sdf->HasElement("offset_x")){
+        this->offsets.translation.x = (float)atof(_sdf->Get<std::string>("offset_x").c_str());
+    }
+
+    if(_sdf->HasElement("offset_y")){
+        this->offsets.translation.y = (float)atof(_sdf->Get<std::string>("offset_y").c_str());
+    }
+
+    if(_sdf->HasElement("offset_z")){
+        this->offsets.translation.z = (float)atof(_sdf->Get<std::string>("offset_z").c_str());
+    }
+
+    if(_sdf->HasElement("offset_yaw")){
+        std::string yaw = _sdf->Get<std::string>("offset_yaw");
+        this->off_yaw = (float)atof(yaw.c_str());
+    }
+
+    /*Load quaternion offset values*/
+    tf2::Quaternion q;
+    q.setRPY(0, 0, this->off_yaw);
+    this->offsets.rotation.x = q.x();
+    this->offsets.rotation.y = q.y();
+    this->offsets.rotation.z = q.z();
+    this->offsets.rotation.w = q.w();
 
     if(!ros::isInitialized){
         int argc = 0;
@@ -65,8 +93,39 @@ void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, flo
     current_pose.rot.y = 0;
 
     this->model->SetWorldPose(current_pose);
-    
+
+    /* get the current pose of the model again to send the tf2 broadcaster*/
+    math::Pose current_pose2 = this->model->GetWorldPose();
+
+    geometry_msgs::Transform crnt_pose2;
+    crnt_pose2.translation.x = current_pose2.pos.x; 
+    crnt_pose2.translation.y = current_pose2.pos.y;
+    crnt_pose2.translation.z = current_pose2.pos.z;
+    crnt_pose2.rotation.x = current_pose2.rot.x;
+    crnt_pose2.rotation.y = current_pose2.rot.y;
+    crnt_pose2.rotation.z = current_pose2.rot.z;
+    crnt_pose2.rotation.w = current_pose2.rot.w;
+
+    this->tfBroadCater(crnt_pose2);
+                                            
     ROS_DEBUG("Moving Table = %s .... END", model_name.c_str());
+}
+
+void ROSTableControlPlugin::tfBroadCater(geometry_msgs::Transform crnt_pose){
+    static tf2_ros::TransformBroadcaster br;
+    geometry_msgs::TransformStamped stampedTransforms;
+
+    stampedTransforms.header.stamp = ros::Time::now();
+    stampedTransforms.header.frame_id = "world";
+    stampedTransforms.child_frame_id = this->table_base_link;
+    stampedTransforms.transform.translation.x = crnt_pose.translation.x + this->offsets.translation.x;
+    stampedTransforms.transform.translation.y = crnt_pose.translation.y + this->offsets.translation.y;
+    stampedTransforms.transform.translation.z = crnt_pose.translation.z + this->offsets.translation.z;
+    stampedTransforms.transform.rotation.x = crnt_pose.rotation.x + this->offsets.rotation.x;
+    stampedTransforms.transform.rotation.y = crnt_pose.rotation.y + this->offsets.rotation.y;
+    stampedTransforms.transform.rotation.z = crnt_pose.rotation.z + this->offsets.rotation.z;
+    stampedTransforms.transform.rotation.w = crnt_pose.rotation.w + this->offsets.rotation.w;
+    br.sendTransform(stampedTransforms);
 }
 
 void ROSTableControlPlugin::OnUpdate(){

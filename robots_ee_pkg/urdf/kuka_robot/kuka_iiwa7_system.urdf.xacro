@@ -18,6 +18,11 @@
   <gazebo>
       <plugin name="ROSTableControlPlugin" filename="libROSTableControlPlugin.so">
         <table_cmd_vel>/iiwa/tbl_cmd_vel</table_cmd_vel>
+        <offset_x>2.25</offset_x>
+        <offset_y>-0.5</offset_y>
+        <offset_z>1.0</offset_z>
+        <offset_yaw>${pi}</offset_yaw>
+        <table_base_link>iiwa_table_base</table_base_link>
       </plugin>
   </gazebo>
 

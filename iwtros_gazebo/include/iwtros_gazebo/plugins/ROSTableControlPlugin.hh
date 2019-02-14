@@ -21,18 +21,25 @@
 #include<gazebo/transport/Publisher.hh>
 #include<gazebo/msgs/msgs.hh>
 
+// for transformation
+#include<tf2/LinearMath/Quaternion.h>
+#include<tf2_ros/transform_broadcaster.h>
+#include<geometry_msgs/TransformStamped.h>
+
 
 namespace gazebo{
     class ROSTableControlPlugin : public ModelPlugin{
 
         public: ROSTableControlPlugin();
         public: virtual ~ROSTableControlPlugin();
-        
+
         public: void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf);
 
         public: void OnRosMsg_Pos(const geometry_msgs::TwistConstPtr &msg);
 
         void MoveModel(float lin_x, float lin_y, float lin_z, float ang_x, float ang_y, float ang_z);
+
+        void tfBroadCater(geometry_msgs::Transform crnt_pose);
 
         public: void OnUpdate();
 
@@ -51,9 +58,16 @@ namespace gazebo{
         //Magnitude of oscillation
         double y_axis_pose = 1.0;
         //table movement topic name
-        std::string table_cmd_vel;
+        private: std::string table_cmd_vel;
         private: std::string robotNamespace_;
-        
+        /*These offset are for the URDF reference
+        howver it is not visible in the gazebo
+        therefore this offset*/
+        private: std::float_t off_yaw;
+        private: std::string table_base_link;
+
+        private: geometry_msgs::Transform offsets;
+
         //brief a node use for ROS transport
         private: std::unique_ptr<ros::NodeHandle> rosNode;
         // ROS subscriber
