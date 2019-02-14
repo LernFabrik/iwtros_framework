@@ -11,4 +11,10 @@
     <origin xyz="0.8 -0.5 1.0" rpy="0 0 ${pi}" />
   </xacro:ur5_table_urdf>
 
+  <gazebo>
+      <plugin name="ROSTableControlPlugin" filename="libROSTableControlPlugin.so">
+        <table_cmd_vel>/ur5/tbl_cmd_vel</table_cmd_vel>
+      </plugin>
+  </gazebo>
+
 </robot>
