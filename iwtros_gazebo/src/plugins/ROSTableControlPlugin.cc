@@ -130,7 +130,7 @@ void ROSTableControlPlugin::tfBroadCater(geometry_msgs::Transform crnt_pose){
     if(this->yawValue != 0 &&  this->lin_Y != 0){
         float r = sqrt((this->offsets.translation.x * this->offsets.translation.x) + (this->offsets.translation.y * this->offsets.translation.y));
         stampedTransforms.transform.translation.x = crnt_pose.translation.x + r * cos(this->yawValue);
-        stampedTransforms.transform.translation.y = crnt_pose.translation.y + r * sin(this->yawValue);
+        stampedTransforms.transform.translation.y = crnt_pose.translation.y - r * sin(this->yawValue);
         stampedTransforms.transform.translation.z = crnt_pose.translation.z + this->offsets.translation.z;
     }
     
