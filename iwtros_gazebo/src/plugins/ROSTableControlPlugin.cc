@@ -90,9 +90,11 @@ void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, flo
     this->old_x = current_pose.pos.x;
     this->old_y = current_pose.pos.y;
     this->old_theta = current_pose.rot.GetYaw();
-    this->model->SetWorldPose(current_pose);
 
-    if(this->loop_counter == 0) this->prev_time = this->current_time;
+    if(this->loop_counter == 0){
+        this->model->SetWorldPose(current_pose);
+        this->prev_time = this->current_time;
+    } 
     this->dt = this->current_time - this->prev_time;
     if(this->dt > 0){
         this->delta_x = lin_x * this->dt;
