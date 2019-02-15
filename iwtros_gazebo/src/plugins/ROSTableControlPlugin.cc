@@ -160,7 +160,7 @@ void ROSTableControlPlugin::tfBroadCater(geometry_msgs::Transform crnt_pose){
     stampedTransforms.transform.rotation.w = crnt_pose.rotation.w;
     br.sendTransform(stampedTransforms);
 
-    // End of the loop 
+    // End of the loop here
     this->loop_counter += 1;
     this->prev_time = this->current_time;
 }
