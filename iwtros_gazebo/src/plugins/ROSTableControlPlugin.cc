@@ -66,12 +66,9 @@ void ROSTableControlPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf
     this->rosQueueThread = std::thread(std::bind(&ROSTableControlPlugin::QueueTHread, this));
 
     ROS_WARN("Loaded Table move plugin with praent.... %s", this->model->GetName().c_str());
-    this->current_time = ros::Time::now().toSec();
-    this->prev_time = this->current_time;
 }
 
 void ROSTableControlPlugin::OnRosMsg_Pos(const geometry_msgs::TwistConstPtr &msg){
-    this->current_time = ros::Time::now().toSec(); //Begining of the loop
     this->MoveModel(msg->linear.x, msg->linear.y, msg->linear.z, msg->angular.x, msg->angular.y, msg->angular.z);
 }
 
@@ -79,63 +76,29 @@ void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, flo
     std::string model_name = this->model->GetName();
     ROS_DEBUG("Moving table = %s", model_name.c_str());
 
-    /*--- Get the current pose of the model
-    ------ models should not change in z axis, roll and pitch
-    ------- we can add one more function to calculate the old pose in the programe 
-    ------- and in current pose in the gazebo---------*/
+    this->model->SetLinearVel(ignition::math::Vector3d(lin_x, lin_y, lin_z));
+    this->model->SetAngularVel(ignition::math::Vector3d(ang_x, ang_y, ang_z));
+    this->yawValue = ang_z;
+    this->lin_X = lin_x;
+    this->lin_Y = lin_y;
     math::Pose current_pose = this->model->GetWorldPose();
     current_pose.pos.z = 0;
     current_pose.rot.x = 0;
     current_pose.rot.y = 0;
-    this->old_x = current_pose.pos.x;
-    this->old_y = current_pose.pos.y;
-    this->old_theta = current_pose.rot.GetYaw();
 
-    if(this->loop_counter == 0){
-        this->model->SetWorldPose(current_pose);
-        this->prev_time = this->current_time;
-    } 
-    this->dt = this->current_time - this->prev_time;
-    if(this->dt > 0){
-        this->delta_x = lin_x * this->dt;
-        this->delta_y = lin_y * this->dt;
-        this->delta_theta = ang_z * this->dt;
+    this->model->SetWorldPose(current_pose);
 
-        this->detlta_d = sqrt((this->delta_x * this->delta_x) + (this->delta_y * this->delta_y));
-        this->crnt_x = this->old_x + this->detlta_d * cos(this->old_theta + this->delta_theta / 2);
-        this->crnt_y = this->old_y + this->detlta_d * sin(this->old_theta + this->delta_theta / 2);
-        this->crnt_theta = this->old_theta + this->delta_theta;
-    }else{
-        //this->model->SetLinearVel(ignition::math::Vector3d(lin_x, lin_y, lin_z));
-        //this->model->SetAngularVel(ignition::math::Vector3d(ang_x, ang_y, ang_z));
-        this->crnt_x = this->old_x;
-        this->crnt_y = this->old_y;
-        this->crnt_theta = this->old_theta;
-    }
-    math::Pose set_pose;
-    set_pose.pos.x = this->crnt_x;
-    set_pose.pos.y = this->crnt_y;
-    set_pose.pos.z = 0;
-    tf2::Quaternion calQuad;
-    calQuad.setRPY(0, 0, crnt_theta);
-    set_pose.rot.x = 0;                             // Hardcoding this value might not be good idea !!!!
-    set_pose.rot.y = 0;
-    set_pose.rot.z = calQuad.z();
-    set_pose.rot.w = calQuad.w();
-    this->model->SetWorldPose(set_pose);
-
-    this->old_x = this->crnt_x;
-    this->old_y = this->crnt_y;
-    this->old_theta = this->crnt_theta;
+    /* get the current pose of the model again to send the tf2 broadcaster*/
+    math::Pose current_pose2 = this->model->GetWorldPose();
 
     geometry_msgs::Transform crnt_pose2;
-    crnt_pose2.translation.x = this->crnt_x; 
-    crnt_pose2.translation.y = this->crnt_y;
-    crnt_pose2.translation.z = 0;
+    crnt_pose2.translation.x = current_pose2.pos.x; 
+    crnt_pose2.translation.y = current_pose2.pos.y;
+    crnt_pose2.translation.z = current_pose2.pos.z;
 
-    float yaw = this->crnt_theta + this->off_yaw;
+    float yaw = (float)current_pose2.rot.GetYaw() + this->off_yaw;
     tf2::Quaternion q;
-    q.setRPY(0, 0, yaw);                        // some of the roll and pitch are set to zero bacause the model motion is in 2D
+    q.setRPY(current_pose2.rot.GetRoll(), current_pose2.rot.GetPitch(), yaw);
     crnt_pose2.rotation.x = q.x();
     crnt_pose2.rotation.y = q.y();
     crnt_pose2.rotation.z = q.z();
@@ -150,21 +113,36 @@ void ROSTableControlPlugin::tfBroadCater(geometry_msgs::Transform crnt_pose){
     static tf2_ros::TransformBroadcaster br;
     geometry_msgs::TransformStamped stampedTransforms;
 
+    /*Dirty coding --------:(---------*/
     stampedTransforms.header.stamp = ros::Time::now();
     stampedTransforms.header.frame_id = "world";
-    stampedTransforms.child_frame_id = this->table_base_link;    
-    stampedTransforms.transform.translation.x = crnt_pose.translation.x + this->offsets.translation.x;
-    stampedTransforms.transform.translation.y = crnt_pose.translation.y + this->offsets.translation.y;
-    stampedTransforms.transform.translation.z = crnt_pose.translation.z + this->offsets.translation.z;
+    stampedTransforms.child_frame_id = this->table_base_link;
+    if(this->yawValue != 0 && this->lin_Y == 0){
+        stampedTransforms.transform.translation.x = this->prev_offsets.translation.x;
+        stampedTransforms.transform.translation.y = this->prev_offsets.translation.y;
+        stampedTransforms.transform.translation.z = this->prev_offsets.translation.z;
+    }
+    if(this->yawValue == 0  && this->lin_Y != 0 ){
+        stampedTransforms.transform.translation.x = crnt_pose.translation.x + this->offsets.translation.x;
+        stampedTransforms.transform.translation.y = crnt_pose.translation.y + this->offsets.translation.y;
+        stampedTransforms.transform.translation.z = crnt_pose.translation.z + this->offsets.translation.z;
+    }
+    if(this->yawValue != 0 &&  this->lin_Y != 0){
+        float r = sqrt((this->offsets.translation.x * this->offsets.translation.x) + (this->offsets.translation.y * this->offsets.translation.y));
+        stampedTransforms.transform.translation.x = crnt_pose.translation.x + r * cos(this->yawValue);
+        stampedTransforms.transform.translation.y = crnt_pose.translation.y + r * sin(this->yawValue);
+        stampedTransforms.transform.translation.z = crnt_pose.translation.z + this->offsets.translation.z;
+    }
+    
     stampedTransforms.transform.rotation.x = crnt_pose.rotation.x;
     stampedTransforms.transform.rotation.y = crnt_pose.rotation.y;
     stampedTransforms.transform.rotation.z = crnt_pose.rotation.z;
     stampedTransforms.transform.rotation.w = crnt_pose.rotation.w;
     br.sendTransform(stampedTransforms);
 
-    // End of the loop here
-    this->loop_counter += 1;
-    this->prev_time = this->current_time;
+    this->prev_offsets.translation.x = stampedTransforms.transform.translation.x;
+    this->prev_offsets.translation.y = stampedTransforms.transform.translation.y;
+    this->prev_offsets.translation.z = stampedTransforms.transform.translation.z;
 }
 
 void ROSTableControlPlugin::OnUpdate(){

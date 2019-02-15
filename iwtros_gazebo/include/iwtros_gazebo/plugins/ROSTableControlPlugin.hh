@@ -64,9 +64,9 @@ namespace gazebo{
         howver it is not visible in the gazebo
         therefore this offset*/
         private: std::float_t delta_theta, crnt_theta, old_theta;
-        private: std::float_t delta_x , crnt_x, old_x;
-        private: std::float_t delta_y, crnt_y, old_y;
-        private: std::float_t detlta_d, current_time, prev_time, dt;
+        private: std::float_t lin_Y; //, crnt_x, old_x;
+        private: std::float_t lin_X; //, crnt_y, old_y;
+        private: std::float_t yawValue; //, current_time, prev_time, dt;
         private: std::int64_t loop_counter = 0;
         private: std::float_t off_yaw;
         private: std::string table_base_link;
