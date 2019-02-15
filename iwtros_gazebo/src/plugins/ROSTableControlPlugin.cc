@@ -90,21 +90,26 @@ void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, flo
     this->old_x = current_pose.pos.x;
     this->old_y = current_pose.pos.y;
     this->old_theta = current_pose.rot.GetYaw();
+    gzerr << "old pose of the model x = " << this->old_x << " y = " << this->old_y << " theta = " << this->old_theta << "\n";
 
     if(this->loop_counter == 0){
         this->model->SetWorldPose(current_pose);
         this->prev_time = this->current_time;
     } 
     this->dt = this->current_time - this->prev_time;
+    gzerr << "dt = " << this->dt << "\n";
     if(this->dt > 0){
         this->delta_x = lin_x * this->dt;
         this->delta_y = lin_y * this->dt;
         this->delta_theta = ang_z * this->dt;
+        gzerr << "delta pose of the model x = " << this->delta_x << " y = " << this->delta_y << " theta = " << this->delta_theta << "\n";
 
         this->detlta_d = sqrt((this->delta_x * this->delta_x) + (this->delta_y * this->delta_y));
-        this->crnt_x = this->old_x + this->detlta_d * cos(this->old_theta + this->delta_theta / 2);
-        this->crnt_y = this->old_y + this->detlta_d * sin(this->old_theta + this->delta_theta / 2);
+        gzerr << "detla_d = " << this->detlta_d << "\n";
+        this->crnt_x = this->old_x + this->detlta_d * sin(this->old_theta + this->delta_theta / 2);
+        this->crnt_y = this->old_y + this->detlta_d * cos(this->old_theta + this->delta_theta / 2);
         this->crnt_theta = this->old_theta + this->delta_theta;
+        gzerr << "calculated current pose of the model x = " << this->crnt_x << " y = " << this->crnt_y << " theta = " << this->crnt_theta << "\n";
     }else{
         //this->model->SetLinearVel(ignition::math::Vector3d(lin_x, lin_y, lin_z));
         //this->model->SetAngularVel(ignition::math::Vector3d(ang_x, ang_y, ang_z));
