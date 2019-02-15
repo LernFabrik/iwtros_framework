@@ -83,16 +83,17 @@ void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, flo
     ------ models should not change in z axis, roll and pitch
     ------- we can add one more function to calculate the old pose in the programe 
     ------- and in current pose in the gazebo---------*/
-    math::Pose current_pose = this->model->GetRelativePose();
-    current_pose.pos.z = 0;
-    current_pose.rot.x = 0;
-    current_pose.rot.y = 0;
-    this->old_x = current_pose.pos.x;
-    this->old_y = current_pose.pos.y;
-    this->old_theta = current_pose.rot.GetYaw();
-    gzerr << "old pose of the model x = " << this->old_x << " y = " << this->old_y << " theta = " << this->old_theta << "\n";
-
+    
     if(this->loop_counter == 0){
+        math::Pose current_pose = this->model->GetRelativePose();
+        current_pose.pos.z = 0;
+        current_pose.rot.x = 0;
+        current_pose.rot.y = 0;
+        this->old_x = current_pose.pos.x;
+        this->old_y = current_pose.pos.y;
+        this->old_theta = current_pose.rot.GetYaw();
+        gzerr << "old pose of the model x = " << this->old_x << " y = " << this->old_y << " theta = " << this->old_theta << "\n";
+
         this->model->SetWorldPose(current_pose);
         this->prev_time = this->current_time;
     } 
@@ -107,7 +108,7 @@ void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, flo
         this->detlta_d = sqrt((this->delta_x * this->delta_x) + (this->delta_y * this->delta_y));
         gzerr << "detla_d = " << this->detlta_d << "\n";
         this->crnt_x = this->old_x + this->detlta_d * sin(this->old_theta + this->delta_theta / 2);
-        this->crnt_y = this->old_y + this->detlta_d * cos(this->old_theta + this->delta_theta / 2);
+        this->crnt_y = this->old_y - this->detlta_d * cos(this->old_theta + this->delta_theta / 2);
         this->crnt_theta = this->old_theta + this->delta_theta;
         gzerr << "calculated current pose of the model x = " << this->crnt_x << " y = " << this->crnt_y << " theta = " << this->crnt_theta << "\n";
     }else{
@@ -123,10 +124,11 @@ void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, flo
     set_pose.pos.z = 0;
     tf2::Quaternion calQuad;
     calQuad.setRPY(0, 0, crnt_theta);
-    set_pose.rot.x = 0;                             // Hardcoding this value might not be good idea !!!!
-    set_pose.rot.y = 0;
+    set_pose.rot.x = calQuad.x();                             // Hardcoding this value might not be good idea !!!!
+    set_pose.rot.y = calQuad.y();
     set_pose.rot.z = calQuad.z();
     set_pose.rot.w = calQuad.w();
+    gzerr << "setting current pose of the model x = " << set_pose.pos.x << " y = " << set_pose.pos.y << " theta = " << this->crnt_theta << "\n";
     this->model->SetWorldPose(set_pose);
 
     this->old_x = this->crnt_x;
