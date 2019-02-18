@@ -30,7 +30,7 @@ catkin_package(
 ###########
 
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -38,5 +38,12 @@ add_executable(fts_goal_node
   src/fts_goal_node.cpp
 )
 target_link_libraries(fts_goal_node 
+  ${catkin_LIBRARIES} 
+)
+
+add_executable(control_table_node 
+  src/control_table_node.cpp
+)
+target_link_libraries(control_table_node 
   ${catkin_LIBRARIES} 
 )
