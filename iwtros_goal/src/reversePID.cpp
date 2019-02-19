@@ -2,9 +2,9 @@
 #include <ros/console.h>
 
 namespace iwtros{
-    PID::PID(double max, double min, double kp, double ki, double kd){
-        this->max = max;
-        this->min = min;
+    PID::PID(/*double max, double min, */double kp, double ki, double kd){
+        /*this->max = max;
+        this->min = min;*/
         this->kp = kp;
         this->ki = ki;
         this->kd = kd;
@@ -24,8 +24,8 @@ namespace iwtros{
         double diffError = error - this->prevError;
         double Dout = diffError * this->kd;
         double output = Pout + Iout + Dout;
-        if(output > this->max) output = this->max;
-        else if(output < this->min) output = this->min;
+        /*if(output > this->max) output = this->max;
+        else if(output < this->min) output = this->min;*/
         this->prevError = error;
         return output;
     }

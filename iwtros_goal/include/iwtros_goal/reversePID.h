@@ -7,7 +7,7 @@
 namespace iwtros{
     class PID{
         public:
-            PID(double max, double min, double kp, double ki, double kd);
+            PID(/*double max, double min, */double kp, double ki, double kd);
             ~PID();
             double calculate(double dt, double setPoint, double currentPoint);
         private:
