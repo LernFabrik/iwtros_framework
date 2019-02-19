@@ -21,6 +21,7 @@
 tf2_ros::Buffer tfBuffer;
 
 double roll, pitch, yaw;
+double roll, pitch, yaw;
 geometry_msgs::Quaternion quaternion;
 
 
