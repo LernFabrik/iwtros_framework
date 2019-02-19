@@ -21,7 +21,7 @@
 tf2_ros::Buffer tfBuffer;
 
 double roll, pitch, yaw;
-double roll, pitch, yaw;
+double fts_roll, fts_pitch, fts_yaw;
 geometry_msgs::Quaternion quaternion;
 
 
@@ -109,17 +109,20 @@ int main(int argc, char** argv){
         /*********PID move FTS reverse***************/
         iwtros::PID pid(10, 0.01, 0.1);
         iwtros::PID pidAng(5, 0.005, 0.05);
-        double output = 1;
+        double output, outputAng;
         currentTime = ros::Time::now().toSec();
         prevTime = currentTime;
-        while(output >= 0.08 && ros::ok()){
+        while(output != 0.0 && ros::ok()){
             currentTime = ros::Time::now().toSec();
             double dt = currentTime - prevTime;
             getTransforms("world", "base_link", stampedFTS);
+            quad_to_Euler(stampedFTS.transform.rotation, fts_roll, fts_pitch, fts_yaw);
             output = pid.calculate(dt, stampedTfIIWA.transform.translation.y, stampedFTS.transform.translation.y);
-            ROS_ERROR("PID output = %f", output);
+            outputAng = pidAng.calculate(dt, yaw, fts_yaw);
+            ROS_ERROR("PIDAng output = %f", outputAng);
             cmdVel.linear.x = - output * dt;
-            ROS_ERROR("cmd_vel output = %f", cmdVel.linear.x);
+            cmdVel.angular.z = - outputAng * dt;
+            ROS_ERROR("cmd_vel output linear = %f, angular = %f", cmdVel.linear.x, cmdVel.angular.z);
             cmd_pub.publish(cmdVel);
             ros::spinOnce();
             rate.sleep();
