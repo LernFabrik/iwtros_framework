@@ -107,14 +107,15 @@ int main(int argc, char** argv){
         }
         /*********PID move FTS reverse***************/
         iwtros::PID pid(10, 0.01, 0.1);
+        iwtros::PID pidAng(5, 0.005, 0.05);
         double output;
         currentTime = ros::Time::now().toSec();
         prevTime = currentTime;
-        while(output != 0 && ros::ok()){
+        while(output <= 0.08 && ros::ok()){
             currentTime = ros::Time::now().toSec();
             double dt = currentTime - prevTime;
             getTransforms("world", "base_link", stampedFTS);
-            output = pid.calculate(0.05, stampedTfIIWA.transform.translation.y, stampedFTS.transform.translation.y);
+            output = pid.calculate(dt, stampedTfIIWA.transform.translation.y, stampedFTS.transform.translation.y);
             ROS_ERROR("PID output = %f", output);
             cmdVel.linear.x = - output * dt;
             ROS_ERROR("cmd_vel output = %f", cmdVel.linear.x);
