@@ -108,10 +108,10 @@ int main(int argc, char** argv){
         /*********PID move FTS reverse***************/
         iwtros::PID pid(10, 0.01, 0.1);
         iwtros::PID pidAng(5, 0.005, 0.05);
-        double output;
+        double output = 1;
         currentTime = ros::Time::now().toSec();
         prevTime = currentTime;
-        while(output <= 0.08 && ros::ok()){
+        while(output >= 0.08 && ros::ok()){
             currentTime = ros::Time::now().toSec();
             double dt = currentTime - prevTime;
             getTransforms("world", "base_link", stampedFTS);
