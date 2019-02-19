@@ -34,6 +34,14 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+# create PID library
+add_library(reversePID
+  src/reversePID.cpp
+)
+target_link_libraries(reversePID
+  ${catkin_LIBRARIES}
+)
+
 add_executable(fts_goal_node 
   src/fts_goal_node.cpp
 )
@@ -45,5 +53,6 @@ add_executable(control_table_node
   src/control_table_node.cpp
 )
 target_link_libraries(control_table_node 
-  ${catkin_LIBRARIES} 
+  ${catkin_LIBRARIES}
+  reversePID 
 )
