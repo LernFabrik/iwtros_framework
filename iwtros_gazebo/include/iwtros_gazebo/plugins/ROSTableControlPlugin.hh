@@ -40,7 +40,7 @@ namespace gazebo{
 
         void MoveModel(float lin_x, float lin_y, float lin_z, float ang_x, float ang_y, float ang_z);
 
-        void tfBroadCater(geometry_msgs::Transform crnt_pose);
+        void tfBroadCaster(geometry_msgs::Transform crnt_pose);
 
         public: void OnUpdate();
 

@@ -68,38 +68,6 @@ void ROSTableControlPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf
     ROS_WARN("Loaded Table move plugin with praent.... %s", this->model->GetName().c_str());
     this->current_time = ros::Time::now().toSec();
     this->prev_time = this->current_time;
-    //ros::Rate r(20);
-    /*****Load current pose of the model*****/
-    /*math::Pose current_pose = this->model->GetWorldPose();
-    this->crnt_pose2.translation.x = current_pose.pos.x;
-    this->crnt_pose2.translation.y = current_pose.pos.y; 
-    this->crnt_pose2.translation.z = current_pose.pos.z;
-    double theta = current_pose.rot.GetYaw();
-    theta += this->off_yaw;
-    tf2::Quaternion q;
-    q.setRPY(0, 0, theta);
-    this->crnt_pose2.rotation.x = q.x();
-    this->crnt_pose2.rotation.y = q.y();
-    this->crnt_pose2.rotation.z = q.z();
-    this->crnt_pose2.rotation.w = q.w();*/
-
-    /*Initialize tf broadcaster*/
-    /*tf2_ros::StaticTransformBroadcaster stBr;
-    geometry_msgs::TransformStamped staticTransform;
-    while(ros::ok()){
-        staticTransform.header.stamp = ros::Time::now();
-        staticTransform.header.frame_id = "world";
-        staticTransform.child_frame_id = this->table_base_link;
-        staticTransform.transform.translation.x = this->crnt_pose2.translation.x + this->offsets.translation.x;
-        staticTransform.transform.translation.y = this->crnt_pose2.translation.y + this->offsets.translation.y;
-        staticTransform.transform.translation.z = this->crnt_pose2.translation.z + this->offsets.translation.z;
-        staticTransform.transform.rotation.x = this->crnt_pose2.rotation.x;
-        staticTransform.transform.rotation.y = this->crnt_pose2.rotation.y;
-        staticTransform.transform.rotation.z = this->crnt_pose2.rotation.z;
-        staticTransform.transform.rotation.w = this->crnt_pose2.rotation.w;
-        ros::spin();
-    }*/
-
 }
 
 void ROSTableControlPlugin::OnRosMsg_Pos(const geometry_msgs::TwistConstPtr &msg){
@@ -180,12 +148,12 @@ void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, flo
     this->crnt_pose2.rotation.z = q.z();
     this->crnt_pose2.rotation.w = q.w();
     
-    this->tfBroadCater(crnt_pose2);
+    this->tfBroadCaster(crnt_pose2);
                                             
     ROS_DEBUG("Moving Table = %s .... END", model_name.c_str());
 }
 
-void ROSTableControlPlugin::tfBroadCater(geometry_msgs::Transform crnt_pose){
+void ROSTableControlPlugin::tfBroadCaster(geometry_msgs::Transform crnt_pose){
     static tf2_ros::StaticTransformBroadcaster br;
     geometry_msgs::TransformStamped stampedTransforms;
 

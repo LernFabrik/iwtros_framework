@@ -107,19 +107,21 @@ int main(int argc, char** argv){
             ROS_INFO("Fail to reach the goal");
         }
         /*********PID move FTS reverse***************/
-        iwtros::PID pid(10, 0.01, 0.1);
-        iwtros::PID pidAng(5, 0.005, 0.05);
+        iwtros::PID pid(5, 0.01, 0.1);
+        iwtros::PID pidAng(1, 0.0001, 0.01);
         double output, outputAng;
         currentTime = ros::Time::now().toSec();
         prevTime = currentTime;
+       
         while(output != 0.0 && ros::ok()){
             currentTime = ros::Time::now().toSec();
             double dt = currentTime - prevTime;
             getTransforms("world", "base_link", stampedFTS);
             quad_to_Euler(stampedFTS.transform.rotation, fts_roll, fts_pitch, fts_yaw);
             output = pid.calculate(dt, stampedTfIIWA.transform.translation.y, stampedFTS.transform.translation.y);
+            ROS_ERROR("angular error = %f", yaw-fts_yaw);
             outputAng = pidAng.calculate(dt, yaw, fts_yaw);
-            ROS_ERROR("PIDAng output = %f", outputAng);
+            ROS_ERROR("PID Position output = %f, angular output", output, outputAng);
             cmdVel.linear.x = - output * dt;
             cmdVel.angular.z = - outputAng * dt;
             ROS_ERROR("cmd_vel output linear = %f, angular = %f", cmdVel.linear.x, cmdVel.angular.z);
