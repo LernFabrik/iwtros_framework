@@ -24,6 +24,7 @@
 // for transformation
 #include<tf2/LinearMath/Quaternion.h>
 #include<tf2_ros/transform_broadcaster.h>
+#include<tf2_ros/static_transform_broadcaster.h>
 #include<geometry_msgs/TransformStamped.h>
 
 
@@ -73,6 +74,7 @@ namespace gazebo{
 
         private: geometry_msgs::Transform offsets;
         private: geometry_msgs::Transform prev_offsets;
+        private: geometry_msgs::Transform crnt_pose2;
 
         //brief a node use for ROS transport
         private: std::unique_ptr<ros::NodeHandle> rosNode;
