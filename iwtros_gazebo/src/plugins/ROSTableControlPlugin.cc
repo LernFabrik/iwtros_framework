@@ -68,9 +68,9 @@ void ROSTableControlPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf
     ROS_WARN("Loaded Table move plugin with praent.... %s", this->model->GetName().c_str());
     this->current_time = ros::Time::now().toSec();
     this->prev_time = this->current_time;
-    ros::Rate r(20);
+    //ros::Rate r(20);
     /*****Load current pose of the model*****/
-    math::Pose current_pose = this->model->GetWorldPose();
+    /*math::Pose current_pose = this->model->GetWorldPose();
     this->crnt_pose2.translation.x = current_pose.pos.x;
     this->crnt_pose2.translation.y = current_pose.pos.y; 
     this->crnt_pose2.translation.z = current_pose.pos.z;
@@ -81,10 +81,10 @@ void ROSTableControlPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf
     this->crnt_pose2.rotation.x = q.x();
     this->crnt_pose2.rotation.y = q.y();
     this->crnt_pose2.rotation.z = q.z();
-    this->crnt_pose2.rotation.w = q.w();
+    this->crnt_pose2.rotation.w = q.w();*/
 
     /*Initialize tf broadcaster*/
-    tf2_ros::StaticTransformBroadcaster stBr;
+    /*tf2_ros::StaticTransformBroadcaster stBr;
     geometry_msgs::TransformStamped staticTransform;
     while(ros::ok()){
         staticTransform.header.stamp = ros::Time::now();
@@ -98,7 +98,7 @@ void ROSTableControlPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf
         staticTransform.transform.rotation.z = this->crnt_pose2.rotation.z;
         staticTransform.transform.rotation.w = this->crnt_pose2.rotation.w;
         ros::spin();
-    }
+    }*/
 
 }
 
@@ -180,13 +180,13 @@ void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, flo
     this->crnt_pose2.rotation.z = q.z();
     this->crnt_pose2.rotation.w = q.w();
     
-    //this->tfBroadCater(crnt_pose2);
+    this->tfBroadCater(crnt_pose2);
                                             
     ROS_DEBUG("Moving Table = %s .... END", model_name.c_str());
 }
 
 void ROSTableControlPlugin::tfBroadCater(geometry_msgs::Transform crnt_pose){
-    static tf2_ros::TransformBroadcaster br;
+    static tf2_ros::StaticTransformBroadcaster br;
     geometry_msgs::TransformStamped stampedTransforms;
 
     stampedTransforms.header.stamp = ros::Time::now();
