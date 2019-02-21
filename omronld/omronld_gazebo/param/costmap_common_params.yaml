@@ -10,7 +10,7 @@ raytrace_range: 4.0
 footprint: [[0.40, 0.30], [0.40, -0.30],[-0.40, 0.30],[-0.40, -0.30]]  # if the robot is not circular
 #-------- inflation parameters: http://wiki.ros.org/costmap_2d/hydro/inflation ----------
 inflation_radius: 0.55  # max. distance from an obstacle at which costs are incurred for planning paths.
-cost_scaling_factor: 2  # exponential rate at which the obstacle cost drops off (default: 10)
+cost_scaling_factor: 1.5  # exponential rate at which the obstacle cost drops off (default: 10)
 
 # voxel map configuration; z-voxels 0 are filled by bumpers and 1 by laser scan (kinect)
 

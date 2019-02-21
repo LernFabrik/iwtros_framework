@@ -15,6 +15,10 @@
 
 #include <tf2_ros/transform_listener.h>
 #include <geometry_msgs/TransformStamped.h>
+#include <dynamic_reconfigure/server.h>
+#include <dynamic_reconfigure/client.h>
+#include <dwa_local_planner/DWAPlannerConfig.h>
+#include <move_base/MoveBaseConfig.h>
 
 #include <iwtros_goal/reversePID.h>
 
@@ -23,7 +27,9 @@ tf2_ros::Buffer tfBuffer;
 double roll, pitch, yaw;
 double fts_roll, fts_pitch, fts_yaw;
 geometry_msgs::Quaternion quaternion;
-
+double maxVel = -0.5;
+double minAng = -0.3;
+double maxAng = 0.3;
 
 
 static void quad_to_Euler(geometry_msgs::Quaternion& q, double& roll, double& pitch, double& yaw){
@@ -51,6 +57,10 @@ void getTransforms(std::string parent, std::string child, geometry_msgs::Transfo
     }
 }
 
+void dwaCallback(dwa_local_planner::DWAPlannerConfig &config, uint32_t level){
+    ROS_INFO("max vel = %f, min vel = %f", config.max_vel_x, config.min_vel_x);
+}
+
 int main(int argc, char** argv){
     ros::init(argc, argv, "control_table_node");
     ros::NodeHandle nh;
@@ -68,7 +78,14 @@ int main(int argc, char** argv){
     /**cmd_vel publisher**/
     ros::Publisher cmd_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 20);
 
-    ros::Rate rate(20.0);
+    dynamic_reconfigure::Server<dwa_local_planner::DWAPlannerConfig> server;
+    //dynamic_reconfigure::Server<dwa_local_planner::DWAPlannerConfig>::CallbackType f;
+    //f = boost::bind(&dwaCallback, _1, _2);
+    //server.setCallback(f);
+    
+    
+
+    ros::Rate rate(5.0);
     double currentTime = ros::Time::now().toSec();
     double prevTime = currentTime;
 
@@ -106,30 +123,37 @@ int main(int argc, char** argv){
         }else{
             ROS_INFO("Fail to reach the goal");
         }
-        /*********PID move FTS reverse***************/
-        iwtros::PID pid(5, 0.01, 0.1);
-        iwtros::PID pidAng(1, 0.0001, 0.01);
-        double output, outputAng;
-        currentTime = ros::Time::now().toSec();
-        prevTime = currentTime;
-       
-        while(output != 0.0 && ros::ok()){
-            currentTime = ros::Time::now().toSec();
-            double dt = currentTime - prevTime;
-            getTransforms("world", "base_link", stampedFTS);
-            quad_to_Euler(stampedFTS.transform.rotation, fts_roll, fts_pitch, fts_yaw);
-            output = pid.calculate(dt, stampedTfIIWA.transform.translation.y, stampedFTS.transform.translation.y);
-            ROS_ERROR("angular error = %f", yaw-fts_yaw);
-            outputAng = pidAng.calculate(dt, yaw, fts_yaw);
-            ROS_ERROR("PID Position output = %f, angular output", output, outputAng);
-            cmdVel.linear.x = - output * dt;
-            cmdVel.angular.z = - outputAng * dt;
-            ROS_ERROR("cmd_vel output linear = %f, angular = %f", cmdVel.linear.x, cmdVel.angular.z);
-            cmd_pub.publish(cmdVel);
-            ros::spinOnce();
-            rate.sleep();
-            prevTime = currentTime;
-        }
+        /*Go backwards*/
+        double s;
+        nh.getParam("/move_base/DWAPlannerROS/max_vel_x", s);
+        ROS_INFO("max velocity %f", s);
+        nh.getParam("/move_base/DWAPlannerROS/min_vel_x", s);
+        ROS_INFO("min velocity %f", s);
+        /*double stpr;
+        stpr = 0;
+        nh.setParam("/move_base/DWAPlannerROS/max_vel_x", stpr);
+        stpr = -0.50;
+        nh.setParam("/move_base/DWAPlannerROS/min_vel_x", stpr);
+        //nh.setParam()*/
+
+        dynamic_reconfigure::ReconfigureRequest srv_req;
+        dynamic_reconfigure::ReconfigureResponse srv_res;
+        dynamic_reconfigure::DoubleParameter dwaConf;
+        dynamic_reconfigure::DoubleParameter dwaConf2;
+        dynamic_reconfigure::Config config;
+
+        dwaConf.name = "min_vel_x";
+        dwaConf.value = -0.5;
+        config.doubles.push_back(dwaConf);
+        srv_req.config = config;
+        ros::service::call("/move_base/DWAPlannerROS", srv_req, srv_res);
+
+
+        nh.getParam("/move_base/DWAPlannerROS/max_vel_x", s);
+        ROS_INFO("---max velocity %f", s);
+        nh.getParam("/move_base/DWAPlannerROS/min_vel_x", s);
+        ROS_INFO("---min velocity %f", s);
+
         ros::spin();
     }
     return 0;
