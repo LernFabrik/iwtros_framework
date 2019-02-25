@@ -12,7 +12,7 @@
         If any changes requred int the position of the the system change it according to the iwt_envirnment.xacro -->
   <xacro:include filename="$(find robots_ee_pkg)/urdf/kuka_robot/kuka_iiwa7.urdf.xacro" />
   <xacro:kuka_iiwa7_table_urdf table_prefix="$(arg robot_name)" table_parent="$(arg workcell_parent)">
-    <origin xyz="0 0 1.0" rpy="0 0 ${pi}" />
+    <origin xyz="0 0 1.0" rpy="0 0 0" />
   </xacro:kuka_iiwa7_table_urdf>
 
   <gazebo reference="world_interface">
