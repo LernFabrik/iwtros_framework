@@ -90,7 +90,7 @@ void ROSTableControlPlugin::MoveModel(double lin_x, double lin_y, double lin_z, 
 
     /*Get the orientation either offseted orientation from the publisher 
     publishing the current FTS pose or offset here.
-    1. Subscriber is subscribing the offseted pose change and*/
+    1. Subscriber is subscribing the offseted pose*/
     setPose.rot.x = 0;
     setPose.rot.y = 0;
     setPose.rot.z = ang_z;
