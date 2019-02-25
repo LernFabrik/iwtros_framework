@@ -147,8 +147,6 @@ int main(int argc, char** argv){
         config.doubles.push_back(dwaConf);
         srv_req.config = config;
         ros::service::call("/move_base/DWAPlannerROS", srv_req, srv_res);
-
-
         nh.getParam("/move_base/DWAPlannerROS/max_vel_x", s);
         ROS_INFO("---max velocity %f", s);
         nh.getParam("/move_base/DWAPlannerROS/min_vel_x", s);
