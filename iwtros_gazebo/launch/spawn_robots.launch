@@ -19,7 +19,7 @@
       <arg name="robot_name" value="wsg50"/>
     </include>
     <node name="$(arg robot1)_gazebo_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-          args="-unpause -urdf -model iiwa -param $(arg robot1)_description" />
+          args="-x 2.25 -y -0.5 -z 1.0 -Y 3.14159 -unpause -urdf -model iiwa -param $(arg robot1)_description" />
   </group>
 
 

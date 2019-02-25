@@ -94,7 +94,8 @@
     </link>
     <gazebo reference="${robot_arm_name}_table_base">
       <material>Gazebo/Grey</material>
-      <turnGravityOff>true</turnGravityOff>
+      <gravity>true</gravity>
+      <selfCollide>false</selfCollide>
       <mu1>0.3</mu1>
       <mu2>0.3</mu2>
     </gazebo>

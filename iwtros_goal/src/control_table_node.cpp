@@ -21,6 +21,8 @@
 #include <move_base/MoveBaseConfig.h>
 
 #include <iwtros_goal/reversePID.h>
+#include <costmap_2d/costmap_2d_ros.h>
+#include <clear_costmap_recovery/clear_costmap_recovery.h>
 
 tf2_ros::Buffer tfBuffer;
 
@@ -78,7 +80,7 @@ int main(int argc, char** argv){
     /**cmd_vel publisher**/
     ros::Publisher cmd_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 20);
 
-    dynamic_reconfigure::Server<dwa_local_planner::DWAPlannerConfig> server;
+    //dynamic_reconfigure::Server<dwa_local_planner::DWAPlannerConfig> server;
     //dynamic_reconfigure::Server<dwa_local_planner::DWAPlannerConfig>::CallbackType f;
     //f = boost::bind(&dwaCallback, _1, _2);
     //server.setCallback(f);
@@ -136,7 +138,7 @@ int main(int argc, char** argv){
         nh.setParam("/move_base/DWAPlannerROS/min_vel_x", stpr);
         //nh.setParam()*/
 
-        dynamic_reconfigure::ReconfigureRequest srv_req;
+        /*dynamic_reconfigure::ReconfigureRequest srv_req;
         dynamic_reconfigure::ReconfigureResponse srv_res;
         dynamic_reconfigure::DoubleParameter dwaConf;
         dynamic_reconfigure::DoubleParameter dwaConf2;
@@ -146,11 +148,27 @@ int main(int argc, char** argv){
         dwaConf.value = -0.5;
         config.doubles.push_back(dwaConf);
         srv_req.config = config;
-        ros::service::call("/move_base/DWAPlannerROS", srv_req, srv_res);
+        ros::service::call("/move_base/DWAPlannerROS", srv_req, srv_res);*/
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 0.0");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x -0.1");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.025");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.025");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.075");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.001");
+
         nh.getParam("/move_base/DWAPlannerROS/max_vel_x", s);
         ROS_INFO("---max velocity %f", s);
         nh.getParam("/move_base/DWAPlannerROS/min_vel_x", s);
         ROS_INFO("---min velocity %f", s);
+
+        goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y;
+        ac.sendGoal(goal);
+        ac.waitForResult();
+        if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
+            ROS_INFO("Reached goal");
+        }else{
+            ROS_INFO("Fail to reach the goal");
+        }
 
         ros::spin();
     }

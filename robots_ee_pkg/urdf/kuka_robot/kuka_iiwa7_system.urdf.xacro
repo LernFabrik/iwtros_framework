@@ -12,16 +12,20 @@
         If any changes requred int the position of the the system change it according to the iwt_envirnment.xacro -->
   <xacro:include filename="$(find robots_ee_pkg)/urdf/kuka_robot/kuka_iiwa7.urdf.xacro" />
   <xacro:kuka_iiwa7_table_urdf table_prefix="$(arg robot_name)" table_parent="$(arg workcell_parent)">
-    <origin xyz="2.25 -0.5 1.0" rpy="0 0 ${pi}" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
   </xacro:kuka_iiwa7_table_urdf>
+
+  <gazebo reference="world_interface">
+      <gravity>true</gravity>
+    </gazebo>
   
   <gazebo>
       <plugin name="ROSTableControlPlugin" filename="libROSTableControlPlugin.so">
         <table_cmd_vel>/iiwa/tbl_cmd_vel</table_cmd_vel>
-        <offset_x>2.25</offset_x>
-        <offset_y>-0.5</offset_y>
+        <offset_x>0</offset_x>
+        <offset_y>0</offset_y>
         <offset_z>1.0</offset_z>
-        <offset_yaw>${pi}</offset_yaw>
+        <offset_yaw>0</offset_yaw>
         <table_base_link>iiwa_table_base</table_base_link>
       </plugin>
   </gazebo>
