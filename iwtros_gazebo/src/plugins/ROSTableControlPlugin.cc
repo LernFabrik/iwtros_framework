@@ -58,7 +58,7 @@ void ROSTableControlPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf
     this->rosNode.reset(new ros::NodeHandle("tablemover_node"));
     //ROS Subcriber table pose
     ros::SubscribeOptions so = 
-        ros::SubscribeOptions::create<geometry_msgs::Twist>(this->table_cmd_vel,
+        ros::SubscribeOptions::create<geometry_msgs::PoseWithCovariance>(this->table_cmd_vel,
         1,  boost::bind(&ROSTableControlPlugin::OnRosMsg_Pos, this, _1),
         ros::VoidPtr(), &this->rosQueue);
     this->rosSub = this->rosNode->subscribe(so);
@@ -70,86 +70,34 @@ void ROSTableControlPlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf
     this->prev_time = this->current_time;
 }
 
-void ROSTableControlPlugin::OnRosMsg_Pos(const geometry_msgs::TwistConstPtr &msg){
+void ROSTableControlPlugin::OnRosMsg_Pos(const geometry_msgs::PoseWithCovarianceConstPtr &msg){
     this->current_time = ros::Time::now().toSec(); //Begining of the loop
-    this->MoveModel(msg->linear.x, msg->linear.y, msg->linear.z, msg->angular.x, msg->angular.y, msg->angular.z);
+    this->MoveModel(msg->pose.position.x, msg->pose.position.y, msg->pose.position.z, 
+                    msg->pose.orientation.x, msg->pose.orientation.y, msg->pose.orientation.z, msg->pose.orientation.w);
 }
 
-void ROSTableControlPlugin::MoveModel(float lin_x, float lin_y, float lin_z, float ang_x, float ang_y, float ang_z){
+void ROSTableControlPlugin::MoveModel(double lin_x, double lin_y, double lin_z, double ang_x, double ang_y, double ang_z, double ang_w){
     std::string model_name = this->model->GetName();
     ROS_DEBUG("Moving table = %s", model_name.c_str());
 
-    /*--- Get the current pose of the model
-    ------ models should not change in z axis, roll and pitch
-    ------- we can add one more function to calculate the old pose in the programe 
-    ------- and in current pose in the gazebo---------*/
+    math::Pose setPose;
+    setPose.pos.x = lin_x;
+    setPose.pos.y = lin_y;
+    setPose.pos.z = 0 + this->offsets.translation.z;
+
+    /*Get the orientation either offseted orientation from the publisher 
+    publishing the current FTS pose or offset here.
+    1. Subscriber is subscribing the offseted pose*/
+    setPose.rot.x = 0;
+    setPose.rot.y = 0;
+    setPose.rot.z = ang_z;
+    setPose.rot.w = ang_w;
+    this->model->SetWorldPose(setPose);
     
-    if(this->loop_counter == 0){
-        math::Pose current_pose = this->model->GetRelativePose();
-        current_pose.pos.z = 0;
-        current_pose.rot.x = 0;
-        current_pose.rot.y = 0;
-        this->old_x = current_pose.pos.x;
-        this->old_y = current_pose.pos.y;
-        this->old_theta = current_pose.rot.GetYaw();
-        gzerr << "old pose of the model x = " << this->old_x << " y = " << this->old_y << " theta = " << this->old_theta << "\n";
-
-        this->model->SetWorldPose(current_pose);
-        this->prev_time = this->current_time;
-    } 
-    this->dt = this->current_time - this->prev_time;
-    gzerr << "dt = " << this->dt << "\n";
-    if(this->dt > 0){
-        this->delta_x = lin_x * this->dt;
-        this->delta_y = lin_y * this->dt;
-        this->delta_theta = ang_z * this->dt;
-        gzerr << "delta pose of the model x = " << this->delta_x << " y = " << this->delta_y << " theta = " << this->delta_theta << "\n";
-
-        this->detlta_d = sqrt((this->delta_x * this->delta_x) + (this->delta_y * this->delta_y));
-        gzerr << "detla_d = " << this->detlta_d << "\n";
-        this->crnt_x = this->old_x + this->delta_x; // this->detlta_d * sin(this->old_theta + this->delta_theta / 2);
-        this->crnt_y = this->old_y + this->delta_y;// this->detlta_d * cos(this->old_theta + this->delta_theta / 2);
-        this->crnt_theta = this->old_theta + this->delta_theta;
-        gzerr << "calculated current pose of the model x = " << this->crnt_x << " y = " << this->crnt_y << " theta = " << this->crnt_theta << "\n";
-    }else{
-        //this->model->SetLinearVel(ignition::math::Vector3d(lin_x, lin_y, lin_z));
-        //this->model->SetAngularVel(ignition::math::Vector3d(ang_x, ang_y, ang_z));
-        this->crnt_x = this->old_x;
-        this->crnt_y = this->old_y;
-        this->crnt_theta = this->old_theta;
-    }
-    math::Pose set_pose;
-    set_pose.pos.x = this->crnt_x;
-    set_pose.pos.y = this->crnt_y;
-    set_pose.pos.z = 0;
-    tf2::Quaternion calQuad;
-    calQuad.setRPY(0, 0, crnt_theta);
-    set_pose.rot.x = calQuad.x();                             // Hardcoding this value might not be good idea !!!!
-    set_pose.rot.y = calQuad.y();
-    set_pose.rot.z = calQuad.z();
-    set_pose.rot.w = calQuad.w();
-    gzerr << "setting current pose of the model x = " << set_pose.pos.x << " y = " << set_pose.pos.y << " theta = " << this->crnt_theta << "\n";
-    this->model->SetWorldPose(set_pose);
-
-    this->old_x = this->crnt_x;
-    this->old_y = this->crnt_y;
-    this->old_theta = this->crnt_theta;
-
-    
-    this->crnt_pose2.translation.x = this->crnt_x; 
-    this->crnt_pose2.translation.y = this->crnt_y;
-    this->crnt_pose2.translation.z = 0;
-
-    float yaw = this->crnt_theta + this->off_yaw;
-    tf2::Quaternion q;
-    q.setRPY(0, 0, yaw);                        // some of the roll and pitch are set to zero bacause the model motion is in 2D
-    this->crnt_pose2.rotation.x = q.x();
-    this->crnt_pose2.rotation.y = q.y();
-    this->crnt_pose2.rotation.z = q.z();
-    this->crnt_pose2.rotation.w = q.w();
-    
-    this->tfBroadCaster(crnt_pose2);
-                                            
+    math::Pose getPose = this->model->GetWorldPose();
+    gzerr << model_name << " Pose x = " << getPose.pos.x << " y = " << getPose.pos.y << " z = " << getPose.pos.z << "\n";
+    gzerr << model_name << " Orientation x = " << getPose.rot.x << " y = " << getPose.rot.y << " z = " << getPose.rot.z << " w = " << getPose.rot.w << "\n";
+      
     ROS_DEBUG("Moving Table = %s .... END", model_name.c_str());
 }
 
