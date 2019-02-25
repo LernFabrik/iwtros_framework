@@ -37,9 +37,9 @@ namespace gazebo{
 
         public: void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf);
 
-        public: void OnRosMsg_Pos(const geometry_msgs::TwistConstPtr &msg);
+        public:void OnRosMsg_Pos(const geometry_msgs::PoseWithCovarianceConstPtr &msg);
 
-        void MoveModel(float lin_x, float lin_y, float lin_z, float ang_x, float ang_y, float ang_z);
+        void MoveModel(double lin_x, double lin_y, double lin_z, double ang_x, double ang_y, double ang_z, double ang_w);
 
         void tfBroadCaster(geometry_msgs::Transform crnt_pose);
 
