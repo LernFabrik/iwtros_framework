@@ -80,13 +80,13 @@ void ROSTableControlPlugin::MoveModel(double lin_x, double lin_y, double lin_z, 
     std::string model_name = this->model->GetName();
     ROS_DEBUG("Moving table = %s", model_name.c_str());
     math::Pose getPose1 = this->model->GetWorldPose();
-    gzerr << model_name << " Pose 1 x = " << getPose1.pos.x << " y = " << getPose1.pos.y << " z = " << getPose1.pos.z << "\n";
-    gzerr << model_name << " Orientation 1 x = " << getPose1.rot.x << " y = " << getPose1.rot.y << " z = " << getPose1.rot.z << " w = " << getPose1.rot.w << "\n";
+    //gzerr << model_name << " Pose 1 x = " << getPose1.pos.x << " y = " << getPose1.pos.y << " z = " << getPose1.pos.z << "\n";
+    //gzerr << model_name << " Orientation 1 x = " << getPose1.rot.x << " y = " << getPose1.rot.y << " z = " << getPose1.rot.z << " w = " << getPose1.rot.w << "\n";
     
     math::Pose setPose;
     setPose.pos.x = lin_x;
     setPose.pos.y = lin_y;
-    setPose.pos.z = 0 + this->offsets.translation.z;
+    setPose.pos.z = 0;
 
     /*Get the orientation either offseted orientation from the publisher 
     publishing the current FTS pose or offset here.
@@ -98,8 +98,8 @@ void ROSTableControlPlugin::MoveModel(double lin_x, double lin_y, double lin_z, 
     this->model->SetWorldPose(setPose);
     
     math::Pose getPose2 = this->model->GetWorldPose();
-    gzerr << model_name << " Pose x = " << getPose2.pos.x << " y = " << getPose2.pos.y << " z = " << getPose2.pos.z << "\n";
-    gzerr << model_name << " Orientation x = " << getPose2.rot.x << " y = " << getPose2.rot.y << " z = " << getPose2.rot.z << " w = " << getPose2.rot.w << "\n";
+    //gzerr << model_name << " Pose x = " << getPose2.pos.x << " y = " << getPose2.pos.y << " z = " << getPose2.pos.z << "\n";
+    //gzerr << model_name << " Orientation x = " << getPose2.rot.x << " y = " << getPose2.rot.y << " z = " << getPose2.rot.z << " w = " << getPose2.rot.w << "\n";
     this->crnt_pose2.translation.x = getPose2.pos.x;
     this->crnt_pose2.translation.y = getPose2.pos.y;
     this->crnt_pose2.translation.z = getPose2.pos.z;
@@ -120,7 +120,7 @@ void ROSTableControlPlugin::tfBroadCaster(geometry_msgs::Transform crnt_pose){
     stampedTransforms.child_frame_id = this->table_base_link;    
     stampedTransforms.transform.translation.x = crnt_pose.translation.x; //+ this->offsets.translation.x;
     stampedTransforms.transform.translation.y = crnt_pose.translation.y;// + this->offsets.translation.y;
-    stampedTransforms.transform.translation.z = crnt_pose.translation.z;// + this->offsets.translation.z;
+    stampedTransforms.transform.translation.z = crnt_pose.translation.z + this->offsets.translation.z;
     stampedTransforms.transform.rotation.x = crnt_pose.rotation.x;
     stampedTransforms.transform.rotation.y = crnt_pose.rotation.y;
     stampedTransforms.transform.rotation.z = crnt_pose.rotation.z;

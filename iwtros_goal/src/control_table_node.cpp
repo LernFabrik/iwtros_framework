@@ -168,10 +168,10 @@ int main(int argc, char** argv){
         ros::service::call("/move_base/DWAPlannerROS", srv_req, srv_res);*/
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 0.0");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x -0.1");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.025");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.025");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.075");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.001");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.05");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.05");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.070");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.0125");
 
         nh.getParam("/move_base/DWAPlannerROS/max_vel_x", s);
         ROS_INFO("---max velocity %f", s);
@@ -188,14 +188,18 @@ int main(int argc, char** argv){
         }
 
         /* Tabel move with FTS Test*/
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 0.25");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x 0.0");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.5");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.025");
         goal2.header.frame_id = "world";
         goal2.header.stamp = ros::Time::now();
         goal2.pose.position.x = -8.0;
         goal2.pose.position.y = 1.7;
         goal2.pose.orientation.z = -0.6923232;
         goal2.pose.orientation.w = 0.7215876;
-        goal_pub.publish(goal2);
-        while(true){
+        //goal_pub.publish(goal2);
+        while(ros::ok()){
             table_pose.pose.position.x = x;
             table_pose.pose.position.y = y;
             table_pose.pose.position.z = 0;
