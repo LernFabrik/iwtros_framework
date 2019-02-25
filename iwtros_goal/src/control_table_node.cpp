@@ -23,6 +23,9 @@
 #include <iwtros_goal/reversePID.h>
 #include <costmap_2d/costmap_2d_ros.h>
 #include <clear_costmap_recovery/clear_costmap_recovery.h>
+#include <geometry_msgs/PoseWithCovariance.h>
+#include <geometry_msgs/PoseStamped.h>
+#include <nav_msgs/Odometry.h>
 
 tf2_ros::Buffer tfBuffer;
 
@@ -33,6 +36,8 @@ double maxVel = -0.5;
 double minAng = -0.3;
 double maxAng = 0.3;
 
+double x, y, z;
+geometry_msgs::Quaternion quad;
 
 static void quad_to_Euler(geometry_msgs::Quaternion& q, double& roll, double& pitch, double& yaw){
     //ROS_INFO("input quat %f, %f, %f, %f", q.x, q.y, q.z, q.w);
@@ -63,6 +68,16 @@ void dwaCallback(dwa_local_planner::DWAPlannerConfig &config, uint32_t level){
     ROS_INFO("max vel = %f, min vel = %f", config.max_vel_x, config.min_vel_x);
 }
 
+void odomCallback(const nav_msgs::Odometry::ConstPtr& msg){
+    x = msg->pose.pose.position.x;
+    y = msg->pose.pose.position.y;
+    z = msg->pose.pose.position.z;
+    quad.x = msg->pose.pose.orientation.x;
+    quad.y = msg->pose.pose.orientation.y;
+    quad.z = msg->pose.pose.orientation.z;
+    quad.w = msg->pose.pose.orientation.w;
+}
+
 int main(int argc, char** argv){
     ros::init(argc, argv, "control_table_node");
     ros::NodeHandle nh;
@@ -75,11 +90,12 @@ int main(int argc, char** argv){
     /*Move base action library setings*/
     actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base", true);
     while(!ac.waitForServer(ros::Duration(10.0))){ROS_INFO("Waiting for the move_base server");} 
+    ros::Publisher goal_pub = nh.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 20);
     /*--------------------------------*/
 
-    /**cmd_vel publisher**/
-    ros::Publisher cmd_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 20);
-
+    /**Position publisher**/
+    ros::Publisher pose_pub = nh.advertise<geometry_msgs::PoseWithCovariance>("/iiwa/tbl_cmd_vel", 20);
+    ros::Subscriber odom_sub = nh.subscribe("odom", 100, odomCallback);
     //dynamic_reconfigure::Server<dwa_local_planner::DWAPlannerConfig> server;
     //dynamic_reconfigure::Server<dwa_local_planner::DWAPlannerConfig>::CallbackType f;
     //f = boost::bind(&dwaCallback, _1, _2);
@@ -87,7 +103,7 @@ int main(int argc, char** argv){
     
     
 
-    ros::Rate rate(5.0);
+    ros::Rate rate(30.0);
     double currentTime = ros::Time::now().toSec();
     double prevTime = currentTime;
 
@@ -95,7 +111,8 @@ int main(int argc, char** argv){
         geometry_msgs::TransformStamped stampedTfIIWA;
         geometry_msgs::TransformStamped stampedTfUR5;
         geometry_msgs::TransformStamped stampedFTS;
-        geometry_msgs::Twist cmdVel;
+        geometry_msgs::PoseStamped goal2;
+        geometry_msgs::PoseWithCovariance table_pose;
 
         getTransforms("world", "iiwa_table_base", stampedTfIIWA);
 
@@ -170,6 +187,32 @@ int main(int argc, char** argv){
             ROS_INFO("Fail to reach the goal");
         }
 
+        /* Tabel move with FTS Test*/
+        goal2.header.frame_id = "world";
+        goal2.header.stamp = ros::Time::now();
+        goal2.pose.position.x = -8.0;
+        goal2.pose.position.y = 1.7;
+        goal2.pose.orientation.z = -0.6923232;
+        goal2.pose.orientation.w = 0.7215876;
+        goal_pub.publish(goal2);
+        while(true){
+            table_pose.pose.position.x = x;
+            table_pose.pose.position.y = y;
+            table_pose.pose.position.z = 0;
+            quad_to_Euler(quad, roll, pitch, yaw);
+            yaw -= M_PI / 2;
+            tf2::Quaternion q1;
+            q1.setRPY(0,0,yaw);
+            table_pose.pose.orientation.x = q1.x();
+            table_pose.pose.orientation.y = q1.y();
+            table_pose.pose.orientation.z = q1.z();
+            table_pose.pose.orientation.w = q1.w();
+            pose_pub.publish(table_pose);
+        
+            rate.sleep();
+            ros::spinOnce();
+        }
+        
         ros::spin();
     }
     return 0;

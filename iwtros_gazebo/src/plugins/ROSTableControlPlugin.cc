@@ -100,7 +100,14 @@ void ROSTableControlPlugin::MoveModel(double lin_x, double lin_y, double lin_z, 
     math::Pose getPose2 = this->model->GetWorldPose();
     gzerr << model_name << " Pose x = " << getPose2.pos.x << " y = " << getPose2.pos.y << " z = " << getPose2.pos.z << "\n";
     gzerr << model_name << " Orientation x = " << getPose2.rot.x << " y = " << getPose2.rot.y << " z = " << getPose2.rot.z << " w = " << getPose2.rot.w << "\n";
-      
+    this->crnt_pose2.translation.x = getPose2.pos.x;
+    this->crnt_pose2.translation.y = getPose2.pos.y;
+    this->crnt_pose2.translation.z = getPose2.pos.z;
+    this->crnt_pose2.rotation.x = getPose2.rot.x;
+    this->crnt_pose2.rotation.y = getPose2.rot.y;
+    this->crnt_pose2.rotation.z = getPose2.rot.z;
+    this->crnt_pose2.rotation.w = getPose2.rot.w;
+    this->tfBroadCaster(this->crnt_pose2);
     ROS_DEBUG("Moving Table = %s .... END", model_name.c_str());
 }
 
@@ -111,9 +118,9 @@ void ROSTableControlPlugin::tfBroadCaster(geometry_msgs::Transform crnt_pose){
     stampedTransforms.header.stamp = ros::Time::now();
     stampedTransforms.header.frame_id = "world";
     stampedTransforms.child_frame_id = this->table_base_link;    
-    stampedTransforms.transform.translation.x = crnt_pose.translation.x + this->offsets.translation.x;
-    stampedTransforms.transform.translation.y = crnt_pose.translation.y + this->offsets.translation.y;
-    stampedTransforms.transform.translation.z = crnt_pose.translation.z + this->offsets.translation.z;
+    stampedTransforms.transform.translation.x = crnt_pose.translation.x; //+ this->offsets.translation.x;
+    stampedTransforms.transform.translation.y = crnt_pose.translation.y;// + this->offsets.translation.y;
+    stampedTransforms.transform.translation.z = crnt_pose.translation.z;// + this->offsets.translation.z;
     stampedTransforms.transform.rotation.x = crnt_pose.rotation.x;
     stampedTransforms.transform.rotation.y = crnt_pose.rotation.y;
     stampedTransforms.transform.rotation.z = crnt_pose.rotation.z;
