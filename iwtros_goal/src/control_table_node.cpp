@@ -121,7 +121,7 @@ int main(int argc, char** argv){
         goal.target_pose.header.stamp = ros::Time::now();
         goal.target_pose.pose.position.x = stampedTfIIWA.transform.translation.x;
         /* this method is not proficent it is better to get axis of rotation*/
-        if(stampedTfIIWA.transform.translation.y < 0) goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y - 1.75;
+        if(stampedTfIIWA.transform.translation.y < 0) goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y - 1;
         if(stampedTfIIWA.transform.translation.y >= 0) goal.target_pose.pose.position.y = 1 + stampedTfIIWA.transform.translation.y;
         goal.target_pose.pose.position.z = 0;
 
@@ -134,8 +134,10 @@ int main(int argc, char** argv){
         goal.target_pose.pose.orientation.y = q.y();
         goal.target_pose.pose.orientation.z = q.z();
         goal.target_pose.pose.orientation.w = q.w();
-        
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.025");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.0125");
         ac.sendGoal(goal);
+        ROS_ERROR("wait for the result");
         ac.waitForResult();
         if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
             ROS_INFO("Reached goal");
@@ -167,17 +169,9 @@ int main(int argc, char** argv){
         srv_req.config = config;
         ros::service::call("/move_base/DWAPlannerROS", srv_req, srv_res);*/
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 0.0");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x -0.5");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.0125");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.001");
-
-        goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y - 1;
-        ac.sendGoal(goal);
-        ac.waitForResult();
-
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x -0.3");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.25");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.05");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.0125");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.075");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.075");
         
@@ -195,14 +189,18 @@ int main(int argc, char** argv){
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x 0.0");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.5");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.025");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.10");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.05");
         goal2.header.frame_id = "world";
         goal2.header.stamp = ros::Time::now();
-        goal2.pose.position.x = -8.0;
-        goal2.pose.position.y = 1.7;
-        goal2.pose.orientation.z = -0.6923232;
-        goal2.pose.orientation.w = 0.7215876;
+        goal.target_pose.pose.position.x = -8.0;
+        goal.target_pose.pose.position.y = -4.0;
+        goal.target_pose.pose.orientation.z = -0.0;
+        goal.target_pose.pose.orientation.w = 1.0;
         //goal_pub.publish(goal2);
-        while(ros::ok()){
+        ROS_ERROR("Move table");
+        ac.sendGoal(goal);
+        while(ros::ok() && ac.getState() != actionlib::SimpleClientGoalState::SUCCEEDED && ac.getState() != actionlib::SimpleClientGoalState::ABORTED){
             table_pose.pose.position.x = x;
             table_pose.pose.position.y = y;
             table_pose.pose.position.z = 0;
@@ -215,11 +213,10 @@ int main(int argc, char** argv){
             table_pose.pose.orientation.z = q1.z();
             table_pose.pose.orientation.w = q1.w();
             pose_pub.publish(table_pose);
-        
             rate.sleep();
             ros::spinOnce();
         }
-        
+        ROS_ERROR("lllllll");
         ros::spin();
     }
     return 0;
