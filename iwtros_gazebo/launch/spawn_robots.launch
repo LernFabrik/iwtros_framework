@@ -34,7 +34,7 @@
       <arg name="robot_name" value="$(arg robot2)"/>
     </include>
     <node name="$(arg robot2)_gazebo_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-          args="-unpause -urdf -model ur5 -param $(arg robot2)_description" />
+          args="-x 0.8 -y -0.5 -Y 3.1415926535 -unpause -urdf -model ur5 -param $(arg robot2)_description" />
   </group>
 
 

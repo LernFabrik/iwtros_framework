@@ -8,14 +8,14 @@
   <!-- origin is given as in the iwt_envirnment.xacro for urdf -->
   <xacro:include filename="$(find robots_ee_pkg)/urdf/ur5_robot/ur5_pedestal.urdf.xacro" />
   <xacro:ur5_table_urdf table_prefix="ur5" table_parent="$(arg workcell_parent)">
-    <origin xyz="0.8 -0.5 1.0" rpy="0 0 ${pi}" />
+    <origin xyz="0 0 1.0" rpy="0 0 0" />
   </xacro:ur5_table_urdf>
 
   <gazebo>
       <plugin name="ROSTableControlPlugin" filename="libROSTableControlPlugin.so">
         <table_cmd_vel>/ur5/tbl_cmd_vel</table_cmd_vel>
-        <offset_x>0.8</offset_x>
-        <offset_y>-0.5</offset_y>
+        <offset_x>0</offset_x>
+        <offset_y>0</offset_y>
         <offset_z>1.0</offset_z>
         <offset_yaw>${pi}</offset_yaw>
         <table_base_link>ur5_table_base</table_base_link>
