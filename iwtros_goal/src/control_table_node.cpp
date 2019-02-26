@@ -167,17 +167,28 @@ int main(int argc, char** argv){
         srv_req.config = config;
         ros::service::call("/move_base/DWAPlannerROS", srv_req, srv_res);*/
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 0.0");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x -0.1");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.05");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.05");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.20");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.0125");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x -0.3");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.1");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.1");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.10");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.001");
+        
 
         nh.getParam("/move_base/DWAPlannerROS/max_vel_x", s);
         ROS_INFO("---max velocity %f", s);
         nh.getParam("/move_base/DWAPlannerROS/min_vel_x", s);
         ROS_INFO("---min velocity %f", s);
 
+        goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y - 0.75;
+        ac.sendGoal(goal);
+        ac.waitForResult();
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.075");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.075");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.10");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.001");
+        goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y - 0.50;
+        ac.sendGoal(goal);
+        ac.waitForResult();
         goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y;
         ac.sendGoal(goal);
         ac.waitForResult();
