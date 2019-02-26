@@ -36,8 +36,8 @@
       </collision>
     </link>
     <gazebo reference="conveyor_system_link">
-      <material>Gazebo/Silver</material>
-      <turnGravityOff>false</turnGravityOff>
+      <material>Gazebo/Black</material>
+      <gravity>true</gravity>
       <mu1>0.5</mu1>
       <mu2>0.4</mu2>
     </gazebo>
