@@ -134,7 +134,7 @@ int main(int argc, char** argv){
         goal.target_pose.pose.orientation.y = q.y();
         goal.target_pose.pose.orientation.z = q.z();
         goal.target_pose.pose.orientation.w = q.w();
-
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.0125");
         ac.sendGoal(goal);
         ac.waitForResult();
         if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
