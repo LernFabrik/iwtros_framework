@@ -11,6 +11,10 @@
     <origin xyz="0 0 1.0" rpy="0 0 0" />
   </xacro:ur5_table_urdf>
 
+  <gazebo reference="world_interface">
+    <gravity>true</gravity>
+  </gazebo>
+
   <gazebo>
       <plugin name="ROSTableControlPlugin" filename="libROSTableControlPlugin.so">
         <table_cmd_vel>/ur5/tbl_cmd_vel</table_cmd_vel>

@@ -17,7 +17,7 @@
 
   <gazebo reference="world_interface">
       <gravity>true</gravity>
-    </gazebo>
+  </gazebo>
   
   <gazebo>
       <plugin name="ROSTableControlPlugin" filename="libROSTableControlPlugin.so">

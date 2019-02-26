@@ -38,7 +38,7 @@
       <turnGravityOff>false</turnGravityOff>
       <sensor type="ray" name="${frame}">
         <pose>0 0 0 0 0 0</pose>
-        <visualize>true</visualize>
+        <visualize>false</visualize>
         <update_rate>${update_rate}</update_rate>
         <ray>
           <scan>
