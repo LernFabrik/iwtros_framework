@@ -121,7 +121,7 @@ int main(int argc, char** argv){
         goal.target_pose.header.stamp = ros::Time::now();
         goal.target_pose.pose.position.x = stampedTfIIWA.transform.translation.x;
         /* this method is not proficent it is better to get axis of rotation*/
-        if(stampedTfIIWA.transform.translation.y < 0) goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y - 1;
+        if(stampedTfIIWA.transform.translation.y < 0) goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y - 1.5;
         if(stampedTfIIWA.transform.translation.y >= 0) goal.target_pose.pose.position.y = 1 + stampedTfIIWA.transform.translation.y;
         goal.target_pose.pose.position.z = 0;
 
@@ -134,7 +134,7 @@ int main(int argc, char** argv){
         goal.target_pose.pose.orientation.y = q.y();
         goal.target_pose.pose.orientation.z = q.z();
         goal.target_pose.pose.orientation.w = q.w();
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.0125");
+        
         ac.sendGoal(goal);
         ac.waitForResult();
         if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
@@ -167,10 +167,14 @@ int main(int argc, char** argv){
         srv_req.config = config;
         ros::service::call("/move_base/DWAPlannerROS", srv_req, srv_res);*/
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 0.0");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x -0.3");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.1");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.1");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.10");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x -0.5");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.0125");
+        goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y - 1;
+        ac.sendGoal(goal);
+        ac.waitForResult();
+
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.3");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.3");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.001");
         
 
@@ -182,13 +186,11 @@ int main(int argc, char** argv){
         goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y - 0.75;
         ac.sendGoal(goal);
         ac.waitForResult();
+
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.25");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.075");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.075");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.10");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.001");
-        goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y - 0.50;
-        ac.sendGoal(goal);
-        ac.waitForResult();
+        
         goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y;
         ac.sendGoal(goal);
         ac.waitForResult();
