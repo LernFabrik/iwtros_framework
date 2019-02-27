@@ -26,6 +26,7 @@
 #include <geometry_msgs/PoseWithCovariance.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/Odometry.h>
+#include <iwtros_msgs/RobotDetach.h>
 
 tf2_ros::Buffer tfBuffer;
 
@@ -35,7 +36,7 @@ geometry_msgs::Quaternion quaternion;
 double maxVel = -0.5;
 double minAng = -0.3;
 double maxAng = 0.3;
-
+bool detach;
 double x, y, z;
 geometry_msgs::Quaternion quad;
 
@@ -78,6 +79,10 @@ void odomCallback(const nav_msgs::Odometry::ConstPtr& msg){
     quad.w = msg->pose.pose.orientation.w;
 }
 
+void detachCallback(const iwtros_msgs::RobotDetach::ConstPtr& msg){
+    detach = msg->detach.data;
+}
+
 int main(int argc, char** argv){
     ros::init(argc, argv, "control_table_node");
     ros::NodeHandle nh;
@@ -94,8 +99,9 @@ int main(int argc, char** argv){
     /*--------------------------------*/
 
     /**Position publisher**/
-    ros::Publisher pose_pub = nh.advertise<geometry_msgs::PoseWithCovariance>("/iiwa/tbl_cmd_vel", 20);
+    ros::Publisher pose_pub = nh.advertise<geometry_msgs::PoseWithCovariance>("/ur5/tbl_cmd_vel", 20);
     ros::Subscriber odom_sub = nh.subscribe("odom", 100, odomCallback);
+    ros::Subscriber detacth_sub = nh.subscribe("robotDetach", 100, detachCallback);
     //dynamic_reconfigure::Server<dwa_local_planner::DWAPlannerConfig> server;
     //dynamic_reconfigure::Server<dwa_local_planner::DWAPlannerConfig>::CallbackType f;
     //f = boost::bind(&dwaCallback, _1, _2);
@@ -114,7 +120,7 @@ int main(int argc, char** argv){
         geometry_msgs::PoseStamped goal2;
         geometry_msgs::PoseWithCovariance table_pose;
 
-        getTransforms("world", "iiwa_table_base", stampedTfIIWA);
+        getTransforms("world", "ur5_table_base", stampedTfIIWA);
 
         move_base_msgs::MoveBaseGoal goal;
         goal.target_pose.header.frame_id = "world";
@@ -193,14 +199,15 @@ int main(int argc, char** argv){
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.05");
         goal2.header.frame_id = "world";
         goal2.header.stamp = ros::Time::now();
-        goal.target_pose.pose.position.x = -8.0;
-        goal.target_pose.pose.position.y = -4.0;
-        goal.target_pose.pose.orientation.z = -0.0;
-        goal.target_pose.pose.orientation.w = 1.0;
+        goal.target_pose.pose.position.x = 4.20;
+        goal.target_pose.pose.position.y = -1.40;
+        goal.target_pose.pose.orientation.z = 1.0;
+        goal.target_pose.pose.orientation.w = 0.0;
         //goal_pub.publish(goal2);
         ROS_ERROR("Move table");
-        ac.sendGoal(goal);
-        while(ros::ok() && ac.getState() != actionlib::SimpleClientGoalState::SUCCEEDED && ac.getState() != actionlib::SimpleClientGoalState::ABORTED){
+        //ac.sendGoal(goal);
+        
+        while(ros::ok() && detach != true/*ac.getState() != actionlib::SimpleClientGoalState::SUCCEEDED && ac.getState() != actionlib::SimpleClientGoalState::ABORTED*/){
             table_pose.pose.position.x = x;
             table_pose.pose.position.y = y;
             table_pose.pose.position.z = 0;

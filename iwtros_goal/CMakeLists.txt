@@ -14,14 +14,15 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   tf
   tf2
+  iwtros_msgs
 )
 
 #catkin_python_setup()
 
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES iwtros_goal
-#  CATKIN_DEPENDS actionlib actionlib_msgs geometry_msgs move_base_msgs roscpp rospy sensor_msgs tf tf2
+  INCLUDE_DIRS include
+  LIBRARIES iwtros_goal iwtros_msgs
+  CATKIN_DEPENDS iwtros_msgs actionlib actionlib_msgs geometry_msgs move_base_msgs roscpp rospy sensor_msgs tf tf2
 #  DEPENDS system_lib
 )
 
