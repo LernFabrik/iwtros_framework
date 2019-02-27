@@ -26,7 +26,7 @@
 #include <geometry_msgs/PoseWithCovariance.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/Odometry.h>
-#include <iwtros_msgs/RobotDetach.h>
+#include <std_msgs/Bool.h>
 
 tf2_ros::Buffer tfBuffer;
 
@@ -79,8 +79,8 @@ void odomCallback(const nav_msgs::Odometry::ConstPtr& msg){
     quad.w = msg->pose.pose.orientation.w;
 }
 
-void detachCallback(const iwtros_msgs::RobotDetach::ConstPtr& msg){
-    detach = msg->detach.data;
+void detachCallback(const std_msgs::Bool::ConstPtr& msg){
+    detach = msg->data;
 }
 
 int main(int argc, char** argv){
