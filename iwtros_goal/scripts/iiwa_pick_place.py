@@ -44,8 +44,8 @@ def iiwa_pick_place():
     iiwa_client.wait_for_result()
     rospy.loginfo("Go to IIWA Home")
 
-    rate = rospy.Rate(5.0);
-
+    rate = rospy.Rate(5.0)
+    
     while not rospy.is_shutdown():
         rate.sleep()
 

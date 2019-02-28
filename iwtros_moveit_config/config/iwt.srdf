@@ -70,6 +70,22 @@
         <joint name="iiwa_joint_6" value="0.4555" />
         <joint name="iiwa_joint_7" value="1.6738" />
     </group_state>
+    <group_state name="ur5_Pick" group="ur5_arm">
+        <joint name="ur5_elbow_joint" value="1.7261" />
+        <joint name="ur5_shoulder_lift_joint" value="-0.863" />
+        <joint name="ur5_shoulder_pan_joint" value="-2.2785" />
+        <joint name="ur5_wrist_1_joint" value="-2.5201" />
+        <joint name="ur5_wrist_2_joint" value="-1.4499" />
+        <joint name="ur5_wrist_3_joint" value="0.9321" />
+    </group_state>
+    <group_state name="ur5_Place" group="ur5_arm">
+        <joint name="ur5_elbow_joint" value="1.4994" />
+        <joint name="ur5_shoulder_lift_joint" value="-0.731" />
+        <joint name="ur5_shoulder_pan_joint" value="-1.6916" />
+        <joint name="ur5_wrist_1_joint" value="0.7194" />
+        <joint name="ur5_wrist_2_joint" value="1.6225" />
+        <joint name="ur5_wrist_3_joint" value="0.9321" />
+    </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="iiwa_eef" parent_link="iiwa_link_ee" group="iiwa_gripper" parent_group="iiwa_arm" />
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->

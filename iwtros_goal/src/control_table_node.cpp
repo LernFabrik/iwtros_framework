@@ -191,10 +191,10 @@ int main(int argc, char** argv){
         }
 
         /* Tabel move with FTS Test*/
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 0.25");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 1.0");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x 0.0");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.5");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.025");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.8");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel 0.02");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.10");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.05");
         goal2.header.frame_id = "world";
