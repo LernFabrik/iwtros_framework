@@ -49,7 +49,6 @@
     </include>
     <node name="$(arg robot3)_gazebo_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
           args="-x 3.7 -y -0.5 -Y 3.1415926535 -unpause -urdf -model panda -param $(arg robot3)_description" />
-    <include file="$(find iwtros_panda_moveit_config)/launch/move_group.launch"/>
   </group>
 
 
