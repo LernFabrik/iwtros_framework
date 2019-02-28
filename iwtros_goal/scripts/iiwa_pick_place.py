@@ -18,6 +18,7 @@ def iiwa_pick_place():
     
     ur5_group = moveit_commander.MoveGroupCommander("ur5_arm")
     iiwa_group = moveit_commander.MoveGroupCommander("iiwa_arm")
+    panda_group = moveit_commander.MoveGroupCommander("panda_arm")
 
     ur5_client = actionlib.SimpleActionClient('execute_trajectory', moveit_msgs.msg.ExecuteTrajectoryAction)
     ur5_client.wait_for_server()
@@ -25,6 +26,9 @@ def iiwa_pick_place():
     iiwa_client = actionlib.SimpleActionClient('execute_trajectory', moveit_msgs.msg.ExecuteTrajectoryAction)
     iiwa_client.wait_for_server()
     rospy.loginfo("Execution Trajectroy server is available for iiwa")
+    panda_client = actionlib.SimpleActionClient('execute_trajectory', moveit_msgs.msg.ExecuteTrajectoryAction)
+    panda_client.wait_for_server()
+    rospy.loginfo("Execution Trajectroy server is available for Panda")
 
     ur5_group.set_named_target("UR5_Home")
     plan = ur5_group.plan()
@@ -60,6 +64,17 @@ def iiwa_pick_place():
 
         rate.sleep()
 
+        panda_group.set_named_target("panda_Pick")
+        plan = panda_group.plan()
+        panda_pick = moveit_msgs.msg.ExecuteTrajectoryGoal()
+        panda_pick.trajectory = plan
+
+        panda_client.send_goal(panda_pick)
+        panda_client.wait_for_result()
+        rospy.loginfo("Go to Panda pick")
+
+        rate.sleep()
+
         iiwa_group.set_named_target("iiwa_Place")
         plan = iiwa_group.plan()
         iiwa_place = moveit_msgs.msg.ExecuteTrajectoryGoal()
@@ -68,6 +83,17 @@ def iiwa_pick_place():
         iiwa_client.send_goal(iiwa_place)
         iiwa_client.wait_for_result()
         rospy.loginfo("Go to iiwa place")
+
+        rate.sleep()
+
+        panda_group.set_named_target("panda_Place")
+        plan = panda_group.plan()
+        panda_pick = moveit_msgs.msg.ExecuteTrajectoryGoal()
+        panda_pick.trajectory = plan
+
+        panda_client.send_goal(panda_pick)
+        panda_client.wait_for_result()
+        rospy.loginfo("Go to Panda place")
 
 
 if __name__=='__main__':
