@@ -16,16 +16,16 @@
     <xacro:arg name="arm_name" default="panda"/>
     <xacro:arg name="robot_param" default="/panda/panda_description"/>
     <xacro:arg name="origin_xyz" default="0 0 0" />
-    <xacro:arg name="origin_rpy" default="0 0 0" />
+    <xacro:arg name="origin_rpy" default="0 0 ${pi/2}" />
     <xacro:arg name="modelDir" default="/home/vishnu/catkin_ws/src/robots_ee_pkg"/>
 
     <xacro:add_table robot_arm_name="${table_prefix}" table_ee="${table_prefix}_table_ee" modelDir="$(arg modelDir)"  parent="${table_parent}">
       <xacro:insert_block name="origin" />
     </xacro:add_table>
     <!-- Panda robot interface -->
-    <xacro:panda_arm  connected_to="${table_prefix}_table_ee" xyz="$(arg origin_xyz)" rpy="$(arg origin_rpy)" />
+    <xacro:panda_arm connected_to="${table_prefix}_table_ee" xyz="$(arg origin_xyz)" rpy="0 0 ${pi/2}" />
     <xacro:panda_gazebo arm_name="$(arg arm_name)" robot_param_name="$(arg robot_param)"/>
-    <xacro:panda_arm_transmission arm_name="$(arg arm_name)" hardware_interface="$(arg hardware_interface)" />
+    <xacro:panda_arm_transmission arm_name="$(arg arm_name)" hardware_interface="EffortJointInterface" />
     <!-- Panda hand interface -->
     <xacro:hand ns="$(arg arm_name)" rpy="0 0 ${-pi/4}" connected_to="$(arg arm_name)_link8" />
     <xacro:panda_hand_transmission ns_name="$(arg arm_name)"  gripper_hardware_interface="$(arg gripperHwInterface)" />

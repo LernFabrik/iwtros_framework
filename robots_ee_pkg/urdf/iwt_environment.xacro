@@ -34,7 +34,7 @@
   <!-- Franka Panda-->
   <xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/franka_panda.urdf.xacro" />
   <xacro:franka_panda_table_urdf table_prefix="panda" table_parent="world_interface">
-    <origin xyz="3.7 -0.5 1.0" rpy="0 0 ${pi/2}" />
+    <origin xyz="3.7 -0.5 1.0" rpy="0 0 ${pi}" />
   </xacro:franka_panda_table_urdf>
 
   <!-- ur5-->

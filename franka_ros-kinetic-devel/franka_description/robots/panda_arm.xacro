@@ -7,7 +7,7 @@
         <parent link="${connected_to}"/>
         <child link="${arm_id}_link0"/>
         <origin rpy="${rpy}" xyz="${xyz}"/>
-        <dynamic damping="${joint_damping}">
+        <dynamic damping="${joint_damping}"/>
       </joint>
     </xacro:unless>
     <link name="${arm_id}_link0">
@@ -23,7 +23,7 @@
       </collision>
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0" />
-        <mass value="3.06357">
+        <mass value="3.06357"/>
         <inertia ixx="0.3" ixy="0.0" ixz="0.0" iyy="0.3" iyz="0.0" izz="0.3" />
       </inertial>
     </link>
@@ -40,7 +40,7 @@
       </collision>
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0" />
-        <mass value="2.34471">
+        <mass value="2.34471"/>
         <inertia ixx="0.3" ixy="0.0" ixz="0.0" iyy="0.3" iyz="0.0" izz="0.3" />
       </inertial>
     </link>
@@ -65,7 +65,7 @@
       </collision>
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0" />
-        <mass value="2.36414">
+        <mass value="2.36414"/>
         <inertia ixx="0.3" ixy="0.0" ixz="0.0" iyy="0.3" iyz="0.0" izz="0.3" />
       </inertial>
     </link>
@@ -90,7 +90,7 @@
       </collision>
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0" />
-        <mass value="2.38050">
+        <mass value="2.38050"/>
         <inertia ixx="0.3" ixy="0.0" ixz="0.0" iyy="0.3" iyz="0.0" izz="0.3" />
       </inertial>
     </link>
@@ -115,7 +115,7 @@
       </collision>
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0" />
-        <mass value="2.42754">
+        <mass value="2.42754"/>
         <inertia ixx="0.3" ixy="0.0" ixz="0.0" iyy="0.3" iyz="0.0" izz="0.3" />
       </inertial>
     </link>
@@ -140,7 +140,7 @@
       </collision>
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0" />
-        <mass value="3.49611">
+        <mass value="3.49611"/>
         <inertia ixx="0.3" ixy="0.0" ixz="0.0" iyy="0.3" iyz="0.0" izz="0.3" />
       </inertial>
     </link>
@@ -165,7 +165,7 @@
       </collision>
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0" />
-        <mass value="1.46736">
+        <mass value="1.46736"/>
         <inertia ixx="0.3" ixy="0.0" ixz="0.0" iyy="0.3" iyz="0.0" izz="0.3" />
       </inertial>
     </link>
@@ -190,7 +190,7 @@
       </collision>
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0" />
-        <mass value="0.45606">
+        <mass value="0.45606"/>
         <inertia ixx="0.3" ixy="0.0" ixz="0.0" iyy="0.3" iyz="0.0" izz="0.3" />
       </inertial>
     </link>

@@ -7,35 +7,35 @@
     <!-- Load Gazebo lib and set the robot namespace -->
     <gazebo>
       <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <legacyModeNS>false</legacyModeNS>
         <robotParam>${robot_param_name}</robotParam>
       </plugin>
     </gazebo>
 
     <!-- Link0 -->
     <gazebo reference="${arm_name}_link0">
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <material>Gazebo/Grey</material>
       <mu1>0.61</mu1>
       <mu2>0.61</mu2>
     </gazebo>
 
     <!-- Link1 -->
     <gazebo reference="${arm_name}_link1">
-      <material>Gazebo/White</material>
+      <material>Gazebo/Grey</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
 
     <!-- Link2 -->
     <gazebo reference="${arm_name}_link2">
-      <material>Gazebo/White</material>
+      <material>Gazebo/Grey</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
 
     <!-- Link3 -->
     <gazebo reference="${arm_name}_link3">
-      <material>Gazebo/White</material>
+      <material>Gazebo/Grey</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
@@ -43,28 +43,28 @@
 
     <!-- Link4 -->
     <gazebo reference="${arm_name}_link4">
-      <material>Gazebo/White</material>
+      <material>Gazebo/Grey</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
 
     <!-- Link5 -->
     <gazebo reference="${arm_name}_link5">
-      <material>Gazebo/White</material>
+      <material>Gazebo/Grey</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
 
     <!-- Link6 -->
     <gazebo reference="${arm_name}_link6">
-      <material>Gazebo/White</material>>
+      <material>Gazebo/Grey</material>>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
 
     <!-- Link7 -->
     <gazebo reference="${arm_name}_link7">
-      <material>Gazebo/White</material>
+      <material>Gazebo/Grey</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>

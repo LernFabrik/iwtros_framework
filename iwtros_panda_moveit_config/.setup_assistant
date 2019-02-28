@@ -6,6 +6,6 @@ moveit_setup_assistant_config:
   SRDF:
     relative_path: config/iwt.srdf
   CONFIG:
-    author_name: Vishnuprasad Prachandabhanu
+    author_name: v.prachandabhanu
     author_email: prachandabhanu@iwt-bodensee.de
-    generated_timestamp: 1551349577
+    generated_timestamp: 1551346265
