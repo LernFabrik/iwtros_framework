@@ -20,6 +20,7 @@
     </include>
     <node name="$(arg robot1)_gazebo_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
           args="-x 2.25 -y -0.5 -Y 3.1415926535 -unpause -urdf -model iiwa -param $(arg robot1)_description" />
+    <include file="$(find iwtros_iiwa_moveit_config)/launch/move_group.launch"/>
   </group>
 
 
@@ -35,6 +36,7 @@
     </include>
     <node name="$(arg robot2)_gazebo_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
           args="-x 0.8 -y -0.5 -Y 3.1415926535 -unpause -urdf -model ur5 -param $(arg robot2)_description" />
+    <include file="$(find iwtros_ur5_moveit_config)/launch/move_group.launch"/>
   </group>
 
   <group ns="/$(arg robot3)">
@@ -49,6 +51,7 @@
     </include>
     <node name="$(arg robot3)_gazebo_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
           args="-x 3.7 -y -0.5 -Y 3.1415926535 -unpause -urdf -model panda -param $(arg robot3)_description" />
+    <include file="$(find iwtros_panda_moveit_config)/launch/move_group.launch"/>
   </group>
 
 

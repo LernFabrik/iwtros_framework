@@ -26,7 +26,7 @@
   <include file="$(find robots_ee_pkg)/launch/load_iwt_environment.launch"/>
   
   <!-- Start move_group -->
-  <include file="$(find iwtros_panda_moveit_config)/launch/move_group.launch"/>
+  <!--include file="$(find iwtros_panda_moveit_config)/launch/move_group.launch"/-->
   <!--include file="$(find iwtros_moveit_config)/launch/move_group.launch"/-->
 
   <!-- Spawn the URDF objects into Gazebo -->
