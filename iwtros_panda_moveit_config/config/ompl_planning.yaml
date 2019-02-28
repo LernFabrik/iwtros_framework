@@ -148,8 +148,8 @@ panda_arm:
     - SPARStwo
   projection_evaluator: joints(panda_joint1,panda_joint2)
   longest_valid_segment_fraction: 0.005
-panda_handa:
-  default_planner_config: ""
+panda_hand:
+  default_planner_config: None
   planner_configs:
     - SBL
     - EST

@@ -3,7 +3,7 @@
   <name>iwtros_panda_moveit_config</name>
   <version>0.3.0</version>
   <description>
-     An automatically generated package with all the configuration and launch files for using the iwt with the MoveIt! Motion Planning Framework
+     An automatically generated package with all the configuration and launch files for using the panda_system with the MoveIt! Motion Planning Framework
   </description>
   <author email="prachandabhanu@iwt-bodensee.de">v.prachandabhanu</author>
   <maintainer email="prachandabhanu@iwt-bodensee.de">v.prachandabhanu</maintainer>
