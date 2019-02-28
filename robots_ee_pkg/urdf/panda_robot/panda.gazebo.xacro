@@ -15,30 +15,27 @@
     <gazebo reference="${arm_name}_link0">
       <turnGravityOff>false</turnGravityOff>
       <selfCollide>true</selfCollide>
-      <mu1>0.2</mu1>
-      <mu2>0.2</mu2>
+      <mu1>0.61</mu1>
+      <mu2>0.61</mu2>
     </gazebo>
 
     <!-- Link1 -->
     <gazebo reference="${arm_name}_link1">
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <material>Gazebo/White</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
 
     <!-- Link2 -->
     <gazebo reference="${arm_name}_link2">
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <material>Gazebo/White</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
 
     <!-- Link3 -->
     <gazebo reference="${arm_name}_link3">
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <material>Gazebo/White</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
@@ -46,32 +43,28 @@
 
     <!-- Link4 -->
     <gazebo reference="${arm_name}_link4">
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <material>Gazebo/White</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
 
     <!-- Link5 -->
     <gazebo reference="${arm_name}_link5">
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <material>Gazebo/White</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
 
     <!-- Link6 -->
     <gazebo reference="${arm_name}_link6">
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <material>Gazebo/White</material>>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
 
     <!-- Link7 -->
     <gazebo reference="${arm_name}_link7">
-      <turnGravityOff>false</turnGravityOff>
-      <selfCollide>true</selfCollide>
+      <material>Gazebo/White</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>

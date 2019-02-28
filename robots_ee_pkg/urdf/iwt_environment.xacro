@@ -32,10 +32,10 @@
     <origin xyz="2.25 -0.5 1.0" rpy="0 0 ${pi}" />
   </xacro:kuka_iiwa7_table_urdf>
   <!-- Franka Panda-->
-  <!--xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/franka_panda.urdf.xacro" />
+  <xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/franka_panda.urdf.xacro" />
   <xacro:franka_panda_table_urdf table_prefix="panda" table_parent="world_interface">
-    <origin xyz="0.5 0 1.0" rpy="0 0 ${pi/2}" />
-  </xacro:franka_panda_table_urdf-->
+    <origin xyz="3.7 -0.5 1.0" rpy="0 0 ${pi/2}" />
+  </xacro:franka_panda_table_urdf>
 
   <!-- ur5-->
   <xacro:include filename="$(find robots_ee_pkg)/urdf/ur5_robot/ur5_pedestal.urdf.xacro" />

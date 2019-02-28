@@ -8,21 +8,21 @@
 
     <!-- Link0 -->
     <gazebo reference="${arm_name}_hand">
-      <turnGravityOff>false</turnGravityOff>
+      <material>Gazebo/White</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
 
     <!-- Link1 -->
     <gazebo reference="${arm_name}_leftfinger">
-      <turnGravityOff>false</turnGravityOff>
+      <material>Gazebo/White</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>
 
     <!-- Link2 -->
     <gazebo reference="${arm_name}_rightfinger">
-      <turnGravityOff>false</turnGravityOff>
+      <material>Gazebo/White</material>
       <mu1>0.2</mu1>
       <mu2>0.2</mu2>
     </gazebo>

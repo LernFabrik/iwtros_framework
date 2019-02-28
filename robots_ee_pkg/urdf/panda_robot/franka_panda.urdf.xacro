@@ -11,7 +11,7 @@
     <xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/panda.gazebo.xacro" />
     <xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/panda_hand.transmission.xacro" />
 
-    <xacro:arg name="hardware_interface" default="PositionJointInterface"/>
+    <xacro:arg name="hardware_interface" default="EffortJointInterface"/>
     <xacro:arg name="gripperHwInterface" default="EffortJointInterface"/>
     <xacro:arg name="arm_name" default="panda"/>
     <xacro:arg name="robot_param" default="/panda/panda_description"/>

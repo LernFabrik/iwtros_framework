@@ -37,5 +37,19 @@
           args="-x 0.8 -y -0.5 -Y 3.1415926535 -unpause -urdf -model ur5 -param $(arg robot2)_description" />
   </group>
 
+  <group ns="/$(arg robot3)">
+    <param name="tf_prefix" value="$(arg robot3)"/>
+    <param name="/$(arg robot3)/$(arg robot3)_description"
+          command="$(find xacro)/xacro --inorder '$(find robots_ee_pkg)/urdf/panda_robot/panda_system.urdf.xacro' robot_prefix:=$(arg robot3)_ robot_param:=/$(arg robot3)/$(arg robot3)_description workcell_parent:=world_interface" />
+
+    <include file="$(find iwtros_gazebo)/launch/controllers/panda_control.launch">
+      <arg name="hardware_interface" value="$(arg hardware_interface)"/>
+      <arg name="controllers" value="$(arg robot3)_joint_state_controller $(arg hardware_interface)_$(arg robot3)_arm_trajectory_controller"/>
+      <arg name="robot_name" value="$(arg robot3)"/>
+    </include>
+    <node name="$(arg robot3)_gazebo_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-x 3.7 -y -0.5 -Y 3.1415926535 -unpause -urdf -model panda -param $(arg robot3)_description" />
+  </group>
+
 
 </launch>
