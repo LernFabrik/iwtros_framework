@@ -29,7 +29,7 @@
   <!--include file="$(find iwtros_panda_moveit_config)/launch/move_group.launch"/>
   <include file="$(find iwtros_iiwa_moveit_config)/launch/move_group.launch"/>
   <include file="$(find iwtros_ur5_moveit_config)/launch/move_group.launch"/-->
-  <!--include file="$(find iwtros_moveit_config)/launch/move_group.launch"/-->
+  <include file="$(find iwtros_moveit_config)/launch/move_group.launch"/>
 
   <!-- Spawn the URDF objects into Gazebo -->
   <include file="$(find iwtros_gazebo)/launch/spawn_static_world_object.launch"/>

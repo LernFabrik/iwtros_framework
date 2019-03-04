@@ -14,7 +14,7 @@
     
     <!-- the real hardware interface /-->
     <node name="iiwa_hw" pkg="iiwa_hw" type="iiwa_hw-bin" respawn="false" output="screen">
-        <remap from="/state/CartesianPose" to="/iiwa/state/CartesianPose"/>
+        <!--remap from="/state/CartesianPose" to="/iiwa/state/CartesianPose"/>
         <remap from="/state/CartesianWrench" to="/iiwa/state/CartesianWrench"/>
         <remap from="/state/JointPosition" to="/iiwa/state/JointPosition"/>
         <remap from="/state/JointPositionVelocity" to="/iiwa/state/JointPositionVelocity"/>
@@ -23,6 +23,11 @@
         <remap from="/state/JointStiffness" to="/iiwa/state/JointStiffness"/>
         <remap from="/state/JointTorque" to="/iiwa/state/JointTorque"/>
         <remap from="/state/JointVelocity" to="/iiwa/state/JointVelocity"/>
+        <remap from="/command/CartesianPose" to="/iiwa/command/CartesianPose"/>
+        <remap from="/command/JointVelocity" to="/iiwa/command/JointVelocity"/>
+        <remap from="/command/JointPositionVelocity" to="/iiwa/command/JointPositionVelocity"/>
+        <remap from="/command/JointPosition" to="/iiwa/command/JointPosition"/>
+        <remap from="joint_states" to="/iiwa/joint_states" /-->
     </node>
 
     <!-- Harware interface setting

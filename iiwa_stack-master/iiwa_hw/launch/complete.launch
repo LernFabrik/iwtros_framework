@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<launch>
+    
+    <!-- By default, we do not start a database (it can be large) -->
+    <arg name="db" default="false" />
+    
+    <!-- hardware_interface to use : PositionJointInterface, EffortJointInterface, VelocityJointInterface. -->
+    <arg name="hardware_interface" default="PositionJointInterface"/>
+    <!-- name of the iiwa to use, useful in case of multiple robots. Every robot is gonna have its nodees/topics under a namespace with the same name. -->
+    <arg name="robot_name" default="iiwa"/>
+    <!-- Model of the iiwa to use : iiwa7, iiwa14 -->
+    <arg name="model" default="iiwa7"/>
+    
+    <!-- By default, we are not in debug mode -->
+    <arg name="debug" default="false" />
+    
+    <remap from="robot_description" to="/$(arg robot_name)/robot_description" /> 
+    <remap from="/get_planning_scene" to="/$(arg robot_name)/get_planning_scene" /> 
+
+    <!--Put in a namespace to allow many instances to run-->
+    <group ns="$(arg robot_name)" >
+        <include file="$(find iiwa_control)/launch/iiwa_control.launch"/>
+        <include file="$(find iiwa_hw)/launch/iiwa_hw.launch"/>
+        <!-- Load move_group -->
+        <include file="$(find iiwa_moveit)/launch/move_group.launch">
+            <arg name="publish_monitored_planning_scene" value="true" />
+            <arg name="fake_execution" value="false"/>
+            <arg name="hardware_interface" value="$(arg hardware_interface)"/>
+            <arg name="robot_name" value="$(arg robot_name)"/>
+            <arg name="model" value="$(arg model)" />
+        </include>
+    </group>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find iwtros_gazebo)/worlds/iiwa_hw.rviz" required="true" />
+</launch>
