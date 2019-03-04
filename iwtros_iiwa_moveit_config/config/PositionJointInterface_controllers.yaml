@@ -1,6 +1,9 @@
 controller_list:
-  - name: fake_iiwa_arm_controller
-    joints:
+  - name: PositionJointInterface_trajectory_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: true
+    joints: 
       - iiwa_joint_1
       - iiwa_joint_2
       - iiwa_joint_3

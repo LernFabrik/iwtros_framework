@@ -14,22 +14,20 @@
     <!-- By default, we are not in debug mode -->
     <arg name="debug" default="false" />
     
-    <remap from="robot_description" to="/$(arg robot_name)/robot_description" /> 
-    <remap from="/get_planning_scene" to="/$(arg robot_name)/get_planning_scene" /> 
-
     <!--Put in a namespace to allow many instances to run-->
     <group ns="$(arg robot_name)" >
         <include file="$(find iiwa_control)/launch/iiwa_control.launch"/>
         <include file="$(find iiwa_hw)/launch/iiwa_hw.launch"/>
         <!-- Load move_group -->
-        <include file="$(find iiwa_moveit)/launch/move_group.launch">
+    </group>
+
+    <include file="$(find iiwa_moveit)/launch/move_group.launch">
             <arg name="publish_monitored_planning_scene" value="true" />
-            <arg name="fake_execution" value="false"/>
             <arg name="hardware_interface" value="$(arg hardware_interface)"/>
+            <arg name="fake_execution" value="false"/>
             <arg name="robot_name" value="$(arg robot_name)"/>
             <arg name="model" value="$(arg model)" />
-        </include>
-    </group>
+    </include>
 
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find iwtros_gazebo)/worlds/iiwa_hw.rviz" required="true" />
 </launch>

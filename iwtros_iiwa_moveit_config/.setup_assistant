@@ -1,11 +1,11 @@
 moveit_setup_assistant_config:
   URDF:
-    package: robots_ee_pkg
-    relative_path: urdf/kuka_robot/kuka_iiwa7_system.urdf.xacro
+    package: iiwa_description
+    relative_path: urdf/iiwa7.urdf.xacro
     xacro_args: "--inorder "
   SRDF:
-    relative_path: config/kuka_iiwa7_system.srdf
+    relative_path: config/iiwa7.srdf
   CONFIG:
     author_name: v.prachandabhanu
     author_email: prachandabhanu@iwt-bodensee.de
-    generated_timestamp: 1551357772
+    generated_timestamp: 1551709643
