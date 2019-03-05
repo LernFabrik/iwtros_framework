@@ -11,7 +11,7 @@
     <param name="trajectory_execution/allowed_execution_duration_scaling" value="1.2"/> <!-- default 1.2 -->
     <!-- Allow more than the expected execution time before triggering a trajectory cancel (applied after scaling) -->
     <param name="trajectory_execution/allowed_goal_duration_margin" value="0.5"/> <!-- default 0.5 -->
-    
+    <param name="trajectory_execution/execution_duration_monitoring" value="true"/> 
     <!-- Load the robot specific controller manager; this sets the moveit_controller_manager ROS parameter -->
     <arg name="moveit_controller_manager" default="iiwa" />
     <include file="$(find iiwa_moveit)/launch/$(arg moveit_controller_manager)_moveit_controller_manager.launch.xml">
