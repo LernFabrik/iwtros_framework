@@ -4,8 +4,8 @@
 <!-- robot pedestal -->
   <xacro:macro name = "franka_panda_table_urdf" params = "table_prefix table_parent *origin">
     <!--Import the lbr iiwa macro -->
-    <xacro:include filename="$(find franka_description)/robots/panda_arm.xacro"/>
-    <xacro:include filename="$(find franka_description)/robots/hand.xacro"/>
+    <xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/robots/panda_arm.xacro"/>
+    <xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/robots/hand.xacro"/>
     <xacro:include filename="$(find robots_ee_pkg)/urdf/table/add_table.urdf.xacro" />
     <xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/panda.transmission.xacro" />
     <xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/panda.gazebo.xacro" />
