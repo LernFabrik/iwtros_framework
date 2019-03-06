@@ -44,7 +44,7 @@
 
     <collision name="base_link_collision">
       <geometry name="base_link_collision_geom">
-        <box size="0.7 0.5 0.05" />
+        <box size="0.7 0.5 0.001" />
       </geometry>
       <origin xyz="0 0 0.1" rpy="0 0 0" />
     </collision>
@@ -67,7 +67,7 @@
     <origin xyz="0.2652 0.0 0.201" rpy="${M_PI} 0.0 0.0"/>
   </xacro:sick_lms1xx>
   <xacro:sick_lms1xx frame="base_laser_fake" parent="base_link" topic="scanFake">
-    <origin xyz="-0.2652 0.0 0.201" rpy="${-M_PI} 0.0 0.0"/>
+    <origin xyz="-0.2652 0.0 0.105" rpy="${M_PI} 0.0 ${M_PI}"/>
   </xacro:sick_lms1xx>
   <!-- GAZEBO PLUGINS--> <!-- http://wiki.ros.org/urdf/Tutorials/Using%20a%20URDF%20in%20Gazebo-->
 
