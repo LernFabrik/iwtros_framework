@@ -2,8 +2,8 @@
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:macro name="sick_lms1xx" params="frame:=laser topic:=scan sample_size:=720 update_rate:=50
-               min_angle:=-2.0944 max_angle:=2.0944 min_range:=0.1 max_range:=15 robot_description:=/" >
+  <xacro:macro name="sick_lms1xx" params="frame:=laser parent:=base_link topic:=scan sample_size:=720 update_rate:=50
+               min_angle:=-2.0944 max_angle:=2.0944 min_range:=0.1 max_range:=15 robot_description:=/ *origin" >
     <link name="${frame}">
       <inertial>
         <mass value="1.1" />
@@ -27,10 +27,10 @@
       </collision>
     </link>
 
-    <joint name="laser_joint" type="fixed">
-      <origin xyz="$(arg laser_xyz)" rpy="$(arg laser_rpy)" />
-      <parent link="base_link" />
-      <child link="base_laser" />
+    <joint name="${frame}_joint" type="fixed">
+      <xacro:insert_block name="origin"/>
+      <parent link="${parent}" />
+      <child link="${frame}" />
     </joint>
 
 
@@ -38,7 +38,7 @@
       <turnGravityOff>false</turnGravityOff>
       <sensor type="ray" name="${frame}">
         <pose>0 0 0 0 0 0</pose>
-        <visualize>false</visualize>
+        <visualize>true</visualize>
         <update_rate>${update_rate}</update_rate>
         <ray>
           <scan>

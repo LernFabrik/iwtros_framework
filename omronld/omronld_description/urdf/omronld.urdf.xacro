@@ -25,8 +25,6 @@
   <!-- LASER -->
 
   <xacro:include filename="$(find omronld_description)/urdf/laser/sick_lms1xx.urdf.xacro" />
-  <xacro:arg name="laser_xyz" default="$(optenv omronld_LMS1XX_XYZ 0.2652 0.0 0.201)" />
-  <xacro:arg name="laser_rpy" default="$(optenv omronld_LMS1XX_RPY ${M_PI} 0.0 0.0)" />
 
   <!-- base_link origin point is center of rotation, on the floor. -->
 
@@ -65,8 +63,12 @@
 
   <!-- LASER -->
 
-  <xacro:sick_lms1xx frame="base_laser" topic="scan" robot_description="/"/> <!-- <xacro: muesste man hier nicht mit anfuegen funktioniert auch ohne-->
-
+  <xacro:sick_lms1xx frame="base_laser" parent="base_link" topic="scan">
+    <origin xyz="0.2652 0.0 0.201" rpy="${M_PI} 0.0 0.0"/>
+  </xacro:sick_lms1xx>
+  <xacro:sick_lms1xx frame="base_laser_fake" parent="base_link" topic="scanFake">
+    <origin xyz="-0.2652 0.0 0.201" rpy="${-M_PI} 0.0 0.0"/>
+  </xacro:sick_lms1xx>
   <!-- GAZEBO PLUGINS--> <!-- http://wiki.ros.org/urdf/Tutorials/Using%20a%20URDF%20in%20Gazebo-->
 
   <gazebo>

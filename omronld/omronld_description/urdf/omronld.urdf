@@ -62,7 +62,7 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
     <joint name="left_wheel">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
   </transmission>
   <link name="right_wheel_link">
@@ -99,7 +99,7 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
     <joint name="right_wheel">
-      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
   </transmission>
   <!-- LASER -->
@@ -123,7 +123,7 @@
       </geometry>
     </collision>
   </link>
-  <joint name="laser_joint" type="fixed">
+  <joint name="base_laser_joint" type="fixed">
     <origin rpy="3.14159 0.0 0.0" xyz="0.2652 0.0 0.201"/>
     <parent link="base_link"/>
     <child link="base_laser"/>
@@ -132,15 +132,15 @@
     <turnGravityOff>false</turnGravityOff>
     <sensor name="base_laser" type="ray">
       <pose>0 0 0 0 0 0</pose>
-      <visualize>true</visualize>
+      <visualize>false</visualize>
       <update_rate>50</update_rate>
       <ray>
         <scan>
           <horizontal>
             <samples>720</samples>
             <resolution>1</resolution>
-            <min_angle>-2.1816616</min_angle>
-            <max_angle>2.1816616</max_angle>
+            <min_angle>-2.0944</min_angle>
+            <max_angle>2.0944</max_angle>
           </horizontal>
         </scan>
         <range>
@@ -160,12 +160,92 @@
       </plugin>
     </sensor>
   </gazebo>
-  <!-- <xacro: muesste man hier nicht mit anfuegen funktioniert auch ohne-->
+  <link name="base_laser_fake">
+    <inertial>
+      <mass value="1.1"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00307156543804" ixy="0.0" ixz="0.0" iyy="0.00312849041527" iyz="0.0" izz="0.00196432421427"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <!-- Origin of this mesh is the focal point of the LIDAR. -->
+        <mesh filename="package://omronld_description/meshes/laser/sick-lms1xx.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 -0.05"/>
+      <geometry>
+        <box size="0.105 0.1 0.1"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="base_laser_fake_joint" type="fixed">
+    <origin rpy="-3.14159 0.0 0.0" xyz="-0.2652 0.0 0.201"/>
+    <parent link="base_link"/>
+    <child link="base_laser_fake"/>
+  </joint>
+  <gazebo reference="base_laser_fake">
+    <turnGravityOff>false</turnGravityOff>
+    <sensor name="base_laser_fake" type="ray">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>50</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-2.0944</min_angle>
+            <max_angle>2.0944</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.1</min>
+          <max>15</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.001</stddev>
+        </noise>
+      </ray>
+      <plugin filename="libgazebo_ros_laser.so" name="gazebo_ros_laser">
+        <topicName>scanFake</topicName>
+        <frameName>base_laser_fake</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
   <!-- GAZEBO PLUGINS-->
   <!-- http://wiki.ros.org/urdf/Tutorials/Using%20a%20URDF%20in%20Gazebo-->
   <gazebo>
     <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
+      <legacyModeNS>false</legacyModeNS>
       <robotParam>/omronld_description</robotParam>
+    </plugin>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_diff_drive.so" name="differential_drive_controller">
+      <rosDebugLevel>Debug</rosDebugLevel>
+      <legacyMode>false</legacyMode>
+      <publishWheelTF>false</publishWheelTF>
+      <robotNamespace>/</robotNamespace>
+      <publishTf>1</publishTf>
+      <publishWheelJointState>true</publishWheelJointState>
+      <alwaysOn>true</alwaysOn>
+      <updateRate>100.0</updateRate>
+      <leftJoint>left_wheel</leftJoint>
+      <rightJoint>right_wheel</rightJoint>
+      <wheelSeparation>0.3929777</wheelSeparation>
+      <wheelDiameter>0.1936863</wheelDiameter>
+      <broadcastTF>1</broadcastTF>
+      <wheelTorque>100</wheelTorque>
+      <wheelAcceleration>1.8</wheelAcceleration>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryTopic>odom</odometryTopic>
+      <robotBaseFrame>base_link</robotBaseFrame>
     </plugin>
   </gazebo>
   <!-- four passive caster  -->
