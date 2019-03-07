@@ -176,8 +176,8 @@ int main(int argc, char** argv){
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x -0.7");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.2");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.2");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/local_costmap inflation_radius 0.01");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/global_costmap inflation_radius 0.01");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/local_costmap/inflation_layer inflation_radius 0.01");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/global_costmap/inflation_layer inflation_radius 0.01");
         goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y;
         ac.sendGoal(goal);
         ac.waitForResult();
@@ -194,8 +194,8 @@ int main(int argc, char** argv){
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel 0.02");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.10");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.05");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/local_costmap inflation_radius 0.55");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/global_costmap inflation_radius 0.55");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/local_costmap/inflation_layer inflation_radius 0.55");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/global_costmap/inflation_layer inflation_radius 0.55");
         goal2.header.frame_id = "world";
         goal2.header.stamp = ros::Time::now();
         goal.target_pose.pose.position.x = 4.20;

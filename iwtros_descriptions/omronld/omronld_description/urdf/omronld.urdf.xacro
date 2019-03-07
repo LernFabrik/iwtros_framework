@@ -63,20 +63,13 @@
 
   <!-- LASER -->
 
-  <xacro:sick_lms1xx frame="base_laser" parent="base_link" topic="scanFront">
+  <xacro:sick_lms1xx frame="base_laser" parent="base_link" topic="scan">
     <origin xyz="0.2652 0.0 0.201" rpy="${M_PI} 0.0 0.0"/>
   </xacro:sick_lms1xx>
   <xacro:sick_lms1xx frame="base_laser_fake" parent="base_link" topic="scanBack">
     <origin xyz="-0.2652 0.0 0.105" rpy="${M_PI} 0.0 ${M_PI}"/>
   </xacro:sick_lms1xx>
   <!-- GAZEBO PLUGINS--> <!-- http://wiki.ros.org/urdf/Tutorials/Using%20a%20URDF%20in%20Gazebo-->
-
-  <gazebo>
-    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <legacyModeNS>false</legacyModeNS>
-      <robotParam>/$(arg robot_description)</robotParam>
-    </plugin>
-  </gazebo>
 
   <gazebo>
       <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
