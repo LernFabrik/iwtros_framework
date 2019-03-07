@@ -35,9 +35,8 @@
   <include file="$(find iwtros_gazebo)/launch/spawn_static_world_object.launch"/>
   <include file="$(find iwtros_gazebo)/launch/spawn_robots.launch"/>
   <include file="$(find iwtros_gazebo)/launch/spawn_omronld.launch"/>
-
-
-
+  <include file="$(find ira_laser_tools)/launch/laserscan_multi_merger.launch" />
+    
   <param name="use_gui" value="false"/>
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
     <rosparam param="source_list">[/ur5/joint_states, /iiwa/joint_states, /panda/joint_states]</rosparam>
