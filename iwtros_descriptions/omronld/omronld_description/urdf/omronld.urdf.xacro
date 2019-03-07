@@ -63,8 +63,12 @@
 
   <!-- LASER -->
 
-  <xacro:sick_lms1xx frame="base_laser" parent="base_link" topic="scan">
+  <xacro:sick_lms1xx frame="base_laser" parent="base_link" topic="scanFront">
     <origin xyz="0.2652 0.0 0.201" rpy="${M_PI} 0.0 0.0"/>
+  </xacro:sick_lms1xx>
+
+  <xacro:sick_lms1xx frame="base_fake_laser" parent="base_link" topic="scanBack">
+    <origin xyz="-0.2652 0.0 0.105" rpy="${M_PI} 0.0 ${M_PI}"/>
   </xacro:sick_lms1xx>
   
   <!-- GAZEBO PLUGINS--> <!-- http://wiki.ros.org/urdf/Tutorials/Using%20a%20URDF%20in%20Gazebo-->

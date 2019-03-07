@@ -127,8 +127,8 @@ int main(int argc, char** argv){
         goal.target_pose.header.stamp = ros::Time::now();
         goal.target_pose.pose.position.x = stampedTfIIWA.transform.translation.x;
         /* this method is not proficent it is better to get axis of rotation*/
-        if(stampedTfIIWA.transform.translation.y < 0) goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y - 1;
-        if(stampedTfIIWA.transform.translation.y >= 0) goal.target_pose.pose.position.y = 1 + stampedTfIIWA.transform.translation.y;
+        if(stampedTfIIWA.transform.translation.y < 0) goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y - 1.5;
+        if(stampedTfIIWA.transform.translation.y >= 0) goal.target_pose.pose.position.y = 1.5 + stampedTfIIWA.transform.translation.y;
         goal.target_pose.pose.position.z = 0;
 
         quad_to_Euler(stampedTfIIWA.transform.rotation, roll, pitch, yaw);
@@ -174,8 +174,8 @@ int main(int argc, char** argv){
         ros::service::call("/move_base/DWAPlannerROS", srv_req, srv_res);*/
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 0.0");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x -0.7");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.2");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.2");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.1");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.1");
         system("rosrun dynamic_reconfigure dynparam set /move_base/local_costmap/inflation_layer inflation_radius 0.01");
         system("rosrun dynamic_reconfigure dynparam set /move_base/global_costmap/inflation_layer inflation_radius 0.01");
         goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y;
