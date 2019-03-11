@@ -7,7 +7,7 @@
 
   <group ns="/$(arg robot1)">
     <param name="tf_prefix" value="$(arg robot1)"/>
-    <param name="/$(arg robot1)/$(arg robot1)_description"
+    <param name="$(arg robot1)_description"
           command="$(find xacro)/xacro --inorder '$(find robots_ee_pkg)/urdf/kuka_robot/kuka_iiwa7_system.urdf.xacro' robot_name:=$(arg robot1) robot_param:=/$(arg robot1)/$(arg robot1)_description workcell_parent:=world_interface" />
 
     <include file="$(find iwtros_gazebo)/launch/controllers/kuka_iiwa_control.launch">
@@ -20,7 +20,9 @@
     </include>
     <node name="$(arg robot1)_gazebo_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
           args="-x 2.25 -y -0.5 -Y 3.1415926535 -unpause -urdf -model iiwa -param $(arg robot1)_description" />
-    <!--include file="$(find iwtros_iiwa_moveit_config)/launch/move_group.launch"/-->
+    <include file="$(find iwtros_iiwa_moveit_config)/launch/move_group.launch">
+      <arg name="robot_description" value="$(arg robot1)_description"/>
+    </include>
   </group>
 
 
@@ -36,7 +38,9 @@
     </include>
     <node name="$(arg robot2)_gazebo_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
           args="-x 0.8 -y -0.5 -Y 3.1415926535 -unpause -urdf -model ur5 -param $(arg robot2)_description" />
-    <!--include file="$(find iwtros_ur5_moveit_config)/launch/move_group.launch"/-->
+    <include file="$(find iwtros_ur5_moveit_config)/launch/move_group.launch">
+      <arg name="robot_description" value="$(arg robot2)_description"/>
+    </include>
   </group>
 
   <group ns="/$(arg robot3)">
@@ -51,7 +55,9 @@
     </include>
     <node name="$(arg robot3)_gazebo_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
           args="-x 3.7 -y -0.5 -Y 3.1415926535 -unpause -urdf -model panda -param $(arg robot3)_description" />
-    <!--include file="$(find iwtros_panda_moveit_config)/launch/move_group.launch"/-->
+    <include file="$(find iwtros_panda_moveit_config)/launch/move_group.launch">
+      <arg name="robot_description" value="$(arg robot3)_description"/>
+    </include>
   </group>
 
   <!--remap from="/robot_description_semantic" to="/$(arg robot1)/$(arg robot1)_description_semantic"/>

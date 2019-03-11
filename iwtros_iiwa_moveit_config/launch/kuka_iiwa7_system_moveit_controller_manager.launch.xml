@@ -4,5 +4,5 @@
   <!-- load controller list -->
   <arg name="use_controller_manager" default="true" />
   <param name="use_controller_manager" value="$(arg use_controller_manager)" />
-  <rosparam file="$(find iwtros_iiwa_moveit_config)/config/PositionJointInterface_controllers.yaml" command="load"/>
+  <rosparam file="$(find iwtros_iiwa_moveit_config)/config/controllers.yaml" command="load"/>
 </launch>
