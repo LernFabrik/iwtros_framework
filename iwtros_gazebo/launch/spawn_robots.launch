@@ -63,7 +63,7 @@
     </include-->
   </group>
 
-  <!--remap from="/robot_description_semantic" to="/$(arg robot1)/$(arg robot1)_description_semantic"/>
+  <!--remap from="/robot_description_semantic" to="/$(arg robot1)/$(arg robot1)_description_semantic"/
   <remap from="/robot_description_semantic" to="/$(arg robot2)/$(arg robot2)_description_semantic"/>
   <remap from="/robot_description_semantic" to="/$(arg robot3)/$(arg robot3)_description_semantic"/-->
 
