@@ -14,6 +14,11 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   tf
   tf2
+  moveit_core 
+  moveit_ros_planning
+  moveit_ros_planning_interface
+  moveit_visual_tools 
+  moveit_msgs
 )
 
 #catkin_python_setup()
@@ -55,4 +60,11 @@ add_executable(control_table_node
 target_link_libraries(control_table_node 
   ${catkin_LIBRARIES}
   reversePID 
+)
+
+add_executable(ur5_async_task_node 
+  src/ur5_async_task.cpp
+)
+target_link_libraries(ur5_async_task_node 
+  ${catkin_LIBRARIES}
 )
