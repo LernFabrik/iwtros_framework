@@ -3,19 +3,20 @@
 # ROS-framework for LernFabrik work place simulation 
 # Author: Vishnuprasad Prachandabhanu
 
-import sys
 import copy
-import rospy
-import moveit_commander
-import moveit_msgs.msg
+import sys
+
 import actionlib
 import geometry_msgs
+import moveit_commander
+import moveit_msgs.msg
+import rospy
 
 
 def iiwa_pick_place():
     moveit_commander.roscpp_initialize(sys.argv)
     rospy.init_node('iiwa_pick_plcae', anonymous=True)
-    
+
     ur5_group = moveit_commander.MoveGroupCommander("ur5_arm")
     iiwa_group = moveit_commander.MoveGroupCommander("iiwa_arm")
     panda_group = moveit_commander.MoveGroupCommander("panda_arm")
@@ -47,7 +48,7 @@ def iiwa_pick_place():
     iiwa_client.send_goal(iiwa_go_to_home)
     iiwa_client.wait_for_result()
     rospy.loginfo("Go to IIWA Home")
-
+    
     rate = rospy.Rate(5.0)
     
     while not rospy.is_shutdown():
@@ -79,7 +80,6 @@ def iiwa_pick_place():
         plan = iiwa_group.plan()
         iiwa_place = moveit_msgs.msg.ExecuteTrajectoryGoal()
         iiwa_place.trajectory = plan
-
         iiwa_client.send_goal(iiwa_place)
         iiwa_client.wait_for_result()
         rospy.loginfo("Go to iiwa place")

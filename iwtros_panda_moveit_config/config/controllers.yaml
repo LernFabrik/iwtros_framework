@@ -11,7 +11,7 @@ controller_list:
       - panda_joint5
       - panda_joint6
       - panda_joint7
-  - name: panda/panda_handa_controller
+  - name: panda_handa_controller
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
     default: true
