@@ -26,7 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES iwtros_goal 
-  CATKIN_DEPENDS actionlib actionlib_msgs geometry_msgs move_base_msgs roscpp rospy sensor_msgs tf tf2
+  CATKIN_DEPENDS actionlib actionlib_msgs geometry_msgs move_base_msgs roscpp rospy sensor_msgs tf tf2  
 #  DEPENDS system_lib
 )
 
