@@ -63,7 +63,7 @@ def simple_pick_place():
     ## create linear offsets to the current pose
     new_eef_pose = geometry_msgs.msg.Pose()
 
-    for cout in range(1, 8):
+    for cout in range(1, 2):
       # Get pose values
       pose = getPosePoints(cout)
       new_eef_pose.position.x = pose[0]
@@ -88,10 +88,10 @@ def simple_pick_place():
       else:
         break
 
-    robot1_goal = moveit_msgs.msg.ExecuteTrajectoryGoal()
-    robot1_goal.trajectory = plan_cartesian
+    iiwa_goal = moveit_msgs.msg.ExecuteTrajectoryGoal()
+    iiwa_goal.trajectory = plan_cartesian
 
-    iiwa_client.send_goal(robot1_goal)
+    iiwa_client.send_goal(iiwa_goal)
     iiwa_client.wait_for_result()
     loopCounter = loopCounter + 1
     if loopCounter == 2:
