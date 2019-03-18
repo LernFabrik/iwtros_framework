@@ -18,7 +18,7 @@ import rospy
 
 
 def getPosePoints(key):
-  choices = {1: (1, 1, 1), 
+  choices = {1: (0.30, -0.4, 0.150), 
             2: (2, 2, 2), 
             3: (2, 2, 2), 
             4: (2, 2, 2), 
@@ -57,6 +57,8 @@ def simple_pick_place():
     current_pose = iiwa_group.get_current_pose()
     rospy.sleep(0.5)
     current_pose = iiwa_group.get_current_pose()
+    rospy.loginfo("Curent Position x = %f, y = %f, z = %f" % (current_pose.pose.position.x, current_pose.pose.position.y, current_pose.pose.position.z))
+    rospy.loginfo("Curent orientation x = %f, y = %f, z = %f, w = %f" % (current_pose.pose.orientation.x, current_pose.pose.orientation.y, current_pose.pose.orientation.z, current_pose.pose.orientation.w))
     
     ## create linear offsets to the current pose
     new_eef_pose = geometry_msgs.msg.Pose()
@@ -90,7 +92,7 @@ def simple_pick_place():
     iiwa_client.send_goal(robot1_goal)
     iiwa_client.wait_for_result()
     loopCounter = loopCounter + 1
-    if loopCounter == 4:
+    if loopCounter == 2:
       loopCounter = 1
     rate.sleep()
 
