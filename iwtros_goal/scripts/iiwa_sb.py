@@ -18,13 +18,13 @@ import rospy
 
 
 def getPosePoints(key):
-  choices = {1: (0.30, -0.4, 0.150), 
-            2: (2, 2, 2), 
-            3: (2, 2, 2), 
-            4: (2, 2, 2), 
-            5: (2, 2, 2), 
-            6: (2, 2, 2), 
-            7: (2, 2, 2)}
+  choices = {1: (-0.30, -0.4, 0.150), 
+            2: (0.30, -0.40, 0.150), 
+            3: (0.30, 0.40, 0.150), 
+            4: (-0.30, 0.40, 0.150), 
+            5: (0, 0.40, 0.2), 
+            6: (0.30, 0, 0.2), 
+            7: (0, 0.40, 0.2)}
   result = choices.get(key, ('default1', 'default2', 'default3', 'default4', 'default5', 'default6', 'default7'))
   return result
 
@@ -63,14 +63,16 @@ def simple_pick_place():
     ## create linear offsets to the current pose
     new_eef_pose = geometry_msgs.msg.Pose()
 
-    # Get pose values
-    pose = getPosePoints(loopCounter)
-    new_eef_pose.position.x = pose[0]
-    new_eef_pose.position.y = pose[1]
-    new_eef_pose.position.z = pose[2]
-    # Retain orientation of the current pose.
-    new_eef_pose.orientation = copy.deepcopy(current_pose.pose.orientation)
-    waypoints.append(new_eef_pose)
+    for cout in range(1, 8):
+      # Get pose values
+      pose = getPosePoints(cout)
+      new_eef_pose.position.x = pose[0]
+      new_eef_pose.position.y = pose[1]
+      new_eef_pose.position.z = pose[2]
+      # Retain orientation of the current pose.
+      new_eef_pose.orientation = copy.deepcopy(current_pose.pose.orientation)
+      waypoints.append(new_eef_pose)
+
     waypoints.append(current_pose.pose)
     ## We want the cartesian path to be interpolated at a resolution of 1 cm
     ## which is why we will specify 0.01 as the eef_step in cartesian
