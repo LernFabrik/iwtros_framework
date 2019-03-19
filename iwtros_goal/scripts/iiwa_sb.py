@@ -68,7 +68,7 @@ def simple_pick_place():
       pose = getPosePoints(cout)
       new_eef_pose.position.x = pose[0]
       new_eef_pose.position.y = pose[1]
-      new_eef_pose.position.z = pose[2]
+      new_eef_pose.position.z = 0.2
       # Retain orientation of the current pose.
       new_eef_pose.orientation = copy.deepcopy(current_pose.pose.orientation)
       waypoints.append(new_eef_pose)
@@ -87,12 +87,15 @@ def simple_pick_place():
                                     0.0)         # jump_threshold
       else:
         break
-
+    
+    iiwa_group.set_pose_target(new_eef_pose)
+    plan = iiwa_group.plan()
     iiwa_goal = moveit_msgs.msg.ExecuteTrajectoryGoal()
-    iiwa_goal.trajectory = plan_cartesian
+    iiwa_goal.trajectory = plan
 
     iiwa_client.send_goal(iiwa_goal)
     iiwa_client.wait_for_result()
+
     loopCounter = loopCounter + 1
     if loopCounter == 2:
       loopCounter = 1
