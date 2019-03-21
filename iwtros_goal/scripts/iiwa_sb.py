@@ -92,7 +92,7 @@ def simple_pick_place():
             new_eef_pose.orientation.x,
             new_eef_pose.orientation.y,
             new_eef_pose.orientation.z,
-            new_eef_pose.orientation.w]
+            new_eef_pose.orientation.w
     iiwa_group.set_pose_targets(pose)
     plan = iiwa_group.plan()
     iiwa_goal = moveit_msgs.msg.ExecuteTrajectoryGoal()
