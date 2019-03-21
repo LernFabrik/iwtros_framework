@@ -97,7 +97,7 @@ def simple_pick_place():
     plan = iiwa_group.plan()
     iiwa_goal = moveit_msgs.msg.ExecuteTrajectoryGoal()
     iiwa_goal.trajectory = plan
-
+    
     iiwa_client.send_goal(iiwa_goal)
     iiwa_client.wait_for_result()
 
