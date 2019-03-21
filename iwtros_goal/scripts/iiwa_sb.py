@@ -87,13 +87,8 @@ def simple_pick_place():
                                     0.0)         # jump_threshold
       else:
         break
-    
-    pose = [pose[0], pose[1], 0.2, 
-            new_eef_pose.orientation.x,
-            new_eef_pose.orientation.y,
-            new_eef_pose.orientation.z,
-            new_eef_pose.orientation.w
-    iiwa_group.set_pose_targets(pose)
+    """ Python error with for using the .set_pose_target"""
+    iiwa_group.set_pose_targets(new_eef_pose)
     plan = iiwa_group.plan()
     iiwa_goal = moveit_msgs.msg.ExecuteTrajectoryGoal()
     iiwa_goal.trajectory = plan
