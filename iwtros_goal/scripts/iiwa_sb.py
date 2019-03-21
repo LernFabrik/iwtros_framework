@@ -91,7 +91,8 @@ def simple_pick_place():
     iiwa_group.set_pose_targets(new_eef_pose)
     plan = iiwa_group.plan()"""
     iiwa_goal = moveit_msgs.msg.ExecuteTrajectoryGoal()
-    iiwa_goal.trajectory = plan_cartesian    
+    iiwa_goal.trajectory = plan_cartesian
+    
     iiwa_client.send_goal(iiwa_goal)
     iiwa_client.wait_for_result()
 
