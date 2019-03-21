@@ -67,3 +67,10 @@ add_executable(ur5_async_task_node
 target_link_libraries(ur5_async_task_node 
   ${catkin_LIBRARIES}
 )
+
+add_executable(iiwa_sb_node 
+  src/iiwa_sb.cpp
+)
+target_link_libraries(iiwa_sb_node 
+  ${catkin_LIBRARIES}
+)

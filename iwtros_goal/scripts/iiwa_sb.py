@@ -18,13 +18,13 @@ import rospy
 
 
 def getPosePoints(key):
-  choices = {1: (-0.30, -0.4, 0.150), 
-            2: (0.30, -0.40, 0.150), 
-            3: (0.30, 0.40, 0.150), 
-            4: (-0.30, 0.40, 0.150), 
-            5: (0, 0.40, 0.2), 
-            6: (0.30, 0, 0.2), 
-            7: (0, 0.40, 0.2)}
+  choices = {7: (-0.30, -0.4, 0.25), 
+            1: (0.30, -0.40, 0.25), 
+            2: (0.30, 0.40, 0.25), 
+            3: (-0.30, 0.40, 0.25), 
+            4: (0, 0.40, 0.3), 
+            5: (0.30, 0, 0.3), 
+            6: (0, 0.40, 0.3)}
   result = choices.get(key, ('default1', 'default2', 'default3', 'default4', 'default5', 'default6', 'default7'))
   return result
 
@@ -63,12 +63,12 @@ def simple_pick_place():
     ## create linear offsets to the current pose
     new_eef_pose = geometry_msgs.msg.Pose()
 
-    for cout in range(1, 2):
+    for cout in range(1, 7):
       # Get pose values
       pose = getPosePoints(cout)
       new_eef_pose.position.x = pose[0]
       new_eef_pose.position.y = pose[1]
-      new_eef_pose.position.z = 0.2
+      new_eef_pose.position.z = pose[2]
       # Retain orientation of the current pose.
       new_eef_pose.orientation = copy.deepcopy(current_pose.pose.orientation)
       waypoints.append(new_eef_pose)
@@ -87,11 +87,11 @@ def simple_pick_place():
                                     0.0)         # jump_threshold
       else:
         break
-    """ Python error with for using the .set_pose_target"""
+    """ Python error with for using the .set_pose_target
     iiwa_group.set_pose_targets(new_eef_pose)
-    plan = iiwa_group.plan()
+    plan = iiwa_group.plan()"""
     iiwa_goal = moveit_msgs.msg.ExecuteTrajectoryGoal()
-    iiwa_goal.trajectory = plan
+    iiwa_goal.trajectory = plan_cartesian
     
     iiwa_client.send_goal(iiwa_goal)
     iiwa_client.wait_for_result()
