@@ -37,6 +37,11 @@
         <include file="$(find ur5_moveit_config)/launch/move_group.launch"/>
     </group>
 
+    <!-- Panda Simulation -->
+    <group ns="panda" if="$(arg sim)">
+        <include file="$(find iwtros_gazebo)/launch/spawn_panda.launch" />
+    </group>
+
     <!-- HARDWARE -->
     <!-- Working with the real robot.  -->
     <group ns="iiwa" unless="$(arg sim)">
