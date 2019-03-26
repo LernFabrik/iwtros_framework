@@ -6,7 +6,11 @@
   <!-- Parameters and nodes in the global namespace. -->
   <param name="$(arg conveyor)description"
     command="$(find xacro)/xacro --inorder '$(find robots_ee_pkg)/urdf/conveyor/conveyor.xacro' parent:=$(arg conveyor_parent_name)"/>
-
+    
+  <node name="conveyor_robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" >
+      <param name="publish_frequency" type="double" value="50.0" />
+      <remap from="robot_description" to="conveyor_description"/>
+    </node>
 
   <node name="$(arg conveyor)description" pkg="gazebo_ros" type="spawn_model" output="screen"
     args="-urdf -model conveyor -param $(arg conveyor)description"/>

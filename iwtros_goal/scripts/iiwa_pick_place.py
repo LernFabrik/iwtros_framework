@@ -24,7 +24,7 @@ def iiwa_pick_place():
     rospy.loginfo("Execution Trajectroy server is available for iiwa")
 
 
-    iiwa_group.set_named_target("IIWA_Home")
+    iiwa_group.set_named_target("iiwa_Home")
     plan = iiwa_group.plan()
     iiwa_go_to_home = moveit_msgs.msg.ExecuteTrajectoryGoal()
     iiwa_go_to_home.trajectory = plan

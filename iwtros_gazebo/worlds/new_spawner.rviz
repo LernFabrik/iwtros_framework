@@ -60,6 +60,10 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        iiwa_interface:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         iiwa_link_0:
           Alpha: 1
           Show Axes: false
@@ -114,10 +118,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        world_interface:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         wsg50_base_link:
           Alpha: 1
           Show Axes: false
@@ -168,6 +168,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        ur5_interface:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         ur5_shoulder_link:
           Alpha: 1
           Show Axes: false
@@ -207,10 +211,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        world_interface:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
       Name: RobotModel
       Robot Description: ur5/robot_description
       TF Prefix: ""
@@ -232,6 +232,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        panda_interface:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         panda_leftfinger:
           Alpha: 1
           Show Axes: false
@@ -296,12 +300,33 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        world_interface:
+      Name: RobotModel
+      Robot Description: panda/robot_description
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
+    - Alpha: 1
+      Class: rviz/RobotModel
+      Collision Enabled: false
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        conveyor_system_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        world:
           Alpha: 1
           Show Axes: false
           Show Trail: false
       Name: RobotModel
-      Robot Description: panda/robot_description
+      Robot Description: conveyor_description
       TF Prefix: ""
       Update Interval: 0
       Value: true
@@ -620,7 +645,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: world_interface
+    Fixed Frame: world
     Frame Rate: 30
   Name: root
   Tools:
@@ -641,25 +666,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 9.64706707
+      Distance: 13.5534344
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.130026519
-        Y: -0.259611189
-        Z: 0.143833086
+        X: 1.42679262
+        Y: 0.0173870604
+        Z: -0.0109943096
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 1.05039787
+      Pitch: 0.625398338
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 2.71174574
+      Yaw: 4.68173313
     Saved: ~
 Window Geometry:
   Displays:
