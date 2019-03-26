@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="hardware_interface" default="PositionJointInterface"/>
+  <arg name="sim" default="true"/>
+  <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="$(arg sim)"/>
+  <arg name="rviz" default = "true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+  <arg name="extra_gazebo_args" default="--verbose"/>
+
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find iwtros_gazebo)/worlds/iwtros2.world"/>
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+    <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>
+  </include>
+  
+  <!-- Spawn the URDF objects into Gazebo -->
+  <include file="$(find iwtros_gazebo)/launch/spawn_static_world_object.launch"/>
+  <include file="$(find iwtros_launch)/launch/spawn_robots.launch"/>
+  <include file="$(find iwtros_gazebo)/launch/spawn_omronld.launch"/>
+    
+  <!-- Start the AMCL-->
+  <arg name="map_file" default="$(find iwtros_gazebo)/map/test6.yaml"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+  <include file="$(find omronld_gazebo)/launch/amcl.launch" >
+    <arg name="initial_pose_x" value="0"/>
+    <arg name="initial_pose_y" value="-1.5"/>
+  </include>
+
+  <node if="$(arg rviz)" name="gazebo_rviz" pkg="rviz" type="rviz" args="-d $(find iwtros_gazebo)/worlds/amcl.rviz" required="true" />
+
+  <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_world" args="0 0 0 0 0 0 1  map world"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_interface" args="0 0 0 0 0 0 1  world_interface world"/>
+
+</launch>
