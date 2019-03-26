@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="sim" default="true"/>
+    <arg name="hardware_interface" default="PositionJointInterface"/>
+    <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+    <arg name="paused" default="false"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="rviz" default = "true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+    <arg name="extra_gazebo_args" default="--verbose"/>
+
+    <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="headless" value="$(arg headless)"/>
+        <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>
+    </include>
+
+    <group ns="iiwa" if="$(arg sim)">
+        <include file="$(find iwtros_gazebo)/launch/spawn_iiwa.launch" />
+    </group>
+    
+    <!-- HARDWARE -->
+    <!-- Working with the real robot.  -->
+    <group ns="$(arg robot_name)" unless="$(arg sim)">
+        
+        <!-- Load controllers accordingly to parameters -->
+        <include file="$(find iiwa_control)/launch/iiwa_control.launch">
+            <arg name="hardware_interface" value="$(arg hardware_interface)" />
+            <arg name="controllers" value="joint_state_controller $(arg hardware_interface)_trajectory_controller" />
+            <arg name="robot_name" value="$(arg robot_name)" />
+            <arg name="model" value="$(arg model)" />
+        </include>
+        
+        <!-- Robot interface -->
+        <include file="$(find iiwa_hw)/launch/iiwa_hw.launch" >
+            <arg name="hardware_interface" value="$(arg hardware_interface)" />
+        </include>
+        
+    </group>
+</launch>
