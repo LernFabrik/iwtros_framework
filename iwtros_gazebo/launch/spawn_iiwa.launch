@@ -4,7 +4,7 @@
     <arg name="hardware_interface" default="PositionJointInterface"/>
 
     <param name="robot_description"
-          command="$(find xacro)/xacro --inorder '$(find robots_ee_pkg)/urdf/kuka_robot/kuka_iiwa7_system.urdf.xacro' robot_name:=$(arg robot_name) robot_param:=robot_description workcell_parent:=world_interface" />
+          command="$(find xacro)/xacro --inorder '$(find robots_ee_pkg)/urdf/kuka_robot/kuka_iiwa7_system.urdf.xacro' robot_name:=$(arg robot_name) robot_param:=robot_description workcell_parent:=$(arg robot_name)_interface" />
 
     <include file="$(find iwtros_gazebo)/launch/controllers/kuka_iiwa_control.launch">
       <arg name="hardware_interface" value="$(arg hardware_interface)"/>

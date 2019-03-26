@@ -36,9 +36,11 @@
     <arg name="initial_pose_y" value="-1.5"/>
   </include>
 
-  <node if="$(arg rviz)" name="gazebo_rviz" pkg="rviz" type="rviz" args="-d $(find iwtros_gazebo)/worlds/amcl.rviz" required="true" />
+  <node if="$(arg rviz)" name="gazebo_rviz" pkg="rviz" type="rviz" args="-d $(find iwtros_gazebo)/worlds/new_spawner.rviz" required="true" />
 
+  <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_iiwa" args="2.25 -0.5 0 0 0 1 0 world iiwa_interface"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_ur5" args="0.8 -0.5 0 0 0 1 0 world ur5_interface"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_panda" args="3.7 -0.5 0 0 0 1 0 world panda_interface"/>
+  <!--node pkg="tf2_ros" type="static_transform_publisher" name="world_to_inteface" args="0 0 0 0 0 0 world world_interface"/-->
   <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_world" args="0 0 0 0 0 0 1  map world"/>
-  <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_interface" args="0 0 0 0 0 0 1  world_interface world"/>
-
 </launch>

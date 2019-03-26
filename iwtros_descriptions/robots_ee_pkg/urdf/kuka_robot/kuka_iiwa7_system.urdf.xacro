@@ -7,7 +7,7 @@
   <xacro:arg name="robot_param" default="/iiwa/iiwa_description"/>
   <xacro:arg name="workcell_parent" default="world_interface"/>
 
-  <link name="world_interface"/>
+  <link name="$(arg workcell_parent)"/>
   <!-- origin is given as in the iwt_envirnment.xacro for urdf
         If any changes requred int the position of the the system change it according to the iwt_envirnment.xacro -->
   <xacro:include filename="$(find robots_ee_pkg)/urdf/kuka_robot/kuka_iiwa7.urdf.xacro" />
@@ -15,7 +15,7 @@
     <origin xyz="0 0 1.0" rpy="0 0 0" />
   </xacro:kuka_iiwa7_table_urdf>
 
-  <gazebo reference="world_interface">
+  <gazebo reference="$(arg workcell_parent)">
       <gravity>true</gravity>
   </gazebo>
   

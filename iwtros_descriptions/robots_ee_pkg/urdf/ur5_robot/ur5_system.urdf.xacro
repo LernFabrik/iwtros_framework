@@ -4,14 +4,14 @@
   <xacro:arg name="robot_param" default="/ur5/ur5_description"/>
   <xacro:arg name="workcell_parent" default="world_interface"/>
 
-  <link name="world_interface"/>
+  <link name="$(arg workcell_parent)"/>
   <!-- origin is given as in the iwt_envirnment.xacro for urdf -->
   <xacro:include filename="$(find robots_ee_pkg)/urdf/ur5_robot/ur5_pedestal.urdf.xacro" />
   <xacro:ur5_table_urdf table_prefix="ur5" table_parent="$(arg workcell_parent)">
     <origin xyz="0 0 1.0" rpy="0 0 0" />
   </xacro:ur5_table_urdf>
 
-  <gazebo reference="world_interface">
+  <gazebo reference="$(arg workcell_parent)">
     <gravity>true</gravity>
   </gazebo>
 
