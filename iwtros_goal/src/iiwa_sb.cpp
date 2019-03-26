@@ -10,7 +10,7 @@ int main(int argc, char** argv){
     ros::AsyncSpinner spinner(1);
     spinner.start();
 
-    moveit::planning_interface::MoveGroupInterface iiwa_group("manipulator");
+    moveit::planning_interface::MoveGroupInterface iiwa_group("iiwa_arm");
     iiwa_group.setMaxVelocityScalingFactor(0.5);
 
     iiwa_group.setPlannerId("RRTConnectkConfigDefault");                    //Specify planner to be used for the further planning
