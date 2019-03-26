@@ -41,6 +41,9 @@
     <group ns="panda" if="$(arg sim)">
         <include file="$(find iwtros_gazebo)/launch/spawn_panda.launch" />
     </group>
+    <group ns="panda">
+        <include file="$(find panda_moveit_configs)/launch/move_group.launch"/>
+    </group>
 
     <!-- HARDWARE -->
     <!-- Working with the real robot.  -->

@@ -1,11 +1,11 @@
 moveit_setup_assistant_config:
   URDF:
     package: robots_ee_pkg
-    relative_path: urdf/ur5_robot/ur5_system.urdf.xacro
+    relative_path: urdf/panda_robot/panda_system.urdf.xacro
     xacro_args: "--inorder "
   SRDF:
-    relative_path: config/ur5_robot_system.srdf
+    relative_path: config/panda_system.srdf
   CONFIG:
     author_name: Vishnuprasad Prachandabhanu
     author_email: prachandabhanu@iwt-bodensee.de
-    generated_timestamp: 1553609901
+    generated_timestamp: 1553610751

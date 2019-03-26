@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Start the pick and place node for robot2 which is in week4_assignment3.py /-->
+  <node name="iiwa_pick_place" pkg="iwtros_goal" type="iiwa_pick_place.py" output="screen" ns="iiwa"/>
+  <node name="panda_pick_place" pkg="iwtros_goal" type="panda_pick_place.py" output="screen" ns="panda"/>
+  <!--node name="movement" pkg="iwtros_goal" type="iiwa_sb_node" output="screen" ns="iiwa"/-->
+</launch>
