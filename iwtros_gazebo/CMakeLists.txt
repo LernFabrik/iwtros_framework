@@ -21,10 +21,11 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   std_srvs
   tf
+  laser_geometry
+  pcl_ros
 )
 
 find_package(gazebo REQUIRED)
-
 find_package(TinyXML REQUIRED)
 
 
@@ -62,6 +63,8 @@ include_directories(
   ${GAZEBO_INCLUDE_DIRS}
   ${roscpp_INCLUDE_DIRS}
   ${TinyXML_INCLUDE_DIRS}
+  ${EIGEN_INCLUDE_DIRS}
+  ${PCL_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -112,3 +115,22 @@ add_library(${ros_table_control_plugins_name} SHARED src/plugins/ROSTableControl
 target_link_libraries(${ros_table_control_plugins_name} ${GAZEBO_LIBRARIES})
 
 #####################################################################################
+
+
+############ LASER SCAN MERGER ###############
+add_library(multi_laserscaner 
+  src/multi_laserscaner.cpp
+)
+target_link_libraries(multi_laserscaner 
+  ${catkin_LIBRARIES}
+  ${PCL_INCLUDE_DIRS}
+)
+
+add_executable(laserscaner_multi_merge_node  
+  src/laserscaner_multi_merge_node.cpp
+)
+target_link_libraries(laserscaner_multi_merge_node  
+  ${catkin_LIBRARIES}  
+  multi_laserscaner
+)
+##############################################
