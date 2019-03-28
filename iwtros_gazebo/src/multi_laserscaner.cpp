@@ -10,17 +10,23 @@ namespace iwtros{
                             double range_max,
                             std::string deactivatingTopic){
         ros::NodeHandle nh("~");
-
-        nh.getParam("destination_frame", destination_frame);
-        nh.getParam("cloud_destination_topic", cloud_destination_topic);
-        nh.getParam("scan_destination_topic", scan_destination_topic);
-        nh.getParam("laserscan_topics_front", laserscan_topic_front);
-        nh.getParam("laserscan_topics_back", laserscan_topic_back);
-
-        front_scan_subscriber_ = node_.subscribe<sensor_msgs::LaserScan> (laserscan_topic_front.c_str(), 1, boost::bind(&laserScanMerger::scanCallback, this, _1, laserscan_topic_front));
-        back_scan_subscriber_ = node_.subscribe<sensor_msgs::LaserScan> (laserscan_topic_back.c_str(), 1, boost::bind(&laserScanMerger::scanCallback, this, _1, laserscan_topic_back));
-        clouds_modified[0] = false;
-        clouds_modified[1] = false;
+        
+        //nh.getParam("destination_frame", destination_frame);
+        //nh.getParam("cloud_destination_topic", cloud_destination_topic);
+        //nh.getParam("scan_destination_topic", scan_destination_topic);
+        //nh.getParam("laserscan_topics_front", laserscan_topic_front);
+        //nh.getParam("laserscan_topics_back", laserscan_topic_back);
+        destination_frame = "base_link";
+        cloud_destination_topic = "merged_cloud";
+        scan_destination_topic = "scan";
+        laserscan_topic_front = "scanFront";
+        laserscan_topic_back = "scanBack";
+        
+        front_scan_subscriber_ = node_.subscribe<sensor_msgs::LaserScan> (laserscan_topic_front, 1, boost::bind(&laserScanMerger::scanCallback, this, _1, laserscan_topic_front));
+        back_scan_subscriber_ = node_.subscribe<sensor_msgs::LaserScan> (laserscan_topic_back, 1, boost::bind(&laserScanMerger::scanCallback, this, _1, laserscan_topic_back));
+        ROS_INFO("Initialization is start2");
+        clouds_modified.push_back(false);
+        clouds_modified.push_back(false);
         deactivation_subscriber_ = node_.subscribe<std_msgs::Bool> (deactivatingTopic.c_str(), 1, boost::bind(&laserScanMerger::deactivateBackScanCallback, this, _1));
         point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud2> (cloud_destination_topic.c_str(), 1, false);
         laser_scaner_publisher_ = node_.advertise<sensor_msgs::LaserScan> (scan_destination_topic.c_str(), 1, false);
@@ -33,6 +39,7 @@ namespace iwtros{
         this->scan_time = scan_time;
         this->range_min = range_min;
         this->range_max = range_max;
+        ROS_INFO("Initialization is complete");
     }
 
     void laserScanMerger::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan, std::string topic){
@@ -41,7 +48,7 @@ namespace iwtros{
 
         // Verify that TF knows how to transform from the received scan to the destination scan frame
         tfListener_.waitForTransform(scan->header.frame_id.c_str(), destination_frame.c_str(), scan->header.stamp, ros::Duration(1));
-
+        
         projector_.transformLaserScanToPointCloud(scan->header.frame_id, *scan, tmpCloud1, tfListener_);
         try
         {
@@ -52,18 +59,20 @@ namespace iwtros{
             ROS_ERROR("%s", e.what());
             return;
         }
-
+        ROS_INFO("Scan callback");
         if(topic.compare(laserscan_topic_front.c_str()) == 0){
             sensor_msgs::convertPointCloudToPointCloud2(tmpCloud2, tmpCloud3);
             pcl_conversions::toPCL(tmpCloud3, clouds[0]);
+            ROS_INFO("Scan callback 1");
             clouds_modified[0] = true;
         }
         if(topic.compare(laserscan_topic_back.c_str()) == 0){
             sensor_msgs::convertPointCloudToPointCloud2(tmpCloud2, tmpCloud3);
             pcl_conversions::toPCL(tmpCloud3, clouds[1]);
+            ROS_INFO("Scan callback 2");
             clouds_modified[1] = true;
         }
-
+        
         //Cout number of scans
         int totalClouds = 0;
         for(int i=0; i<clouds_modified.size(); ++i){

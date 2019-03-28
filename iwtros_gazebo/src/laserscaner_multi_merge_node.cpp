@@ -3,14 +3,14 @@
 
 int main (int argc, char** argv){
     ros::init(argc, argv, "laserscaner_multi_merge_node");
-
-    iwtros::laserScanMerger merge(-3.1400001049,                //angle_min
-                                    3.1400001049,               //angle_max
-                                    0.00579999992624,           //angle_increment
-                                    0.0,                        //time_increment
-                                    0.0333,                     //scan_time
-                                    0.1,                        //range_min
-                                    15.0,                       //range_max
+    ROS_INFO("Initialization is Start");
+    iwtros::laserScanMerger merge(-3.1400001049,
+                                    3.1400001049,
+                                    0.00579999992624,
+                                    0.0,
+                                    0.0333,
+                                    0.1,
+                                    15.0,
                                     "/deactivateScan");
     ros::spin();
     return 0;

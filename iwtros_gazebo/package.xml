@@ -61,6 +61,9 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>std_srvs</build_depend>
   <build_depend>tf</build_depend>
+  <build_depend>pcl</build_depend>
+  <build_depend>pcl_ros</build_depend>
+  <build_depend>laser_geometry</build_depend>
   <build_export_depend>cmake_modules</build_export_depend>
   <build_export_depend>gazebo_msgs</build_export_depend>
   <build_export_depend>gazebo_plugins</build_export_depend>
@@ -72,6 +75,9 @@
   <build_export_depend>std_msgs</build_export_depend>
   <build_export_depend>std_srvs</build_export_depend>
   <build_export_depend>tf</build_export_depend>
+  <build_export_depend>pcl</build_export_depend>
+  <build_export_depend>pcl_ros</build_export_depend>
+  <build_export_depend>laser_geometry</build_export_depend>
 
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>cmake_modules</exec_depend>
@@ -84,6 +90,9 @@
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>std_srvs</exec_depend>
   <exec_depend>tf</exec_depend>
+  <exec_depend>pcl</exec_depend>
+  <exec_depend>pcl_ros</exec_depend>
+  <exec_depend>laser_geometry</exec_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
