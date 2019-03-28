@@ -29,7 +29,7 @@ namespace iwtros{
                             double range_min,
                             double range_max,
                             std::string deactivatingTopic);
-            void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan, std::string topic);
+            void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan, const std::string &topic);
             void pointcloud_to_laserscan(Eigen::MatrixXf points, pcl::PCLPointCloud2 *merged_cloud);
             void deactivateBackScanCallback(const std_msgs::Bool::ConstPtr& detach);
         
