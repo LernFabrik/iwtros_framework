@@ -79,11 +79,11 @@ void ROSTableControlPlugin::OnRosMsg_Pos(const geometry_msgs::PoseWithCovariance
 void ROSTableControlPlugin::MoveModel(double lin_x, double lin_y, double lin_z, double ang_x, double ang_y, double ang_z, double ang_w){
     std::string model_name = this->model->GetName();
     ROS_DEBUG("Moving table = %s", model_name.c_str());
-    math::Pose getPose1 = this->model->GetWorldPose();
+    ignition::math::Pose getPose1 = this->model->GetWorldPose();
     //gzerr << model_name << " Pose 1 x = " << getPose1.pos.x << " y = " << getPose1.pos.y << " z = " << getPose1.pos.z << "\n";
     //gzerr << model_name << " Orientation 1 x = " << getPose1.rot.x << " y = " << getPose1.rot.y << " z = " << getPose1.rot.z << " w = " << getPose1.rot.w << "\n";
     
-    math::Pose setPose;
+    igition::math::Pose setPose;
     setPose.pos.x = lin_x;
     setPose.pos.y = lin_y;
     setPose.pos.z = 0;
@@ -97,7 +97,7 @@ void ROSTableControlPlugin::MoveModel(double lin_x, double lin_y, double lin_z, 
     setPose.rot.w = ang_w;
     this->model->SetWorldPose(setPose);
     
-    math::Pose getPose2 = this->model->GetWorldPose();
+    ignition::math::Pose getPose2 = this->model->GetWorldPose();
     //gzerr << model_name << " Pose x = " << getPose2.pos.x << " y = " << getPose2.pos.y << " z = " << getPose2.pos.z << "\n";
     //gzerr << model_name << " Orientation x = " << getPose2.rot.x << " y = " << getPose2.rot.y << " z = " << getPose2.rot.z << " w = " << getPose2.rot.w << "\n";
     this->crnt_pose2.translation.x = getPose2.pos.x;
