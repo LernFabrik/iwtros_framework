@@ -12,4 +12,5 @@ To shift from kinetic to melodic. Compilation fails due to the following reasons
 **ToDo**:  
 1. Gazebo plugin in iwtros_gazeo, is currently ugly fixed, due to uuid or tinyxml not found by cmake  
 [Discussion](https://bitbucket.org/ignitionrobotics/ign-cmake/issues/40/target-uuid-uuid-does-not-exist)  
+[Other possible solution](https://blog.csdn.net/zjq2008wd/article/details/17450033) add softlink  
 [ignition cmake](https://bitbucket.org/ignitionrobotics/ign-cmake)  
