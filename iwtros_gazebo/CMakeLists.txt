@@ -140,6 +140,14 @@ target_link_libraries(laserscaner_multi_merge_node
   multi_laserscaner
 )
 add_dependencies(laserscaner_multi_merge_node ${PROJECT_NAME}_gencfg)
+
+add_executable(laserscan_multi_merger_node  
+  src/laserscan_multi_merger_node.cpp
+)
+target_link_libraries(laserscan_multi_merger_node  
+  ${catkin_LIBRARIES}
+)
+add_dependencies(laserscan_multi_merger_node ${PROJECT_NAME}_gencfg)
 ##############################################
 
 
