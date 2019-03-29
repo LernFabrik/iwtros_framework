@@ -23,7 +23,7 @@ namespace iwtros{
     class laserScanMerger{
         public:
             laserScanMerger(std::string deactivatingTopic);
-            void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan, const std::string &topic);
+            void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan, std::string topic);
             void pointcloud_to_laserscan(Eigen::MatrixXf points, pcl::PCLPointCloud2 *merged_cloud);
             void deactivateBackScanCallback(const std_msgs::Bool::ConstPtr& detach);
             void recongigureCallback(laserscan_multi_merger::laserscan_multi_mergerConfig &config, uint32_t level);
@@ -35,13 +35,14 @@ namespace iwtros{
 
             ros::Publisher point_cloud_publisher_;
             ros::Publisher laser_scaner_publisher_;
-            ros::Subscriber front_scan_subscriber_;
-            ros::Subscriber back_scan_subscriber_;
+            //ros::Subscriber front_scan_subscriber_;
+            //ros::Subscriber back_scan_subscriber_;
+            std::vector<ros::Subscriber> scan_subscribers;
             ros::Subscriber deactivation_subscriber_;
             std::vector<bool> clouds_modified;
 
             std::vector<pcl::PCLPointCloud2> clouds;
-            std::vector<std::string> input_topic;
+            std::vector<std::string> input_topics;
 
             void laser_scan_topic_paser();   // dont know if it requires --- not used
 
