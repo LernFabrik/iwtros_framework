@@ -1,6 +1,6 @@
 
 <launch>
-    <node pkg="iwtros_gazebo" name="laserscaner_multi_merge_node" type="laserscaner_multi_merge_node" output="screen">
+    <node pkg="iwtros_gazebo" name="laserscan_multi_merger_node" type="laserscan_multi_merger_node" output="screen">
 			<param name="destination_frame" value="/base_link"/>
 			<param name="cloud_destination_topic" value="/merged_cloud"/>
 			<param name="scan_destination_topic" value="/scan"/>
