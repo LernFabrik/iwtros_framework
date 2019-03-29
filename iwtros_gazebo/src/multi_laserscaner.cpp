@@ -61,23 +61,19 @@ namespace iwtros{
             ROS_ERROR("%s", e.what());
             return;
         }
-        ROS_INFO("Scan callback topic: %s", topic.c_str());
+        //ROS_INFO("Scan callback topic: %s", topic.c_str());
         if(topic == "/scanFront"){
-            ROS_INFO("Scan callback 1 - 1");
             sensor_msgs::convertPointCloudToPointCloud2(tmpCloud2, tmpCloud3);
             pcl_conversions::toPCL(tmpCloud3, clouds[0]);
-            ROS_INFO("Scan callback 1");
             clouds_modified[0] = true;
         }
         if(topic == "/scanBack"){
-            ROS_INFO("Scan callback 2 -2");
             sensor_msgs::convertPointCloudToPointCloud2(tmpCloud2, tmpCloud3);
             pcl_conversions::toPCL(tmpCloud3, clouds[1]);
-            ROS_INFO("Scan callback 2");
             clouds_modified[1] = true;
         }
         
-        ROS_INFO("Scan callback Stage 1");
+        //ROS_INFO("Scan callback Stage 1");
         //Cout number of scans
         int totalClouds = 0;
         for(int i=0; i<clouds_modified.size(); ++i){
@@ -161,6 +157,7 @@ namespace iwtros{
             this->tmp_angle_max = this->angle_max;
             this->angle_min = -2.09439992905;
             this->angle_max = 2.09439992905;
+            ROS_INFO("Back scan is deactivated");
         }
         else if (deactivate == false){
             back_scan_subscriber_ = node_.subscribe<sensor_msgs::LaserScan> (laserscan_topic_back.c_str(), 1, boost::bind(&laserScanMerger::scanCallback, this, _1, laserscan_topic_back));
@@ -168,6 +165,7 @@ namespace iwtros{
             clouds.resize(2);
             this->angle_min = this->tmp_angle_min;
             this->angle_max = this->tmp_angle_max;
+            ROS_INFO("Back scan is activated");
         }
         
     }
