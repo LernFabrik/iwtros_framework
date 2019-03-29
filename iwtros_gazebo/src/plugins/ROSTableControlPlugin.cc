@@ -97,7 +97,7 @@ void ROSTableControlPlugin::MoveModel(double lin_x, double lin_y, double lin_z, 
     setPose.rot.w = ang_w;
     this->model->SetWorldPose(setPose);
     
-    ignition::math::Pose getPose2 = this->model->GetWorldPose();
+    ignition::math::Pose getPose2 = this->model->WorldPose();
     //gzerr << model_name << " Pose x = " << getPose2.pos.x << " y = " << getPose2.pos.y << " z = " << getPose2.pos.z << "\n";
     //gzerr << model_name << " Orientation x = " << getPose2.rot.x << " y = " << getPose2.rot.y << " z = " << getPose2.rot.z << " w = " << getPose2.rot.w << "\n";
     this->crnt_pose2.translation.x = getPose2.pos.x;
