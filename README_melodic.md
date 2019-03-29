@@ -5,7 +5,7 @@
 To shift from kinetic to melodic. Compilation fails due to the following reasons:  
 1. New Gazebo API, refactor and rename  
   they refactor some stuff, like ignition name spaces  
-2. move_group rename  
+2. [move_group rename](https://github.com/ros-planning/moveit/issues/37)  
 3. urdf related library use STL for shared_ptr instead of Boost library  
 
 
