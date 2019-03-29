@@ -23,15 +23,19 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   laser_geometry
   pcl_ros
+  dynamic_reconfigure
 )
 
 find_package(gazebo REQUIRED)
 find_package(TinyXML REQUIRED)
 
+########### > before build run chmod a+x laserscan_multi_merger.cfg #############
+generate_dynamic_reconfigure_options(cfg/laserscan_multi_merger.cfg)
 
 catkin_package(
   INCLUDE_DIRS 
     include
+    cfg
   LIBRARIES 
     conveyor_spawner
     urdf_creator
@@ -70,6 +74,8 @@ include_directories(
 link_directories(
   ${GAZEBO_LIBRARY_DIRS}
 )
+
+
 
 # Create URDF creator libraries
 add_library(urdf_creator 
@@ -133,4 +139,7 @@ target_link_libraries(laserscaner_multi_merge_node
   ${catkin_LIBRARIES}  
   multi_laserscaner
 )
+add_dependencies(laserscaner_multi_merge_node ${PROJECT_NAME}_gencfg)
 ##############################################
+
+
