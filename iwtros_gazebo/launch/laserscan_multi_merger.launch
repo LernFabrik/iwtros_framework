@@ -4,6 +4,7 @@
 			<param name="destination_frame" value="/base_link"/>
 			<param name="cloud_destination_topic" value="/merged_cloud"/>
 			<param name="scan_destination_topic" value="/scan"/>
-			<param name="laserscan_topics" value ="/scanFront /scanBack" />
+			<param name="laserscan_topics_front" value ="/scanFront" />
+			<param name="laserscan_topics_back" value ="/scanBack" />
 	</node>
 </launch>

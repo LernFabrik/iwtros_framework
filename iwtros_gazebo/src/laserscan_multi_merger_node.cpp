@@ -59,7 +59,8 @@ private:
     string destination_frame;
     string cloud_destination_topic;
     string scan_destination_topic;
-    string laserscan_topics;
+    string laserscan_topics_front;
+	string laserscan_topics_back;
 };
 
 void LaserscanMerger::reconfigureCallback(laserscan_multi_mergerConfig &config, uint32_t level)
@@ -76,7 +77,7 @@ void LaserscanMerger::reconfigureCallback(laserscan_multi_mergerConfig &config, 
 void LaserscanMerger::laserscan_topic_parser()
 {
 	// LaserScan topics to subscribe
-	ros::master::V_TopicInfo topics;
+	/*ros::master::V_TopicInfo topics;
 	ros::master::getTopics(topics);
 
     istringstream iss(laserscan_topics);
@@ -85,12 +86,10 @@ void LaserscanMerger::laserscan_topic_parser()
 
 	vector<string> tmp_input_topics;
 
-	for(int i=0;i<tokens.size();++i)
-	{
-	        for(int j=0;j<topics.size();++j)
-		{
-			if( (tokens[i].compare(topics[j].name) == 0) && (topics[j].datatype.compare("sensor_msgs/LaserScan") == 0) )
-			{
+	
+	for(int i=0;i<tokens.size();++i){
+	    for(int j=0;j<topics.size();++j){
+			if( (tokens[i].compare(topics[j].name) == 0) && (topics[j].datatype.compare("sensor_msgs/LaserScan") == 0) ){
 				tmp_input_topics.push_back(topics[j].name);
 			}
 		}
@@ -98,34 +97,33 @@ void LaserscanMerger::laserscan_topic_parser()
 
 	sort(tmp_input_topics.begin(),tmp_input_topics.end());
 	std::vector<string>::iterator last = std::unique(tmp_input_topics.begin(), tmp_input_topics.end());
-	tmp_input_topics.erase(last, tmp_input_topics.end());
+	tmp_input_topics.erase(last, tmp_input_topics.end());*/
 
 
 	// Do not re-subscribe if the topics are the same
-	if( (tmp_input_topics.size() != input_topics.size()) || !equal(tmp_input_topics.begin(),tmp_input_topics.end(),input_topics.begin()))
+	
+
+	// Unsubscribe from previous topics
+	for(int i=0; i<scan_subscribers.size(); ++i)
+		scan_subscribers[i].shutdown();
+
+	input_topics.push_back(laserscan_topics_front);
+	input_topics.push_back(laserscan_topics_back);
+	if(input_topics.size() > 0)
 	{
-
-		// Unsubscribe from previous topics
-		for(int i=0; i<scan_subscribers.size(); ++i)
-			scan_subscribers[i].shutdown();
-
-		input_topics = tmp_input_topics;
-		if(input_topics.size() > 0)
+		scan_subscribers.resize(input_topics.size());
+		clouds_modified.resize(input_topics.size());
+		clouds.resize(input_topics.size());
+		ROS_INFO("Subscribing to topics\t%ld", scan_subscribers.size());
+		for(int i=0; i<input_topics.size(); ++i)
 		{
-            scan_subscribers.resize(input_topics.size());
-			clouds_modified.resize(input_topics.size());
-			clouds.resize(input_topics.size());
-            ROS_INFO("Subscribing to topics\t%ld", scan_subscribers.size());
-			for(int i=0; i<input_topics.size(); ++i)
-			{
-                scan_subscribers[i] = node_.subscribe<sensor_msgs::LaserScan> (input_topics[i].c_str(), 1, boost::bind(&LaserscanMerger::scanCallback,this, _1, input_topics[i]));
-				clouds_modified[i] = false;
-				cout << input_topics[i] << " ";
-			}
+			scan_subscribers[i] = node_.subscribe<sensor_msgs::LaserScan> (input_topics[i].c_str(), 1, boost::bind(&LaserscanMerger::scanCallback,this, _1, input_topics[i]));
+			clouds_modified[i] = false;
+			cout << input_topics[i] << " ";
 		}
-		else
-            ROS_INFO("Not subscribed to any topic.");
 	}
+	else
+		ROS_INFO("Not subscribed to any topic.");
 }
 
 LaserscanMerger::LaserscanMerger(std::string deactivatingTopic)
@@ -135,7 +133,8 @@ LaserscanMerger::LaserscanMerger(std::string deactivatingTopic)
 	nh.getParam("destination_frame", destination_frame);
 	nh.getParam("cloud_destination_topic", cloud_destination_topic);
 	nh.getParam("scan_destination_topic", scan_destination_topic);
-    nh.getParam("laserscan_topics", laserscan_topics);
+    nh.getParam("laserscan_topics_front", laserscan_topics_front);
+	 nh.getParam("laserscan_topics_back", laserscan_topics_back);
 
     this->laserscan_topic_parser();
     deactivation_subscriber_ = node_.subscribe<std_msgs::Bool> (deactivatingTopic.c_str(), 1, boost::bind(&LaserscanMerger::deactivateBackScanCallback, this, _1));
