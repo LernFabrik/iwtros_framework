@@ -40,7 +40,7 @@ namespace iwtros{
         this->scan_time = scan_time;
         this->range_min = range_min;
         this->range_max = range_max;
-        ROS_INFO("Initialization is complete");
+        ROS_INFO("Initialization is complet");
     }
 
     void laserScanMerger::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan, const std::string &topic){
