@@ -93,7 +93,6 @@ namespace iwtros{
                 clouds_modified[i] = true;
             }
         }
-        
         //ROS_INFO("Scan callback Stage 1");
         //Cout number of scans
         int totalClouds = 0;
