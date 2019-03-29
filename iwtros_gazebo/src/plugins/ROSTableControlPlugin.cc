@@ -79,34 +79,43 @@ void ROSTableControlPlugin::OnRosMsg_Pos(const geometry_msgs::PoseWithCovariance
 void ROSTableControlPlugin::MoveModel(double lin_x, double lin_y, double lin_z, double ang_x, double ang_y, double ang_z, double ang_w){
     std::string model_name = this->model->GetName();
     ROS_DEBUG("Moving table = %s", model_name.c_str());
-    ignition::math::Pose getPose1 = this->model->GetWorldPose();
+
+    // in gazebo 9, GetWorldPose is renamed as WorldPose
+    // http://osrf-distributions.s3.amazonaws.com/gazebo/api/9.0.0/classgazebo_1_1physics_1_1Model.html
+    ignition::math::Pose3d getPose1 = this->model->WorldPose();
     //gzerr << model_name << " Pose 1 x = " << getPose1.pos.x << " y = " << getPose1.pos.y << " z = " << getPose1.pos.z << "\n";
     //gzerr << model_name << " Orientation 1 x = " << getPose1.rot.x << " y = " << getPose1.rot.y << " z = " << getPose1.rot.z << " w = " << getPose1.rot.w << "\n";
     
-    igition::math::Pose setPose;
-    setPose.pos.x = lin_x;
-    setPose.pos.y = lin_y;
-    setPose.pos.z = 0;
+    // https://osrf-distributions.s3.amazonaws.com/ign-math/api/1.0.0/classignition_1_1math_1_1Pose3.html
+    ignition::math::Pose3d setPose;
+    ignition::math::Vector3d setPosition;
+    setPosition.Set(lin_x, lin_y, 0);
+    // setPose.Pos().x = lin_x;
+    // setPose.Pos().y = lin_y;
+    // setPose.Pos().z = 0;
 
     /*Get the orientation either offseted orientation from the publisher 
     publishing the current FTS pose or offset here.
     1. Subscriber is subscribing the offseted pose*/
-    setPose.rot.x = 0;
-    setPose.rot.y = 0;
-    setPose.rot.z = ang_z;
-    setPose.rot.w = ang_w;
+    ignition::math::Quaternion<double> setQ;
+    setQ.Set(ang_w, 0, 0, ang_z);
+    setPose.Set(setPosition, setQ);
+    // setPose.Rot().x = 0;
+    // setPose.Rot().y = 0;
+    // setPose.Rot().z = ang_z;
+    // setPose.Rot().w = ang_w;
     this->model->SetWorldPose(setPose);
     
-    ignition::math::Pose getPose2 = this->model->WorldPose();
+    ignition::math::Pose3d getPose2 = this->model->WorldPose();
     //gzerr << model_name << " Pose x = " << getPose2.pos.x << " y = " << getPose2.pos.y << " z = " << getPose2.pos.z << "\n";
     //gzerr << model_name << " Orientation x = " << getPose2.rot.x << " y = " << getPose2.rot.y << " z = " << getPose2.rot.z << " w = " << getPose2.rot.w << "\n";
-    this->crnt_pose2.translation.x = getPose2.pos.x;
-    this->crnt_pose2.translation.y = getPose2.pos.y;
-    this->crnt_pose2.translation.z = getPose2.pos.z;
-    this->crnt_pose2.rotation.x = getPose2.rot.x;
-    this->crnt_pose2.rotation.y = getPose2.rot.y;
-    this->crnt_pose2.rotation.z = getPose2.rot.z;
-    this->crnt_pose2.rotation.w = getPose2.rot.w;
+    this->crnt_pose2.translation.x = getPose2.Pos().X();
+    this->crnt_pose2.translation.y = getPose2.Pos().Y();
+    this->crnt_pose2.translation.z = getPose2.Pos().Z();
+    this->crnt_pose2.rotation.x = getPose2.Rot().X();
+    this->crnt_pose2.rotation.y = getPose2.Rot().Y();
+    this->crnt_pose2.rotation.z = getPose2.Rot().Z();
+    this->crnt_pose2.rotation.w = getPose2.Rot().W();
     this->tfBroadCaster(this->crnt_pose2);
     ROS_DEBUG("Moving Table = %s .... END", model_name.c_str());
 }
