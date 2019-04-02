@@ -69,6 +69,7 @@ namespace iwtros{
     }
 
     void ftsControl::getTransforms(std::string parent, std::string child,  geometry_msgs::TransformStamped& stamped){
+        ROS_INFO("Looking for the transformation parent: %s, child: %s", parent.c_str(), child.c_str());
         try{
             stamped = this->tf2Buffer.lookupTransform(parent, child, ros::Time(0));
         }catch(tf2::TransformException& e){
@@ -81,7 +82,7 @@ namespace iwtros{
         switch (sel){
             case IIWA:
                 ROS_INFO("Moving IIWA Standarzelle");
-                ftsControl::getTransforms("world", "iiwa_table_base", this->stampedtf2Cell);
+                ftsControl::getTransforms(this->worldFrame.c_str(), this->iiwaFrame.c_str(), this->stampedtf2Cell);
                 break;
             case UR5:
                 ROS_INFO("Moving UR5 Standarzelle");
