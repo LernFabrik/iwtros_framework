@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Start the pick and place node for robot2 which is in week4_assignment3.py /-->
+  <node name="fts_controller" pkg="iwtros_goal" type="fts_controller_node" output="screen" >
+    <param name="iiwa_table_topic" value="/iiwa/tbl_cmd_vel"/>
+    <param name="ur5_table_topic" value="/ur5/tbl_cmd_vel"/>
+    <param name="panda_table_topic" value="/panda/tbl_cmd_vel"/>
+    <param name="worldFrame" value="world"/>
+    <param name="iiwaFrame" value="iiwa_table_base"/>
+    <param name="ur5Frame" value="ur5_table_base"/>
+    <param name="pandaFrame" value="panda_table_base"/>
+  </node>
+  <!--node name="movement" pkg="iwtros_goal" type="iiwa_sb_node" output="screen" ns="iiwa"/-->
+</launch>

@@ -4,9 +4,9 @@ namespace iwtros{
     ftsControl::ftsControl() : ac("move_base", true){
         ros::NodeHandle nh_("~");
 
-        nh_.getParam("iiwa_table", iiwa_table_topic);
-        nh_.getParam("ur5_table", ur5_table_topic);
-        nh_.getParam("panda_table", panda_table_topic);
+        nh_.getParam("iiwa_table_topic", iiwa_table_topic);
+        nh_.getParam("ur5_table_topic", ur5_table_topic);
+        nh_.getParam("panda_table_topic", panda_table_topic);
         nh_.getParam("worldFrame", worldFrame);
         nh_.getParam("iiwaFrame", iiwaFrame);
         nh_.getParam("ur5Frame", ur5Frame);
@@ -125,7 +125,7 @@ namespace iwtros{
         ac.waitForResult();
         if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Reached goal");
         else ROS_INFO("Failed to reach goal");
-        
+
         ftsControl::withTableDynamicParam();
 
         /* Once the FTS is under the Standardzelle, Lock the position FTS to the Standardzelle*/
