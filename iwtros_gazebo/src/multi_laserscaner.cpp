@@ -1,14 +1,7 @@
 #include <iwtros_gazebo/multi_laserscaner.hpp>
 
 namespace iwtros{
-    laserScanMerger::laserScanMerger(double angle_min,
-                            double angle_max,
-                            double angle_increment,
-                            double time_increment,
-                            double scan_time,
-                            double range_min,
-                            double range_max,
-                            std::string deactivatingTopic){
+    laserScanMerger::laserScanMerger(std::string deactivatingTopic){
         ros::NodeHandle nh("~");
         
         //nh.getParam("destination_frame", destination_frame);
@@ -22,28 +15,60 @@ namespace iwtros{
         laserscan_topic_front = "/scanFront";
         laserscan_topic_back = "/scanBack";
         
-        front_scan_subscriber_ = node_.subscribe<sensor_msgs::LaserScan> (laserscan_topic_front.c_str(), 1, boost::bind(&laserScanMerger::scanCallback, this, _1, laserscan_topic_front.c_str()));
-        back_scan_subscriber_ = node_.subscribe<sensor_msgs::LaserScan> (laserscan_topic_back.c_str(), 1, boost::bind(&laserScanMerger::scanCallback, this, _1, laserscan_topic_back.c_str()));
-        ROS_INFO("Initialization is start2");
-        clouds_modified.push_back(false);
-        clouds_modified.push_back(false);
-        clouds.resize(2);
+        //front_scan_subscriber_ = node_.subscribe<sensor_msgs::LaserScan> (laserscan_topic_front.c_str(), 1, boost::bind(&laserScanMerger::scanCallback, this, _1, laserscan_topic_front.c_str()));
+        //back_scan_subscriber_ = node_.subscribe<sensor_msgs::LaserScan> (laserscan_topic_back.c_str(), 1, boost::bind(&laserScanMerger::scanCallback, this, _1, laserscan_topic_back.c_str()));
+        //ROS_INFO("Initialization is start2");
+        this->laser_scan_topic_paser();
+        //clouds_modified.push_back(false);
+        //clouds_modified.push_back(false);
+        //clouds.resize(2);
         deactivation_subscriber_ = node_.subscribe<std_msgs::Bool> (deactivatingTopic.c_str(), 1, boost::bind(&laserScanMerger::deactivateBackScanCallback, this, _1));
         point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud2> (cloud_destination_topic.c_str(), 1, false);
         laser_scaner_publisher_ = node_.advertise<sensor_msgs::LaserScan> (scan_destination_topic.c_str(), 1, false);
         tfListener_.setExtrapolationLimit(ros::Duration(0.1));
 
-        this->angle_min = angle_min;
-        this->angle_max = angle_max;
-        this->angle_increment = angle_increment;
-        this->time_increment = time_increment;
-        this->scan_time = scan_time;
-        this->range_min = range_min;
-        this->range_max = range_max;
+        dynamic_reconfigure::Server<laserscan_multi_merger::laserscan_multi_mergerConfig> server;
+        dynamic_reconfigure::Server<laserscan_multi_merger::laserscan_multi_mergerConfig>::CallbackType f;
+        f = boost::bind(&laserScanMerger::recongigureCallback, this, _1, _2);
+        server.setCallback(f);
+        
         ROS_INFO("Initialization is complete");
     }
+    void laserScanMerger::recongigureCallback(laserscan_multi_merger::laserscan_multi_mergerConfig &config, uint32_t level){
+        this->angle_min = config.angle_min;
+        this->angle_max = config.angle_max;
+        this->angle_increment = config.angle_increment;
+        this->time_increment = config.time_increment;
+        this->scan_time = config.scan_time;
+        this->range_min = config.range_min;
+        this->range_max = config.range_max;
+        ROS_INFO("Setting the scan configuration from dynamic parameters");
+    }
 
-    void laserScanMerger::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan, const std::string &topic){
+    void laserScanMerger::laser_scan_topic_paser(){
+        for(int i=0; i<scan_subscribers.size(); ++i)
+		scan_subscribers[i].shutdown();
+
+        input_topics.push_back(laserscan_topic_front);
+        input_topics.push_back(laserscan_topic_back);
+        if(input_topics.size() > 0)
+        {
+            scan_subscribers.resize(input_topics.size());
+            clouds_modified.resize(input_topics.size());
+            clouds.resize(input_topics.size());
+            ROS_INFO("Subscribing to topics\t%ld", scan_subscribers.size());
+            for(int i=0; i<input_topics.size(); ++i)
+            {
+                scan_subscribers[i] = node_.subscribe<sensor_msgs::LaserScan> (input_topics[i].c_str(), 1, boost::bind(&laserScanMerger::scanCallback,this, _1, input_topics[i]));
+                clouds_modified[i] = false;
+                std::cout << input_topics[i] << " ";
+            }
+        }
+        else
+            ROS_INFO("Not subscribed to any topic.");
+    }
+
+    void laserScanMerger::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan, std::string topic){
         sensor_msgs::PointCloud tmpCloud1, tmpCloud2;
         sensor_msgs::PointCloud2 tmpCloud3;
 
@@ -60,23 +85,15 @@ namespace iwtros{
             ROS_ERROR("%s", e.what());
             return;
         }
-        ROS_INFO("Scan callback topic: %s", topic.c_str());
-        if(topic == "/scanFront"){
-            ROS_INFO("Scan callback 1 - 1");
-            sensor_msgs::convertPointCloudToPointCloud2(tmpCloud2, tmpCloud3);
-            pcl_conversions::toPCL(tmpCloud3, clouds[0]);
-            ROS_INFO("Scan callback 1");
-            clouds_modified[0] = true;
+        //ROS_INFO("Scan callback topic: %s", topic.c_str());
+        for(int i=0; i<input_topics.size(); ++i){
+            if(topic.compare(input_topics[i]) == 0){
+                sensor_msgs::convertPointCloudToPointCloud2(tmpCloud2, tmpCloud3);
+                pcl_conversions::toPCL(tmpCloud3, clouds[i]);
+                clouds_modified[i] = true;
+            }
         }
-        if(topic == "/scanBack"){
-            ROS_INFO("Scan callback 2 -2");
-            sensor_msgs::convertPointCloudToPointCloud2(tmpCloud2, tmpCloud3);
-            pcl_conversions::toPCL(tmpCloud3, clouds[1]);
-            ROS_INFO("Scan callback 2");
-            clouds_modified[1] = true;
-        }
-        
-        ROS_INFO("Scan callback Stage 1");
+        //ROS_INFO("Scan callback Stage 1");
         //Cout number of scans
         int totalClouds = 0;
         for(int i=0; i<clouds_modified.size(); ++i){
@@ -153,18 +170,22 @@ namespace iwtros{
     void laserScanMerger::deactivateBackScanCallback(const std_msgs::Bool::ConstPtr& detach){
         bool deactivate = detach->data;
         if(deactivate == true){
-            back_scan_subscriber_.shutdown();
+            scan_subscribers[1].shutdown();
             clouds_modified.resize(1);
+            clouds.resize(1);
             this->tmp_angle_min = this->angle_min;
             this->tmp_angle_max = this->angle_max;
             this->angle_min = -2.09439992905;
             this->angle_max = 2.09439992905;
+            ROS_INFO("Back scan is deactivated");
         }
         else if (deactivate == false){
-            back_scan_subscriber_ = node_.subscribe<sensor_msgs::LaserScan> (laserscan_topic_back.c_str(), 1, boost::bind(&laserScanMerger::scanCallback, this, _1, laserscan_topic_back));
+            scan_subscribers[1] = node_.subscribe<sensor_msgs::LaserScan> (input_topics[1].c_str(), 1, boost::bind(&laserScanMerger::scanCallback, this, _1, input_topics[1]));
             clouds_modified.resize(2);
+            clouds.resize(2);
             this->angle_min = this->tmp_angle_min;
             this->angle_max = this->tmp_angle_max;
+            ROS_INFO("Back scan is activated");
         }
         
     }

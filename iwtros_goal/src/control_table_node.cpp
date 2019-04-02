@@ -53,7 +53,7 @@ static void quad_to_Euler(geometry_msgs::Quaternion& q, double& roll, double& pi
 
     double siny_cosp = +2.0 * (q.w * q.z + q.x * q.y);
     double cosy_cosp = +1.0 - 2.0 * (q.y * q.y + q.z * q.z);
-    yaw = atan2(siny_cosp, cosy_cosp); 
+    yaw = atan2(siny_cosp, cosy_cosp);
 }
 
 void getTransforms(std::string parent, std::string child, geometry_msgs::TransformStamped& stamped){
@@ -91,10 +91,10 @@ int main(int argc, char** argv){
     tf2_ros::TransformListener tfListener(tfBuffer);
     /*---------------------------------------*/
 
-    
+
     /*Move base action library setings*/
     actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac("move_base", true);
-    while(!ac.waitForServer(ros::Duration(10.0))){ROS_INFO("Waiting for the move_base server");} 
+    while(!ac.waitForServer(ros::Duration(10.0))){ROS_INFO("Waiting for the move_base server");}
     ros::Publisher goal_pub = nh.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 20);
     /*--------------------------------*/
 
@@ -106,8 +106,8 @@ int main(int argc, char** argv){
     //dynamic_reconfigure::Server<dwa_local_planner::DWAPlannerConfig>::CallbackType f;
     //f = boost::bind(&dwaCallback, _1, _2);
     //server.setCallback(f);
-    
-    
+
+
 
     ros::Rate rate(30.0);
     double currentTime = ros::Time::now().toSec();
@@ -205,7 +205,7 @@ int main(int argc, char** argv){
         //goal_pub.publish(goal2);
         ROS_ERROR("Move table");
         //ac.sendGoal(goal);
-        
+
         while(ros::ok() && detach != true/*ac.getState() != actionlib::SimpleClientGoalState::SUCCEEDED && ac.getState() != actionlib::SimpleClientGoalState::ABORTED*/){
             table_pose.pose.position.x = x;
             table_pose.pose.position.y = y;
