@@ -13,7 +13,7 @@ namespace iwtros{
         nh_.getParam("pandaFrame", pandaFrame);
 
         /* Subscribers*/
-        ros::Subscriber startSub = node_.subscribe<iwtros_msgs::ftsControl>("startFtsOperation", 10, boost::bind(&ftsControl::ftsStartCallback, this, _1, _2));
+        ros::Subscriber startSub = node_.subscribe<iwtros_msgs::ftsControl>("startFtsOperation", 10, boost::bind(&ftsControl::ftsStartCallback, this, _1));
         ftsOdom = node_.subscribe("odom", 100, &ftsControl::ftsOdomCallback, this);
         
         /*Table position control publishers*/
@@ -30,6 +30,10 @@ namespace iwtros{
         tf2_ros::TransformListener tf2Listener(tf2Buffer);
 
         this->lockCell =  false;
+    }
+
+    ftsControl::~ftsControl(){
+        node_.shutdown();
     }
 
     void ftsControl::ftsOdomCallback(const nav_msgs::Odometry::ConstPtr &msg){
@@ -108,7 +112,7 @@ namespace iwtros{
 
         this->ac.sendGoal(this->goal);
         this->ac.waitForResult();
-        if(ac.getState == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Reached goal infront of Standardzelle");
+        if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Reached goal infront of Standardzelle");
         else ("Failed to reach goal");
         //ftsControl::reverseDocking();
     }
@@ -119,8 +123,9 @@ namespace iwtros{
         this->goal.target_pose.pose.position.y = this->stampedtf2Cell.transform.translation.y;
         this->ac.sendGoal(this->goal);
         ac.waitForResult();
-        if(ac.getState == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Reached goal");
+        if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Reached goal");
         else ROS_INFO("Failed to reach goal");
+        
         ftsControl::withTableDynamicParam();
 
         /* Once the FTS is under the Standardzelle, Lock the position FTS to the Standardzelle*/
@@ -131,7 +136,7 @@ namespace iwtros{
     void ftsControl::carryCellToGoal(move_base_msgs::MoveBaseGoal dropLoc){
         ac.sendGoal(dropLoc);
         ac.waitForResult();
-        if(ac.getState == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Reached goal");
+        if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Reached goal");
         else ROS_INFO("Failed to reach goal");
         this->lockCell = false;
 
@@ -180,6 +185,46 @@ namespace iwtros{
         /*Unable the back laser scanner*/
         this->deatBackScaner.data = false;
         this->deactScan_pub.publish(this->deatBackScaner);
+
+    }
+
+    void ftsControl::quadToEuler(geometry_msgs::Quaternion& q, double& roll, double& pitch, double& yaw){
+        //ROS_INFO("input quat %f, %f, %f, %f", q.x, q.y, q.z, q.w);
+        double sinr_cosp = +2.0 * (q.w * q.x + q.y * q.z);
+        double cosr_cosp = +1.0 - 2.0 * (q.x * q.x + q.y * q.y);
+        //ROS_ERROR("sinr %f, cosr %f", sinr_cosp, cosr_cosp);
+        roll = atan2(sinr_cosp , cosr_cosp);
+
+        double sinp = 2 * (q.w * q.y + q.z * q.x);
+        if(fabs(sinp >= 1)) pitch = copysign(M_PI /2, sinp);
+        else pitch = asin(sinp);
+
+        double siny_cosp = +2.0 * (q.w * q.z + q.x * q.y);
+        double cosy_cosp = +1.0 - 2.0 * (q.y * q.y + q.z * q.z);
+        yaw = atan2(siny_cosp, cosy_cosp);
+    }
+
+    void ftsControl::setDynamicParam(){
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 0.0");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x -0.7");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.1");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.1");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/local_costmap/inflation_layer inflation_radius 0.01");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/global_costmap/inflation_layer inflation_radius 0.01");
+    }
+
+    void ftsControl::withTableDynamicParam(){
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 1.0");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x 0.0");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.8");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel 0.02");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS xy_goal_tolerance 0.10");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS yaw_goal_tolerance 0.05");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/local_costmap/inflation_layer inflation_radius 0.55");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/global_costmap/inflation_layer inflation_radius 0.55");
+    }
+
+    void ftsControl::resetDynamicParam(){
 
     }
 }
