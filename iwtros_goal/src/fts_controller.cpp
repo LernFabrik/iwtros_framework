@@ -12,6 +12,7 @@ namespace iwtros{
         nh_.getParam("ur5Frame", ur5Frame);
         nh_.getParam("pandaFrame", pandaFrame);
 
+        ROS_INFO("Frame received world: %s, iiwa: %s", this->worldFrame.c_str(), this->iiwaFrame.c_str());
         /* Subscribers*/
         this->startSub = node_.subscribe<iwtros_msgs::ftsControl>("startFtsOperation", 10, boost::bind(&ftsControl::ftsStartCallback, this, _1));
         ftsOdom = node_.subscribe("odom", 100, &ftsControl::ftsOdomCallback, this);
@@ -27,7 +28,7 @@ namespace iwtros{
         fts_goalPub = node_.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 20);
 
         /* Initialize tf2*/
-        tf2_ros::TransformListener tf2Listener(tf2Buffer);
+        tf2_ros::TransformListener tf2Listener(this->tf2Buffer);
 
         this->lockCell =  false;
     }
@@ -69,7 +70,7 @@ namespace iwtros{
 
     void ftsControl::getTransforms(std::string parent, std::string child,  geometry_msgs::TransformStamped& stamped){
         try{
-            stamped = tf2Buffer.lookupTransform(parent, child, ros::Time(0));
+            stamped = this->tf2Buffer.lookupTransform(parent, child, ros::Time(0));
         }catch(tf2::TransformException& e){
             ROS_INFO("%s", e.what());
             ros::Duration(0.1).sleep();
