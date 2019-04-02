@@ -39,6 +39,7 @@ namespace iwtros{
         ros::Publisher deactScan_pub;
         ros::Publisher cmdVel_pub;
         ros::Subscriber ftsOdom;
+        ros::Subscriber startSub;
         tf2_ros::Buffer tf2Buffer;
         public:
             ftsControl();

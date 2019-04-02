@@ -13,7 +13,7 @@ namespace iwtros{
         nh_.getParam("pandaFrame", pandaFrame);
 
         /* Subscribers*/
-        ros::Subscriber startSub = node_.subscribe<iwtros_msgs::ftsControl>("startFtsOperation", 10, boost::bind(&ftsControl::ftsStartCallback, this, _1));
+        this->startSub = node_.subscribe<iwtros_msgs::ftsControl>("startFtsOperation", 10, boost::bind(&ftsControl::ftsStartCallback, this, _1));
         ftsOdom = node_.subscribe("odom", 100, &ftsControl::ftsOdomCallback, this);
         
         /*Table position control publishers*/
@@ -79,13 +79,16 @@ namespace iwtros{
     void ftsControl::goToTableLocation(select_table sel){
         switch (sel){
             case IIWA:
-                ftsControl::getTransforms(this->worldFrame, this->iiwaFrame, this->stampedtf2Cell);
+                ROS_INFO("Moving IIWA Standarzelle");
+                ftsControl::getTransforms("world", "iiwa_table_base", this->stampedtf2Cell);
                 break;
             case UR5:
-                ftsControl::getTransforms(this->worldFrame, this->ur5Frame, this->stampedtf2Cell);
+                ROS_INFO("Moving UR5 Standarzelle");
+                ftsControl::getTransforms(this->worldFrame.c_str(), this->ur5Frame.c_str(), this->stampedtf2Cell);
                 break;
             case PANDA:
-                ftsControl::getTransforms(this->worldFrame, this->pandaFrame, this->stampedtf2Cell);
+                ROS_INFO("Moving PANDA Standarzelle");
+                ftsControl::getTransforms(this->worldFrame.c_str(), this->pandaFrame.c_str(), this->stampedtf2Cell);
                 break;
             default:
                 break;
