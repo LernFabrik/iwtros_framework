@@ -12,7 +12,6 @@ namespace iwtros{
         nh_.getParam("ur5Frame", ur5Frame);
         nh_.getParam("pandaFrame", pandaFrame);
 
-        ROS_INFO("Frame received world: %s, iiwa: %s", this->worldFrame.c_str(), this->iiwaFrame.c_str());
         /* Subscribers*/
         this->startSub = node_.subscribe<iwtros_msgs::ftsControl>("startFtsOperation", 10, boost::bind(&ftsControl::ftsStartCallback, this, _1));
         ftsOdom = node_.subscribe("odom", 100, &ftsControl::ftsOdomCallback, this);
@@ -26,9 +25,6 @@ namespace iwtros{
         /*FTS goal action client & simple goal publisher*/
         while(!ac.waitForServer(ros::Duration(10.0))){ROS_INFO("Waiting for the move_base server");}
         fts_goalPub = node_.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 20);
-
-        /* Initialize tf2*/
-        tf2_ros::TransformListener tf2Listener(this->tf2Buffer);
 
         this->lockCell =  false;
     }
@@ -72,6 +68,7 @@ namespace iwtros{
         ROS_INFO("Looking for the transformation parent: %s, child: %s", parent.c_str(), child.c_str());
         try{
             stamped = this->tf2Buffer.lookupTransform(parent, child, ros::Time(0));
+            ROS_WARN("Get the transforms");
         }catch(tf2::TransformException& e){
             ROS_INFO("%s", e.what());
             ros::Duration(0.1).sleep();
@@ -96,7 +93,7 @@ namespace iwtros{
                 break;
         }
 
-        this->goal.target_pose.header.frame_id = this->worldFrame;
+        this->goal.target_pose.header.frame_id = this->worldFrame.c_str();
         this->goal.target_pose.header.stamp = ros::Time::now();
         this->goal.target_pose.pose.position.x = this->stampedtf2Cell.transform.translation.x;
         /* Dirty method of offsetting the y - axis because first FTS should go in front of the Standardzell
