@@ -65,12 +65,13 @@ namespace iwtros{
     }
 
     void ftsControl::getTransforms(std::string parent, std::string child,  geometry_msgs::TransformStamped& stamped){
+        tf2_ros::TransformListener tfListner(this->tf2Buffer);
         ROS_INFO("Looking for the transformation parent: %s, child: %s", parent.c_str(), child.c_str());
         try{
             stamped = this->tf2Buffer.lookupTransform(parent, child, ros::Time(0));
             ROS_WARN("Get the transforms");
-        }catch(tf2::TransformException& e){
-            ROS_INFO("%s", e.what());
+        }catch(tf2::TransformException &e){
+            ROS_ERROR("%s", e.what());
             ros::Duration(0.1).sleep();
         }   
     }
