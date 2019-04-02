@@ -20,7 +20,8 @@ namespace iwtros{
         this->tableControl_iiwaPub = node_.advertise<geometry_msgs::PoseWithCovariance>(iiwa_table_topic.c_str(), 20);
         this->tableControl_ur5Pub = node_.advertise<geometry_msgs::PoseWithCovariance>(ur5_table_topic.c_str(), 20);
         this->tableControl_pandaPub = node_.advertise<geometry_msgs::PoseWithCovariance>(panda_table_topic.c_str(), 20);
-
+        this->deactScan_pub = node_.advertise<std_msgs::Bool>("deactivateScan", 10);
+        this->cmdVel_pub = node_.advertise<geometry_msgs::Twist>("cmd_vel", 20);
         /*FTS goal action client & simple goal publisher*/
         while(!ac.waitForServer(ros::Duration(10.0))){ROS_INFO("Waiting for the move_base server");}
         fts_goalPub = node_.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 20);
@@ -46,7 +47,7 @@ namespace iwtros{
             this->ftsPose.pose.orientation.z = q.z();
             this->ftsPose.pose.orientation.w = q.w();
 
-            switch(seletTable){
+            switch(this->selCell){
                 case IIWA:
                     this->tableControl_iiwaPub.publish(this->ftsPose);
                     break;
@@ -127,6 +128,30 @@ namespace iwtros{
             
     }
 
+    void ftsControl::carryCellToGoal(move_base_msgs::MoveBaseGoal dropLoc){
+        ac.sendGoal(dropLoc);
+        ac.waitForResult();
+        if(ac.getState == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Reached goal");
+        else ROS_INFO("Failed to reach goal");
+        this->lockCell = false;
+
+        /*This is a ugly method of moving the FTS from under the standardzelle because of the following reason
+        1.  We should not give new goal because scanner are not detecting the standardzelle's leg 
+            if the robot rotate the it will collide with the standardzelle
+        2.  In  the Navigation algorithm if FTS detect the obstacle in very close proximity then 
+            the FTS will not move forward therefore back scanner can not be activated untile the FTS moved
+            from under the standardzelle*/
+        ros::Rate r(20);
+        int couter = 0;
+        geometry_msgs::Twist vel;
+        vel.linear.x = 2.0;
+        while(ros::ok() && couter <= 10){
+            this->cmdVel_pub.publish(vel);
+            r.sleep();
+            couter ++;
+        }
+    }
+
     void ftsControl::ftsStartCallback(const iwtros_msgs::ftsControl::ConstPtr& msg){
         this->endGoal.target_pose.pose.position.x = msg->pose.position.x;
         this->endGoal.target_pose.pose.position.y = msg->pose.position.y;
@@ -137,8 +162,24 @@ namespace iwtros{
         this->endGoal.target_pose.pose.orientation.w = msg->pose.orientation.w;
 
         this->chooseTable = msg->selRobot;
-        if(this->chooseTable == 0) seletTable = IIWA;
-        else if(this->chooseTable == 1) seletTable = UR5;
-        else if(this->chooseTable == 2) seletTable = PANDA;
+        if(this->chooseTable == 0) this->selCell = IIWA;
+        else if(this->chooseTable == 1) this->selCell = UR5;
+        else if(this->chooseTable == 2) this->selCell = PANDA;
+
+        /*FTS Dockin to the standartdzelle*/
+        ftsControl::goToTableLocation(this->selCell);
+        ftsControl::reverseDocking();
+
+        /*Disable the back laser scanner*/
+        this->deatBackScaner.data = true;
+        this->deactScan_pub.publish(this->deatBackScaner);
+
+        /* Carry the Standardzelle to goal location */
+        ftsControl::carryCellToGoal(this->endGoal);
+
+        /*Unable the back laser scanner*/
+        this->deatBackScaner.data = false;
+        this->deactScan_pub.publish(this->deatBackScaner);
+
     }
 }

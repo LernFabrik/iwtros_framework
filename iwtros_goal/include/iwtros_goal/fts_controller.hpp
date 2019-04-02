@@ -36,6 +36,8 @@ namespace iwtros{
         ros::NodeHandle node_;
         actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac;
         ros::Publisher tableControl_iiwaPub, tableControl_ur5Pub, tableControl_pandaPub, fts_goalPub;
+        ros::Publisher deactScan_pub;
+        ros::Publisher cmdVel_pub;
         ros::Subscriber ftsOdom;
         tf2_ros::Buffer tf2Buffer;
         public:
@@ -43,6 +45,7 @@ namespace iwtros{
             ~ftsControl();
             void goToTableLocation(select_table sel);
             void reverseDocking();
+            void carryCellToGoal(move_base_msgs::MoveBaseGoal dropLoc);
             void stopRobotTask();
             void ftsOdomCallback(const nav_msgs::Odometry::ConstPtr& msg);
             void ftsStartCallback(const iwtros_msgs::ftsControl::ConstPtr& msg);
@@ -56,13 +59,14 @@ namespace iwtros{
             std::string iiwa_table_topic, ur5_table_topic, panda_table_topic;
             std::string worldFrame;
             std::string iiwaFrame, ur5Frame, pandaFrame;
-            select_table seletTable;
+            select_table selCell;
             double roll, pitch, yaw;
 
             geometry_msgs::TransformStamped stampedtf2Cell;
             move_base_msgs::MoveBaseGoal goal, endGoal;
             geometry_msgs::PoseWithCovariance ftsPose;
             uint8_t chooseTable;
+            std_msgs::Bool deatBackScaner;
 
             bool lockCell;
     };

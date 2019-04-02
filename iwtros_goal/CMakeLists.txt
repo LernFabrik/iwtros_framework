@@ -74,3 +74,20 @@ add_executable(iiwa_sb_node
 target_link_libraries(iiwa_sb_node 
   ${catkin_LIBRARIES}
 )
+
+
+############### FTS Controller ################
+add_library(fts_controller
+  src/fts_controller.cpp
+)
+target_link_libraries(fts_controller
+  ${catkin_LIBRARIES}
+)
+
+add_executable(fts_controller_node 
+  src/fts_controller_node.cpp
+)
+target_link_libraries(fts_controller_node 
+  ${catkin_LIBRARIES}
+  fts_controller
+)
