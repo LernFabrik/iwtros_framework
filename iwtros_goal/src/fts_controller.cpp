@@ -26,9 +26,6 @@ namespace iwtros{
         while(!ac.waitForServer(ros::Duration(10.0))){ROS_INFO("Waiting for the move_base server");}
         fts_goalPub = node_.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 20);
 
-        /* Initialize tf2*/
-        tf2_ros::TransformListener tf2Listener(tf2Buffer);
-
         this->lockCell =  false;
     }
 
@@ -68,8 +65,9 @@ namespace iwtros{
     }
 
     void ftsControl::getTransforms(std::string parent, std::string child,  geometry_msgs::TransformStamped& stamped){
+        tf2_ros::TransformListener tfListner(this->tf2Buffer);
         try{
-            stamped = tf2Buffer.lookupTransform(parent, child, ros::Time(0));
+            stamped = this->tf2Buffer.lookupTransform(parent, child, ros::Time(0));
             ROS_WARN("Get the transforms");
         }catch(tf2::TransformException& e){
             ROS_INFO("%s", e.what());
