@@ -12,6 +12,8 @@ namespace iwtros{
         nh_.getParam("ur5Frame", ur5Frame);
         nh_.getParam("pandaFrame", pandaFrame);
 
+        tf2_ros::TransformListener tfListner(this->tf2Buffer);
+
         /* Subscribers*/
         this->startSub = node_.subscribe<iwtros_msgs::ftsControl>("startFtsOperation", 10, boost::bind(&ftsControl::ftsStartCallback, this, _1));
         ftsOdom = node_.subscribe("odom", 100, &ftsControl::ftsOdomCallback, this);
@@ -34,7 +36,9 @@ namespace iwtros{
     }
 
     void ftsControl::ftsOdomCallback(const nav_msgs::Odometry::ConstPtr &msg){
+        //ROS_INFO("Odom callback is working");
         if(this->lockCell == true){
+            //ROS_INFO("attching the table");
             this->ftsPose.pose.position.x = msg->pose.pose.position.x;
             this->ftsPose.pose.position.y = msg->pose.pose.position.y;
             this->ftsPose.pose.position.z = msg->pose.pose.position.z;
@@ -65,7 +69,6 @@ namespace iwtros{
     }
 
     void ftsControl::getTransforms(std::string parent, std::string child,  geometry_msgs::TransformStamped& stamped){
-        tf2_ros::TransformListener tfListner(this->tf2Buffer);
         ROS_INFO("Looking for the transformation parent: %s, child: %s", parent.c_str(), child.c_str());
         try{
             stamped = this->tf2Buffer.lookupTransform(parent, child, ros::Time(0));
@@ -120,13 +123,41 @@ namespace iwtros{
         //ftsControl::reverseDocking();
     }
 
+    void ftsControl::acDoneCallback(const actionlib::SimpleClientGoalState& state){
+        ROS_INFO("Finished in state [%s]", state.toString().c_str());
+        //ROS_INFO("Answer : %s", res->status.text.c_str());
+        this->lockCell = false;
+    }
+
+    void ftsControl::acActiveCallback(){
+        ros::Rate r(30.0);
+        while(ros::ok() && (this->lockCell == true)){
+            if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED &&
+                ac.getState() == actionlib::SimpleClientGoalState::ABORTED){
+                ROS_INFO("Breaking the active loop");
+                this->lockCell = false;
+                break; 
+            }
+                
+            r.sleep();
+            ROS_INFO("inside the active callback");
+            ros::spinOnce();
+        }
+        
+    }
+
+    void ftsControl::acFailedCallback(const move_base_msgs::MoveBaseActionFeedback::ConstPtr& feedback){
+        ROS_INFO("Failed state: %s", feedback->status.text.c_str());
+        this->lockCell = false;
+    }
+
     void ftsControl::reverseDocking(){
         /* This function is used only after "goToTableLocation"*/
         ftsControl::setDynamicParam();
         this->goal.target_pose.pose.position.y = this->stampedtf2Cell.transform.translation.y;
         this->ac.sendGoal(this->goal);
         ac.waitForResult();
-        if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Reached goal");
+        if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Docking Reached goal");
         else ROS_INFO("Failed to reach goal");
 
         ftsControl::withTableDynamicParam();
@@ -137,12 +168,15 @@ namespace iwtros{
     }
 
     void ftsControl::carryCellToGoal(move_base_msgs::MoveBaseGoal dropLoc){
-        ac.sendGoal(dropLoc);
+        ac.sendGoal(dropLoc, boost::bind(&ftsControl::acDoneCallback, this,_1), 
+                    boost::bind(&ftsControl::acActiveCallback, this),
+                    iwtros::Client::SimpleFeedbackCallback());
         ac.waitForResult();
         if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Reached goal");
         else ROS_INFO("Failed to reach goal");
         this->lockCell = false;
 
+        ROS_ERROR("Carring table actin client out of the loop");
         /*This is a ugly method of moving the FTS from under the standardzelle because of the following reason
         1.  We should not give new goal because scanner are not detecting the standardzelle's leg 
             if the robot rotate the it will collide with the standardzelle
@@ -157,10 +191,14 @@ namespace iwtros{
             this->cmdVel_pub.publish(vel);
             r.sleep();
             couter ++;
+            ros::spinOnce();
+            ROS_INFO("Free forward motion");
         }
     }
 
     void ftsControl::ftsStartCallback(const iwtros_msgs::ftsControl::ConstPtr& msg){
+        this->endGoal.target_pose.header.frame_id = this->worldFrame.c_str();
+        this->endGoal.target_pose.header.stamp = ros::Time::now();
         this->endGoal.target_pose.pose.position.x = msg->pose.position.x;
         this->endGoal.target_pose.pose.position.y = msg->pose.position.y;
         this->endGoal.target_pose.pose.position.z = msg->pose.position.z;

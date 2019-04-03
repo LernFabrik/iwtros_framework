@@ -27,6 +27,7 @@
 #include <iwtros_msgs/ftsControl.h>
 
 namespace iwtros{
+    typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> Client;
     enum select_table{
         IIWA = 0,
         UR5 = 1,
@@ -34,7 +35,6 @@ namespace iwtros{
     };
     class ftsControl{
         ros::NodeHandle node_;
-        actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> ac;
         ros::Publisher tableControl_iiwaPub, tableControl_ur5Pub, tableControl_pandaPub, fts_goalPub;
         ros::Publisher deactScan_pub;
         ros::Publisher cmdVel_pub;
@@ -50,6 +50,9 @@ namespace iwtros{
             void stopRobotTask();
             void ftsOdomCallback(const nav_msgs::Odometry::ConstPtr& msg);
             void ftsStartCallback(const iwtros_msgs::ftsControl::ConstPtr& msg);
+            void acActiveCallback();
+            void acDoneCallback(const actionlib::SimpleClientGoalState& state);
+            void acFailedCallback(const move_base_msgs::MoveBaseActionFeedbackConstPtr& feedback);
         private:
             void setDynamicParam();
             void withTableDynamicParam();
@@ -70,6 +73,8 @@ namespace iwtros{
             std_msgs::Bool deatBackScaner;
 
             bool lockCell;
+
+            Client ac;
     };
 }
 
