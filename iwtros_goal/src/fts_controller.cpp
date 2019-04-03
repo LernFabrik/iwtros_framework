@@ -123,34 +123,6 @@ namespace iwtros{
         //ftsControl::reverseDocking();
     }
 
-    void ftsControl::acDoneCallback(const actionlib::SimpleClientGoalState& state){
-        ROS_INFO("Finished in state [%s]", state.toString().c_str());
-        //ROS_INFO("Answer : %s", res->status.text.c_str());
-        this->lockCell = false;
-    }
-
-    void ftsControl::acActiveCallback(){
-        ros::Rate r(30.0);
-        while(ros::ok() && (this->lockCell == true)){
-            if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED &&
-                ac.getState() == actionlib::SimpleClientGoalState::ABORTED){
-                ROS_INFO("Breaking the active loop");
-                this->lockCell = false;
-                break; 
-            }
-                
-            r.sleep();
-            ROS_INFO("inside the active callback");
-            ros::spinOnce();
-        }
-        
-    }
-
-    void ftsControl::acFailedCallback(const move_base_msgs::MoveBaseActionFeedback::ConstPtr& feedback){
-        ROS_INFO("Failed state: %s", feedback->status.text.c_str());
-        this->lockCell = false;
-    }
-
     void ftsControl::reverseDocking(){
         /* This function is used only after "goToTableLocation"*/
         ftsControl::setDynamicParam();
@@ -168,15 +140,19 @@ namespace iwtros{
     }
 
     void ftsControl::carryCellToGoal(move_base_msgs::MoveBaseGoal dropLoc){
-        ac.sendGoal(dropLoc, boost::bind(&ftsControl::acDoneCallback, this,_1), 
-                    boost::bind(&ftsControl::acActiveCallback, this),
-                    iwtros::Client::SimpleFeedbackCallback());
-        ac.waitForResult();
+        ac.sendGoal(dropLoc);
+
+        ros::Rate rate(30);
+        while(ac.getState() !=  actionlib::SimpleClientGoalState::SUCCEEDED &&
+                ac.getState() != actionlib::SimpleClientGoalState::ABORTED && ros::ok()){
+            ros::spinOnce();
+            rate.sleep();
+        }
+        
         if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Reached goal");
         else ROS_INFO("Failed to reach goal");
         this->lockCell = false;
 
-        ROS_ERROR("Carring table actin client out of the loop");
         /*This is a ugly method of moving the FTS from under the standardzelle because of the following reason
         1.  We should not give new goal because scanner are not detecting the standardzelle's leg 
             if the robot rotate the it will collide with the standardzelle
@@ -187,13 +163,14 @@ namespace iwtros{
         int couter = 0;
         geometry_msgs::Twist vel;
         vel.linear.x = 2.0;
-        while(ros::ok() && couter <= 10){
+        while(ros::ok() && couter <= 15){
             this->cmdVel_pub.publish(vel);
             r.sleep();
             couter ++;
             ros::spinOnce();
-            ROS_INFO("Free forward motion");
         }
+        vel.linear.x = 0;
+        this->cmdVel_pub.publish(vel);
     }
 
     void ftsControl::ftsStartCallback(const iwtros_msgs::ftsControl::ConstPtr& msg){

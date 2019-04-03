@@ -50,9 +50,6 @@ namespace iwtros{
             void stopRobotTask();
             void ftsOdomCallback(const nav_msgs::Odometry::ConstPtr& msg);
             void ftsStartCallback(const iwtros_msgs::ftsControl::ConstPtr& msg);
-            void acActiveCallback();
-            void acDoneCallback(const actionlib::SimpleClientGoalState& state);
-            void acFailedCallback(const move_base_msgs::MoveBaseActionFeedbackConstPtr& feedback);
         private:
             void setDynamicParam();
             void withTableDynamicParam();

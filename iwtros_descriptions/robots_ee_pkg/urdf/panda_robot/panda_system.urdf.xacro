@@ -21,12 +21,12 @@
   
   <gazebo>
       <plugin name="ROSTableControlPlugin" filename="libROSTableControlPlugin.so">
-        <table_cmd_vel>/pand/tbl_cmd_vel</table_cmd_vel>
+        <table_cmd_vel>/panda/tbl_cmd_vel</table_cmd_vel>
         <offset_x>0</offset_x>
         <offset_y>0</offset_y>
         <offset_z>1.0</offset_z>
         <offset_yaw>${pi}</offset_yaw>
-        <table_base_link>iiwa_table_base</table_base_link>
+        <table_base_link>panda_table_base</table_base_link>
       </plugin>
   </gazebo>
 
