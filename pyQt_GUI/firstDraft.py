@@ -6,8 +6,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
+import sys
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import *
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -35,12 +35,13 @@ class Ui_rosFrame(object):
         # LAUNCH Button
         self.launchEnvButton = QtGui.QPushButton(self.launchGroup)
         self.launchEnvButton.setObjectName(_fromUtf8("launchEnvButton"))
-        self.launchEnvButton.clicked.connect(self.launchButtonCallback)
+        QtCore.QObject.connect(self.launchEnvButton, QtCore.SIGNAL("clicked()"), self.launchButtonCallback)
         self.gridLayout.addWidget(self.launchEnvButton, 0, 0, 1, 1)
-
+        # Enabled Simulation checkbox
         self.enabledSimulation = QtGui.QCheckBox(self.launchGroup)
         self.enabledSimulation.setObjectName(_fromUtf8("enabledSimulation"))
         self.gridLayout.addWidget(self.enabledSimulation, 0, 1, 1, 1)
+
         self.enabledRviz = QtGui.QCheckBox(self.launchGroup)
         self.enabledRviz.setObjectName(_fromUtf8("enabledRviz"))
         self.gridLayout.addWidget(self.enabledRviz, 0, 2, 1, 1)
@@ -113,12 +114,11 @@ class Ui_rosFrame(object):
         item.setText(_translate("rosFrame", "Position 5", None))
         self.listPosition.setSortingEnabled(__sortingEnabled)
 
-    def launchButtonCallback(self, rosFrame):
-        print "Launch button is pressed"
+    def launchButtonCallback(self):
+        print "Launching the "
 
 
 if __name__ == "__main__":
-    import sys
     app = QtGui.QApplication(sys.argv)
     rosFrame = QtGui.QDialog()
     ui = Ui_rosFrame()
