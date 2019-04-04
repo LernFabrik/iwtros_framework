@@ -9,7 +9,7 @@
 #include<gazebo/common/common.hh>
 #include<gazebo/common/Plugin.hh>
 #include<gazebo/common/UpdateInfo.hh>
-#include<ignition/math2/ignition/math/Vector3.hh>
+#include<ignition/math4/ignition/math/Vector3.hh>
 #include<thread>
 #include<ros/ros.h>
 #include<ros/callback_queue.h>
