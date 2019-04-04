@@ -33,5 +33,6 @@
     <!-- Harware interface setting
     For joint_state ffrom the robot publish: https://github.com/IFL-CAMP/iiwa_stack/issues/39 -->
     <param name="/iiwa/publishJointStates" value="true" />
+    <!--param name="/iiwa/toolName" value="SchunkWSG50" /-->
     
 </launch>
