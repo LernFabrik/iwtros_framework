@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5.2)
 project(iwtros_gazebo)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -9,7 +9,7 @@ add_compile_options(-std=c++11)
 ## is used, also find other catkin packages
 
 find_package(catkin REQUIRED COMPONENTS
-  cmake_modules
+  #cmake_modules
   gazebo_msgs
   gazebo_plugins
   gazebo_ros
@@ -27,7 +27,9 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(gazebo REQUIRED)
-find_package(TinyXML REQUIRED)
+#find_package(TinyXML REQUIRED)
+set(TinyXML_INCLUDE_DIRS /usr/include)
+set(TinyXML_LIBRARIES /usr/lib/x86_64-linux-gnu/libtinyxml.so.2.6.2)
 
 ########### > before build run chmod a+x laserscan_multi_merger.cfg #############
 generate_dynamic_reconfigure_options(cfg/laserscan_multi_merger.cfg)
@@ -149,5 +151,3 @@ target_link_libraries(laserscan_multi_merger_node
 )
 add_dependencies(laserscan_multi_merger_node ${PROJECT_NAME}_gencfg)
 ##############################################
-
-

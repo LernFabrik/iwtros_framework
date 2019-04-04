@@ -71,9 +71,15 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
+<<<<<<< HEAD
   #INCLUDE_DIRS #include
   #LIBRARIES #iwtros_msgs
   CATKIN_DEPENDS message_runtime #actionlib_msgs #geometry_msgs #nav_msgs #nav_msgs #roscpp #rospy #sensor_msgs #std_msgs #tf #tf2
+=======
+  # INCLUDE_DIRS include
+  LIBRARIES iwtros_msgs
+  CATKIN_DEPENDS message_runtime actionlib_msgs geometry_msgs nav_msgs nav_msgs roscpp rospy sensor_msgs std_msgs tf tf2
+>>>>>>> melodic-lenty
   #DEPENDS #system_lib
 )
 

@@ -1,9 +1,10 @@
 #include <ros/ros.h>
 
-#include <moveit/move_group_interface/move_group.h>
+#include <moveit/move_group_interface/move_group_interface.h>
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 #include <moveit_msgs/DisplayRobotState.h>
 #include <moveit_msgs/DisplayTrajectory.h>
+#include <tf/transform_datatypes.h>
 
 enum robotState{
     STATE1 = 0,
@@ -65,7 +66,7 @@ int main(int argc, char** argv){
     target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(0.0, 3.14, 0.0);
     
     iiwa_group.setPoseTarget(target_pose);
-    moveit::planning_interface::MoveGroup::Plan my_plan;
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     moveit::planning_interface::MoveItErrorCode success =  iiwa_group.plan(my_plan);
     ROS_INFO("plan: %s", success?"SUCCESS":"FAIL");
     if(success){
