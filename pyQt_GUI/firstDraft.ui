@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>rosFrame</class>
+ <widget class="QDialog" name="rosFrame">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>ROS Framework</string>
   </property>
   <widget class="QGroupBox" name="launchGroup">
    <property name="geometry">
@@ -27,7 +27,7 @@
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QPushButton" name="launchEnv">
+     <widget class="QPushButton" name="launchEnvButton">
       <property name="text">
        <string>LAUNCH</string>
       </property>
@@ -47,19 +47,12 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="3">
-     <widget class="QCheckBox" name="enabledGazebo">
-      <property name="text">
-       <string>Gazebo</string>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QPushButton" name="stopButton">
    <property name="geometry">
     <rect>
-     <x>90</x>
+     <x>160</x>
      <y>240</y>
      <width>99</width>
      <height>27</height>
@@ -83,7 +76,7 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QPushButton" name="ftsGo">
+     <widget class="QPushButton" name="ftsGoButton">
       <property name="text">
        <string>GO</string>
       </property>
@@ -144,7 +137,7 @@
      </widget>
     </item>
    </layout>
-   <zorder>ftsGo</zorder>
+   <zorder>ftsGoButton</zorder>
    <zorder>selPanda</zorder>
    <zorder></zorder>
    <zorder>listPosition</zorder>
