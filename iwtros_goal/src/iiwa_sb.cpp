@@ -38,7 +38,7 @@ void getPoses(geometry_msgs::PoseStamped &poses, robotState state){
     
         default:
             break;
-    }
+    };
 }
 
 int main(int argc, char** argv){
