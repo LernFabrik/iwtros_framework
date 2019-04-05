@@ -6,7 +6,10 @@
 #
 # WARNING! All changes made in this file will be lost!
 
+import os
 import sys
+import signal
+import subprocess
 from PyQt4 import QtCore, QtGui
 
 try:
@@ -24,6 +27,10 @@ except AttributeError:
         return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_rosFrame(object):
+    def __init__(self, rosFrame):
+        self.enable_sim = True
+        self.enabled_rviz = True
+
     def setupUi(self, rosFrame):
         rosFrame.setObjectName(_fromUtf8("rosFrame"))
         rosFrame.resize(450, 324)
@@ -40,14 +47,21 @@ class Ui_rosFrame(object):
         # Enabled Simulation checkbox
         self.enabledSimulation = QtGui.QCheckBox(self.launchGroup)
         self.enabledSimulation.setObjectName(_fromUtf8("enabledSimulation"))
+        self.enabledSimulation.setChecked(True)
+        self.enabledSimulation.stateChanged.connect(lambda:self.checkBoxCallback(self.enabledSimulation))
         self.gridLayout.addWidget(self.enabledSimulation, 0, 1, 1, 1)
-
+        # Enable rviz
         self.enabledRviz = QtGui.QCheckBox(self.launchGroup)
         self.enabledRviz.setObjectName(_fromUtf8("enabledRviz"))
+        self.enabledRviz.setChecked(True)
+        self.enabledRviz.stateChanged.connect(lambda:self.checkBoxCallback(self.enabledRviz))
         self.gridLayout.addWidget(self.enabledRviz, 0, 2, 1, 1)
+        # STOP Button
         self.stopButton = QtGui.QPushButton(rosFrame)
         self.stopButton.setGeometry(QtCore.QRect(160, 240, 99, 27))
+        QtCore.QObject.connect(self.stopButton, QtCore.SIGNAL("clicked()"), self.stopButtonCallback)
         self.stopButton.setObjectName(_fromUtf8("stopButton"))
+
         self.ftsControlGroup = QtGui.QGroupBox(rosFrame)
         self.ftsControlGroup.setGeometry(QtCore.QRect(20, 100, 331, 91))
         self.ftsControlGroup.setObjectName(_fromUtf8("ftsControlGroup"))
@@ -113,15 +127,54 @@ class Ui_rosFrame(object):
         item = self.listPosition.item(4)
         item.setText(_translate("rosFrame", "Position 5", None))
         self.listPosition.setSortingEnabled(__sortingEnabled)
-
+    
+    def checkBoxCallback(self, checked):
+        print "--------- Check Box State ---------"
+        if checked.text() == "Simulation":
+            if checked.isChecked() == False:
+                self.enable_sim = False
+                print checked.text() + " is disabled!"
+            else:
+                self.enable_sim = True
+                print checked.text() + " is enabled!"
+        if checked.text() == "rviz":
+            if checked.isChecked() == False:
+                self.enabled_rviz = False
+                print checked.text() + " is disabled!"
+            else:
+                self.enabled_rviz = True
+                print checked.text() + " is enabled!"
+                    
     def launchButtonCallback(self):
-        print "Launching the "
+        if self.enable_sim == False:
+            if self.enabled_rviz == False:
+                print "launching sim:=false rviz:=false"
+                os.system('roslaunch iwtros_launch iwtros_env.launch sim:=false rviz:=false &')
+            else:
+                print "launching sim:=false"
+                os.system('roslaunch iwtros_launch iwtros_env.launch sim:=false &')
+        else:
+            if self.enabled_rviz == False:
+                print "launching rviz:=false"
+                os.system('roslaunch iwtros_launch iwtros_env.launch rviz:=false &')
+            else:
+                print "launching"
+                os.system('roslaunch iwtros_launch iwtros_env.launch &')
+        self.launchEnvButton.setDisabled(True)
+    
+    def stopButtonCallback(self):
+        print sys.argv
+        os.system('rosnode kill -a &')
+        os.system('killall -9 roscore &')
+        os.system('killall -9 rosmaster &')
+        self.launchEnvButton.setDisabled(False)
+        
 
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     rosFrame = QtGui.QDialog()
-    ui = Ui_rosFrame()
+    ui = Ui_rosFrame(rosFrame)
     ui.setupUi(rosFrame)
     rosFrame.show()
     sys.exit(app.exec_())
