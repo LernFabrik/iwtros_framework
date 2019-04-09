@@ -168,6 +168,13 @@ class Ui_rosFrame(object):
         os.system('killall -9 roscore &')
         os.system('killall -9 rosmaster &')
         self.launchEnvButton.setDisabled(False)
+
+        msg = QtGui.QMessageBox()
+        msg.setIcon(QtGui.QMessageBox.Critical)
+        msg.setText("Killing ROS Master")
+        msg.setWindowTitle("Wait!")
+        msg.setDetailedText("wait until ROS nodes are killed and you see the message done in the terminal")
+        msg.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
         
 
 
