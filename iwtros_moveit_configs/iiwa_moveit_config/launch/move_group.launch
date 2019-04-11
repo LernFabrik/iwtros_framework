@@ -20,8 +20,8 @@
   <arg name="jiggle_fraction" default="0.05" />
   <arg name="publish_monitored_planning_scene" default="true"/>
 
-  <arg name="capabilities" default=""/>
-  <arg name="disable_capabilities" default=""/>
+  <arg name="capabilities" default="false"/>
+  <arg name="disable_capabilities" default="false"/>
   <!-- load these non-default MoveGroup capabilities (space seperated) -->
   <!--
   <arg name="capabilities" value="

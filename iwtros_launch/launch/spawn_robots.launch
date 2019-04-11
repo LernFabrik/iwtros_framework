@@ -22,11 +22,32 @@
     </include -->
 
     <!-- IIWA Simulation -->
+    <group ns="iiwa" if="$(arg sim)">
+        <include file="$(find iwtros_gazebo)/launch/spawn_iiwa.launch" />
+    </group>
     <group ns="iiwa">
-        <include file="$(find iiwa_moveit_config)/launch/move_group.launch"/>
+        <include file="$(find iiwa_moveit_config)/launch/move_group.launch">
+            <arg name="capabilities" default="true"/>
+            <arg name="disable_capabilities" default="true"/>
+        </include>
     </group>
 
-    
+    <!-- UR5 Simulation -->
+    <group ns="ur5" if="$(arg sim)">
+        <include file="$(find iwtros_gazebo)/launch/spawn_ur5.launch" />
+    </group>
+    <group ns="ur5">
+        <include file="$(find ur5_moveit_config)/launch/move_group.launch"/>
+    </group>
+
+    <!-- Panda Simulation -->
+    <group ns="panda" if="$(arg sim)">
+        <include file="$(find iwtros_gazebo)/launch/spawn_panda.launch" />
+    </group>
+    <group ns="panda">
+        <include file="$(find panda_moveit_configs)/launch/move_group.launch"/>
+    </group>
+
     <!-- HARDWARE -->
     <!-- Working with the real robot.  -->
     <group ns="iiwa" unless="$(arg sim)">
@@ -40,7 +61,7 @@
         </include>
         
         <!-- Robot interface -->
-        <include file="$(find iwtros_goal)/launch/robot_hw/iiwa_hw.launch" >
+        <include file="$(find iwtros_launch)/launch/robot_hw/iiwa_hw.launch" >
             <arg name="hardware_interface" value="$(arg hardware_interface)" />
         </include>
         
