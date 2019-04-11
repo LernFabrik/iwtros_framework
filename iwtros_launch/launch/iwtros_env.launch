@@ -12,7 +12,7 @@
   <arg name="extra_gazebo_args" default="--verbose"/>
 
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+  <include if="$(arg sim)" file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find iwtros_gazebo)/worlds/iwtros2.world"/>
     <arg name="debug" value="$(arg debug)" />
     <arg name="gui" value="$(arg gui)" />
@@ -24,8 +24,11 @@
   
   <!-- Spawn the URDF objects into Gazebo -->
   <include file="$(find iwtros_gazebo)/launch/spawn_static_world_object.launch"/>
-  <include file="$(find iwtros_launch)/launch/spawn_robots.launch"/>
+  <include if="$(arg sim)" file="$(find iwtros_launch)/launch/spawn_robots.launch"/>
   <include file="$(find iwtros_gazebo)/launch/spawn_omronld.launch"/>
+
+  <!-- Hardware spwaner-->
+   <include unless="$(arg sim)" file="$(find iwtros_launch)/launch/robot_hw/iiwa_hw_controller.launch"/>
     
   <!-- Start the AMCL-->
   <arg name="map_file" default="$(find iwtros_gazebo)/map/test6.yaml"/>
