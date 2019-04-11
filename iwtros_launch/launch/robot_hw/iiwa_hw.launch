@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<launch>
+    
+    <!-- LAUNCH INTERFACE -->
+    <arg name="hardware_interface" default="PositionJointInterface"/>
+    <arg name="robot_name" default="iiwa"/>
+
+    <param name="robot_description"
+        command="$(find xacro)/xacro --inorder '$(find robots_ee_pkg)/urdf/kuka_robot/kuka_iiwa7_system.urdf.xacro' robot_name:=$(arg robot_name) robot_param:=robot_description workcell_parent:=$(arg robot_name)_interface" />
+
+    <!-- LAUNCH IMPLEMENTATION -->
+    <rosparam command="load" file="$(find iiwa_hw)/config/joint_names.yaml" />
+    <!-- addresses /-->
+    <param name="interface" value="$(arg hardware_interface)"/>
+    
+    <!-- the real hardware interface /-->
+    <node name="iiwa_hw" pkg="iiwa_hw" type="iiwa_hw-bin" respawn="false" output="screen">
+    </node>
+
+    <!-- Harware interface setting
+    For joint_state ffrom the robot publish: https://github.com/IFL-CAMP/iiwa_stack/issues/39 -->
+    <param name="/iiwa/publishJointStates" value="true" />
+    <!--param name="/iiwa/toolName" value="SchunkWSG50" /-->
+    
+</launch>
