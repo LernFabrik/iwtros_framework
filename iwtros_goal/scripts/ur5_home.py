@@ -18,6 +18,8 @@ def ur5_home():
     rospy.init_node('ur5_home', anonymous=True)
 
     ur5_group = moveit_commander.MoveGroupCommander("ur5_arm")
+    ur5_group.set_max_acceleration_scaling_factor(1.0)
+    ur5_group.set_max_velocity_scaling_factor(1.0)
 
     ur5_client = actionlib.SimpleActionClient('execute_trajectory', moveit_msgs.msg.ExecuteTrajectoryAction)
     ur5_client.wait_for_server()
