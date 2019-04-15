@@ -28,5 +28,5 @@ int main(int argc, char** argv){
     ROS_INFO("End effector cartesion Orientation x: %d , y: %d, z: %d, w: %d", current_pose.pose.orientation.x,
                                                                 current_pose.pose.orientation.y,
                                                                 current_pose.pose.orientation.z,
-                                                                current_pose.pose.orientation.w);
+                                                                current_pose.pose.orientation.w)
 }
