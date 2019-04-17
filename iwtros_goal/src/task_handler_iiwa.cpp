@@ -4,6 +4,7 @@
 #include <moveit_msgs/DisplayRobotState.h>
 #include <moveit_msgs/DisplayTrajectory.h>
 
+<<<<<<< Updated upstream
 enum robotState{
     STATE1 = 0,
     STATE2 = 1,
@@ -41,6 +42,15 @@ void getPoses(geometry_msgs::PoseStamped &poses, robotState state){
 }
 
 
+=======
+#include <fstream>
+
+
+void storeNewPoses(){
+    
+}
+
+>>>>>>> Stashed changes
 int main(int argc, char** argv){
     ros::init(argc, argv, "iiwa_task_handler");
     ros::AsyncSpinner spinner(1);
@@ -66,6 +76,7 @@ int main(int argc, char** argv){
                                                                 current_pose.pose.orientation.y,
                                                                 current_pose.pose.orientation.z,
                                                                 current_pose.pose.orientation.w);
+<<<<<<< Updated upstream
 
     geometry_msgs::PoseStamped target_pose;
     robotState state = STATE1;
@@ -106,3 +117,6 @@ int main(int argc, char** argv){
     
     
 }
+=======
+}
+>>>>>>> Stashed changes
