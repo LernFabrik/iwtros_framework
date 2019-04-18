@@ -17,3 +17,4 @@ clearing_rotation_allowed: false
 
 shutdown_costmap: false
 base_local_planner: "dwa_local_planner/DWAPlannerROS"
+base_global_planner: "global_planner/GlobalPlanner"
