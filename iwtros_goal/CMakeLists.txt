@@ -92,3 +92,12 @@ target_link_libraries(fts_controller_node
   ${catkin_LIBRARIES}
   fts_controller
 )
+
+
+################ Panda Pick Place ###############
+add_executable(panda_pick_place_node 
+  src/panda_pick_place.cpp
+)
+target_link_libraries(panda_pick_place_node 
+  ${catkin_LIBRARIES}
+)

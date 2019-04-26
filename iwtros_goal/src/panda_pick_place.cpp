@@ -60,10 +60,12 @@ void pick(moveit::planning_interface::MoveGroupInterface& move_group){
     grasps[0].post_grasp_retreat.desired_distance = 0.25;
 
     // Setting up figure in open positon before grasp
+    openGripper(grasps[0].pre_grasp_posture);
 
     // Close the fingure after the grasp
+    closeGripper(grasps[0].grasp_posture);
 
-    move_group.setSupportSurfaceName("PandaTablePick");
+    move_group.setSupportSurfaceName("table1");
     move_group.pick("object", grasps);
 }
 
@@ -95,9 +97,82 @@ void place(moveit::planning_interface::MoveGroupInterface& move_group){
     place_location[0].post_place_retreat.desired_distance = 0.25;
 
     //Setting posture of the eef after placing the object
+    openGripper(place_location[0].post_place_posture);
 
-    move_group.setSupportSurfaceName("PandaTablePlace");
+    move_group.setSupportSurfaceName("table2");
     move_group.place("object", place_location); 
+}
+
+void addCollisionObject(moveit::planning_interface::PlanningSceneInterface& planning_scene_interface){
+    std::vector<moveit_msgs::CollisionObject> collision_objects;
+    collision_objects.resize(3);
+
+    // Add the first table where the cube will originally be kept.
+    collision_objects[0].id = "table1";
+    collision_objects[0].header.frame_id = "panda_link0";
+
+    /* Define the primitive and its dimensions. */
+    collision_objects[0].primitives.resize(1);
+    collision_objects[0].primitives[0].type = collision_objects[0].primitives[0].BOX;
+    collision_objects[0].primitives[0].dimensions.resize(3);
+    collision_objects[0].primitives[0].dimensions[0] = 0.2;
+    collision_objects[0].primitives[0].dimensions[1] = 0.4;
+    collision_objects[0].primitives[0].dimensions[2] = 0.4;
+
+    /* Define the pose of the table. */
+    collision_objects[0].primitive_poses.resize(1);
+    collision_objects[0].primitive_poses[0].position.x = 0.5;
+    collision_objects[0].primitive_poses[0].position.y = 0;
+    collision_objects[0].primitive_poses[0].position.z = 0.2;
+    // END_SUB_TUTORIAL
+
+    collision_objects[0].operation = collision_objects[0].ADD;
+
+    // BEGIN_SUB_TUTORIAL table2
+    // Add the second table where we will be placing the cube.
+    collision_objects[1].id = "table2";
+    collision_objects[1].header.frame_id = "panda_link0";
+
+    /* Define the primitive and its dimensions. */
+    collision_objects[1].primitives.resize(1);
+    collision_objects[1].primitives[0].type = collision_objects[1].primitives[0].BOX;
+    collision_objects[1].primitives[0].dimensions.resize(3);
+    collision_objects[1].primitives[0].dimensions[0] = 0.4;
+    collision_objects[1].primitives[0].dimensions[1] = 0.2;
+    collision_objects[1].primitives[0].dimensions[2] = 0.4;
+
+    /* Define the pose of the table. */
+    collision_objects[1].primitive_poses.resize(1);
+    collision_objects[1].primitive_poses[0].position.x = 0;
+    collision_objects[1].primitive_poses[0].position.y = 0.5;
+    collision_objects[1].primitive_poses[0].position.z = 0.2;
+    // END_SUB_TUTORIAL
+
+    collision_objects[1].operation = collision_objects[1].ADD;
+
+    // BEGIN_SUB_TUTORIAL object
+    // Define the object that we will be manipulating
+    collision_objects[2].header.frame_id = "panda_link0";
+    collision_objects[2].id = "object";
+
+    /* Define the primitive and its dimensions. */
+    collision_objects[2].primitives.resize(1);
+    collision_objects[2].primitives[0].type = collision_objects[1].primitives[0].BOX;
+    collision_objects[2].primitives[0].dimensions.resize(3);
+    collision_objects[2].primitives[0].dimensions[0] = 0.02;
+    collision_objects[2].primitives[0].dimensions[1] = 0.02;
+    collision_objects[2].primitives[0].dimensions[2] = 0.2;
+
+    /* Define the pose of the object. */
+    collision_objects[2].primitive_poses.resize(1);
+    collision_objects[2].primitive_poses[0].position.x = 0.5;
+    collision_objects[2].primitive_poses[0].position.y = 0;
+    collision_objects[2].primitive_poses[0].position.z = 0.5;
+    // END_SUB_TUTORIAL
+
+    collision_objects[2].operation = collision_objects[2].ADD;
+
+    planning_scene_interface.applyCollisionObjects(collision_objects);
 }
 
 int main(int argc, char** argv){
@@ -112,6 +187,8 @@ int main(int argc, char** argv){
     move_group.setPlanningTime(45.0);
 
     //add collision object with planning scene
+    addCollisionObject(planning_scene_interface);
+
     ros::WallDuration(1.0).sleep();
 
     pick(move_group);

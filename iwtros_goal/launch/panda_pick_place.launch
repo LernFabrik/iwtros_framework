@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+  <node name="pick_place" pkg="iwtros_goal" type="panda_pick_place_node" output="screen" ns="panda"/>
+</launch>
