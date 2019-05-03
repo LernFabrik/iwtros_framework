@@ -1,4 +1,4 @@
-# iwtros_framework
+# iwtros_framework (Melodic)
 
 **Current status**: Compilation done, not tested  
 
@@ -13,7 +13,9 @@ To shift from kinetic to melodic. Compilation fails due to the following reasons
 1. Gazebo plugin in iwtros_gazeo, is currently ugly fixed, due to uuid or tinyxml not found by cmake  
 [Discussion](https://bitbucket.org/ignitionrobotics/ign-cmake/issues/40/target-uuid-uuid-does-not-exist)  
 [Other possible solution](https://blog.csdn.net/zjq2008wd/article/details/17450033) add softlink  
-[ignition cmake](https://bitbucket.org/ignitionrobotics/ign-cmake)  
+[ignition cmake](https://bitbucket.org/ignitionrobotics/ign-cmake)
+2. Solve naviation stack
+3. [URDF migration](http://wiki.ros.org/melodic/Migration). Currently some of mesh file is not visible.
 
 libfraka build path setup:
 catkin build -DCMAKE_BUILD_TYPE=Release -DFranka_DIR:PATH=/($ Path)/libfranka/build

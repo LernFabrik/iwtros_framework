@@ -4,7 +4,7 @@
   <arg name="robot_fts" default="omronld" />
 
     <param name="$(arg robot_fts)_description"
-      command="$(find xacro)xacro --inorder '$(find omronld_description)/urdf/omronld.urdf.xacro' robot_description:=$(arg robot_fts)_description" />
+      command="$(find xacro)xacro --legacy '$(find omronld_description)/urdf/omronld.urdf.xacro' robot_description:=$(arg robot_fts)_description" />
 
     <node name="omronld_robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" >
       <param name="publish_frequency" type="double" value="50.0" />
