@@ -55,6 +55,7 @@
     <rosparam file="$(find omronld_gazebo)/param/global_costmap_params.yaml" command="load" />
     <rosparam file="$(find omronld_gazebo)/param/base_local_planner_params.yaml" command="load" />
     <rosparam file="$(find omronld_gazebo)/param/dwa_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find omronld_gazebo)/param/base_global_planner_params.yaml" command="load" />
     <rosparam file="$(find omronld_gazebo)/param/move_base_params.yaml" command="load" />
   </node>
 </launch>
