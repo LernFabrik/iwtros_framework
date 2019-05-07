@@ -4,6 +4,11 @@
 
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
+/* Robot model and robot states*/
+#include <moveit/robot_model_loader/robot_model_loader.h>
+#include <moveit/robot_model/robot_model.h>
+#include <moveit/robot_state/robot_state.h>
+
 void openGripper(trajectory_msgs::JointTrajectory& posture){
     posture.joint_names.resize(2);
     posture.joint_names[0] = "panda_finger_joint1";
@@ -22,7 +27,7 @@ void closeGripper(trajectory_msgs::JointTrajectory& posture){
     posture.joint_names[0] = "panda_finger_joint1";
     posture.joint_names[1] = "panda_finger_joint2";
 
-    // Set as open, wide enough if panda robot;
+    // Set them as closed;
     posture.points.resize(1);
     posture.points[0].positions.resize(2);
     posture.points[0].positions[0] = 0.0;
@@ -42,20 +47,20 @@ void pick(moveit::planning_interface::MoveGroupInterface& move_group){
     orientation.setRPY(M_PI, 0, -M_PI/4);
     grasps[0].grasp_pose.pose.position.x = 0.43;
     grasps[0].grasp_pose.pose.position.y = 0;
-    grasps[0].grasp_pose.pose.position.z = 0.125;
+    grasps[0].grasp_pose.pose.position.z = 0.130;
     grasps[0].grasp_pose.pose.orientation = tf2::toMsg(orientation);
 
     // Setting pre-grasp approach
     grasps[0].pre_grasp_approach.direction.header.frame_id = "panda_link0";
     /*Direction is set to positive z axis*/
-    grasps[0].pre_grasp_approach.direction.vector.z = 1.0;
-    grasps[0].pre_grasp_approach.min_distance = 0.1;
-    grasps[0].pre_grasp_approach.desired_distance = 0.120;
+    grasps[0].pre_grasp_approach.direction.vector.z = -1.0;
+    grasps[0].pre_grasp_approach.min_distance = 0.095;
+    grasps[0].pre_grasp_approach.desired_distance = 0.115;
 
     // Setting post-grasp retreat
     grasps[0].post_grasp_retreat.direction.header.frame_id = "panda_link8";
     /* Test this before deploying in Hardware*/
-    grasps[0].post_grasp_retreat.direction.vector.z = - 1.0;
+    grasps[0].post_grasp_retreat.direction.vector.z = -1.0;
     grasps[0].post_grasp_retreat.min_distance = 0.1;
     grasps[0].post_grasp_retreat.desired_distance = 0.25;
 
@@ -65,7 +70,7 @@ void pick(moveit::planning_interface::MoveGroupInterface& move_group){
     // Close the fingure after the grasp
     closeGripper(grasps[0].grasp_posture);
 
-    move_group.setSupportSurfaceName("table1");
+    move_group.setSupportSurfaceName("panda_table_ee");
     move_group.pick("object", grasps);
 }
 
@@ -76,19 +81,19 @@ void place(moveit::planning_interface::MoveGroupInterface& move_group){
     // Setting up place location pose
     place_location[0].place_pose.header.frame_id = "panda_link0";
     tf2::Quaternion q;
-    q.setRPY(M_PI, 0, -M_PI/4);
+    q.setRPY(M_PI, 0, -M_PI / 4);
     place_location[0].place_pose.pose.orientation = tf2::toMsg(q);
     place_location[0].place_pose.pose.position.x = 0.48;
-    place_location[0].place_pose.pose.position.y = - 0.2;
-    place_location[0].place_pose.pose.position.z = 0.125;
+    place_location[0].place_pose.pose.position.y = -0.210;
+    place_location[0].place_pose.pose.position.z = 0.130;
 
 
     //Setting up pre pllace approach
     place_location[0].pre_place_approach.direction.header.frame_id = "panda_link0";
     // Direction is set to positive z direction
-    place_location[0].pre_place_approach.direction.vector.z = 1.0;
-    place_location[0].pre_place_approach.min_distance = 0.1;
-    place_location[0].pre_place_approach.desired_distance = 0.12;
+    place_location[0].pre_place_approach.direction.vector.z = -1.0;
+    place_location[0].pre_place_approach.min_distance = 0.095;
+    place_location[0].pre_place_approach.desired_distance = 0.115;
 
     // Setting post grasp retreat
     place_location[0].post_place_retreat.direction.header.frame_id = "panda_link0";
@@ -99,78 +104,33 @@ void place(moveit::planning_interface::MoveGroupInterface& move_group){
     //Setting posture of the eef after placing the object
     openGripper(place_location[0].post_place_posture);
 
-    move_group.setSupportSurfaceName("table2");
+    move_group.setSupportSurfaceName("panda_table_ee");
     move_group.place("object", place_location); 
 }
 
 void addCollisionObject(moveit::planning_interface::PlanningSceneInterface& planning_scene_interface){
     std::vector<moveit_msgs::CollisionObject> collision_objects;
-    collision_objects.resize(3);
+    collision_objects.resize(1);
 
     // Add the first table where the cube will originally be kept.
-    collision_objects[0].id = "table1";
+    collision_objects[0].id = "object";
     collision_objects[0].header.frame_id = "panda_link0";
 
     /* Define the primitive and its dimensions. */
     collision_objects[0].primitives.resize(1);
-    collision_objects[0].primitives[0].type = collision_objects[0].primitives[0].BOX;
+    collision_objects[0].primitives[0].type = collision_objects[0].primitives[0].CYLINDER;
     collision_objects[0].primitives[0].dimensions.resize(3);
-    collision_objects[0].primitives[0].dimensions[0] = 0.2;
-    collision_objects[0].primitives[0].dimensions[1] = 0.4;
-    collision_objects[0].primitives[0].dimensions[2] = 0.4;
+    collision_objects[0].primitives[0].dimensions[0] = 0.01;    // height
+    collision_objects[0].primitives[0].dimensions[1] = 0.02;    // radiis
 
     /* Define the pose of the table. */
     collision_objects[0].primitive_poses.resize(1);
-    collision_objects[0].primitive_poses[0].position.x = 0.5;
+    collision_objects[0].primitive_poses[0].position.x = 0.43;
     collision_objects[0].primitive_poses[0].position.y = 0;
-    collision_objects[0].primitive_poses[0].position.z = 0.2;
+    collision_objects[0].primitive_poses[0].position.z = 0.01;
     // END_SUB_TUTORIAL
 
     collision_objects[0].operation = collision_objects[0].ADD;
-
-    // BEGIN_SUB_TUTORIAL table2
-    // Add the second table where we will be placing the cube.
-    collision_objects[1].id = "table2";
-    collision_objects[1].header.frame_id = "panda_link0";
-
-    /* Define the primitive and its dimensions. */
-    collision_objects[1].primitives.resize(1);
-    collision_objects[1].primitives[0].type = collision_objects[1].primitives[0].BOX;
-    collision_objects[1].primitives[0].dimensions.resize(3);
-    collision_objects[1].primitives[0].dimensions[0] = 0.4;
-    collision_objects[1].primitives[0].dimensions[1] = 0.2;
-    collision_objects[1].primitives[0].dimensions[2] = 0.4;
-
-    /* Define the pose of the table. */
-    collision_objects[1].primitive_poses.resize(1);
-    collision_objects[1].primitive_poses[0].position.x = 0;
-    collision_objects[1].primitive_poses[0].position.y = 0.5;
-    collision_objects[1].primitive_poses[0].position.z = 0.2;
-    // END_SUB_TUTORIAL
-
-    collision_objects[1].operation = collision_objects[1].ADD;
-
-    // BEGIN_SUB_TUTORIAL object
-    // Define the object that we will be manipulating
-    collision_objects[2].header.frame_id = "panda_link0";
-    collision_objects[2].id = "object";
-
-    /* Define the primitive and its dimensions. */
-    collision_objects[2].primitives.resize(1);
-    collision_objects[2].primitives[0].type = collision_objects[1].primitives[0].BOX;
-    collision_objects[2].primitives[0].dimensions.resize(3);
-    collision_objects[2].primitives[0].dimensions[0] = 0.02;
-    collision_objects[2].primitives[0].dimensions[1] = 0.02;
-    collision_objects[2].primitives[0].dimensions[2] = 0.2;
-
-    /* Define the pose of the object. */
-    collision_objects[2].primitive_poses.resize(1);
-    collision_objects[2].primitive_poses[0].position.x = 0.5;
-    collision_objects[2].primitive_poses[0].position.y = 0;
-    collision_objects[2].primitive_poses[0].position.z = 0.5;
-    // END_SUB_TUTORIAL
-
-    collision_objects[2].operation = collision_objects[2].ADD;
 
     planning_scene_interface.applyCollisionObjects(collision_objects);
 }
@@ -180,6 +140,31 @@ int main(int argc, char** argv){
     ros::NodeHandle nh;
     ros::AsyncSpinner sppinner(1);
     sppinner.start();
+
+    /* Robot model and robot states: http://docs.ros.org/kinetic/api/moveit_tutorials/html/doc/robot_model_and_robot_state/robot_model_and_robot_state_tutorial.html*/
+    robot_model_loader::RobotModelLoader robot_model_loader("robot_description");
+    robot_model::RobotModelPtr kinematic_model = robot_model_loader.getModel();
+    ROS_INFO("Model name: %s", kinematic_model->getModelFrame().c_str());
+    robot_state::RobotStatePtr kinematic_state(new robot_state::RobotState(kinematic_model));
+    kinematic_state->setToDefaultValues();
+    const robot_state::JointModelGroup* joint_model_group = kinematic_model->getJointModelGroup("panda_arm");
+    const std::vector<std::string>& joint_names = joint_model_group->getVariableNames();
+    std::vector<double> joint_values;
+    kinematic_state->copyJointGroupPositions(joint_model_group, joint_values);
+    for(std::size_t i = 0; i < joint_names.size(); ++i){
+        ROS_INFO("Joint %s: %f", joint_names[i].c_str(), joint_values[i]);
+    }
+    // Set joint limits
+    /*joint_values[0] = 5.57;
+    kinematic_state->setJointGroupPositions(joint_model_group, joint_values);
+    ROS_INFO_STREAM("Current state is " << (kinematic_state->satisfiesBounds() ? "valid" : "not valid"));
+    kinematic_state->enforceBounds();
+    ROS_INFO_STREAM("Current state is " << (kinematic_state->satisfiesBounds() ? "valid" : "not valid"));*/
+    /******
+     * TODO: 1. Forward Kinematics
+     *       2. Inverse Kinematics
+     *       3. Get the Jacobian
+    /****************************************************************************************/
 
     ros::WallDuration(1.0).sleep();
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
