@@ -1,0 +1,2 @@
+[submodule "moveit_tutorials"]
+	url = https://github.com/ros-planning/moveit_tutorials.git
