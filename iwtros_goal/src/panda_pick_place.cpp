@@ -81,10 +81,10 @@ void place(moveit::planning_interface::MoveGroupInterface& move_group){
     // Setting up place location pose
     place_location[0].place_pose.header.frame_id = "panda_link0";
     tf2::Quaternion q;
-    q.setRPY(M_PI, 0, -M_PI / 4);
+    q.setRPY(0, 0, 0);
     place_location[0].place_pose.pose.orientation = tf2::toMsg(q);
-    place_location[0].place_pose.pose.position.x = 0.48;
-    place_location[0].place_pose.pose.position.y = -0.210;
+    place_location[0].place_pose.pose.position.x = 0.50;
+    place_location[0].place_pose.pose.position.y = -0.40;
     place_location[0].place_pose.pose.position.z = 0.130;
 
 
@@ -97,7 +97,7 @@ void place(moveit::planning_interface::MoveGroupInterface& move_group){
 
     // Setting post grasp retreat
     place_location[0].post_place_retreat.direction.header.frame_id = "panda_link0";
-    place_location[0].post_place_retreat.direction.vector.z = -1.0;
+    place_location[0].post_place_retreat.direction.vector.z = 1.0;
     place_location[0].post_place_retreat.min_distance = 0.1;
     place_location[0].post_place_retreat.desired_distance = 0.25;
 
