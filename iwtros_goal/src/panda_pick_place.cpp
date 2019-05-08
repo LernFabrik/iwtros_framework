@@ -83,9 +83,9 @@ void place(moveit::planning_interface::MoveGroupInterface& move_group){
     tf2::Quaternion q;
     q.setRPY(0, 0, 0);
     place_location[0].place_pose.pose.orientation = tf2::toMsg(q);
-    place_location[0].place_pose.pose.position.x = 0.50;
+    place_location[0].place_pose.pose.position.x = 0.1;
     place_location[0].place_pose.pose.position.y = -0.40;
-    place_location[0].place_pose.pose.position.z = 0.130;
+    place_location[0].place_pose.pose.position.z = 0.0;
 
 
     //Setting up pre pllace approach
@@ -170,7 +170,8 @@ int main(int argc, char** argv){
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
     moveit::planning_interface::MoveGroupInterface move_group("panda_arm");
     move_group.setPlanningTime(45.0);
-
+    move_group.setMaxVelocityScalingFactor(0.75);
+    move_group.setMaxAccelerationScalingFactor(0.5);
     //add collision object with planning scene
     addCollisionObject(planning_scene_interface);
 
