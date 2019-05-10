@@ -8,7 +8,7 @@
 
     <include file="$(find iwtros_gazebo)/launch/controllers/panda_control.launch">
       <arg name="hardware_interface" value="$(arg hardware_interface)"/>
-      <arg name="controllers" value="$(arg robot_name)_joint_state_controller $(arg hardware_interface)_$(arg robot_name)_arm_trajectory_controller"/>
+      <arg name="controllers" value="$(arg robot_name)_joint_state_controller position_joint_trajectory_controller"/>
       <arg name="robot_name" value="$(arg robot_name)"/>
     </include>
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
