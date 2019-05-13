@@ -173,12 +173,12 @@ int main(int argc, char** argv){
         srv_req.config = config;
         ros::service::call("/move_base/DWAPlannerROS", srv_req, srv_res);*/
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 0.0");
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x -0.7");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x -2.5");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.1");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel -0.1");
         system("rosrun dynamic_reconfigure dynparam set /move_base/local_costmap/inflation_layer inflation_radius 0.01");
         system("rosrun dynamic_reconfigure dynparam set /move_base/global_costmap/inflation_layer inflation_radius 0.01");
-        goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y;
+        goal.target_pose.pose.position.y = stampedTfIIWA.transform.translation.y - 0.65;
         ac.sendGoal(goal);
         ac.waitForResult();
         if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
@@ -188,7 +188,7 @@ int main(int argc, char** argv){
         }
 
         /* Tabel move with FTS Test*/
-        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 1.0");
+        system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_vel_x 2.5");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_vel_x 0.0");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS max_rot_vel 0.8");
         system("rosrun dynamic_reconfigure dynparam set /move_base/DWAPlannerROS min_rot_vel 0.02");
