@@ -126,7 +126,7 @@ namespace iwtros{
     void ftsControl::reverseDocking(){
         /* This function is used only after "goToTableLocation"*/
         ftsControl::setDynamicParam();
-        this->goal.target_pose.pose.position.y = this->stampedtf2Cell.transform.translation.y;
+        this->goal.target_pose.pose.position.y = this->stampedtf2Cell.transform.translation.y - 0.65;
         this->ac.sendGoal(this->goal);
         ac.waitForResult();
         if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Docking Reached goal");
