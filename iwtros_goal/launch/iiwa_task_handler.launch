@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+  <node name="iiwa_task_handler" pkg="iwtros_goal" type="iiwa_task_handler_node" output="screen" ns="iiwa"/>
+</launch>

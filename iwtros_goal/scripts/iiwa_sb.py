@@ -6,6 +6,7 @@
 ##
 ## To use the python interface to move_group, import the moveit_commander
 ## module.  We also import rospy and some messages that we will use.
+## Developef for CARTESIAN motion testing
 
 import copy
 import sys
