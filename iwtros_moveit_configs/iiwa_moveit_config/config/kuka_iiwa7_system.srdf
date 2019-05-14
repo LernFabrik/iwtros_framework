@@ -52,6 +52,69 @@
         <joint name="iiwa_joint_6" value="-0.5658" />
         <joint name="iiwa_joint_7" value="1.5263" />
     </group_state>
+    <group_state name="iiwa_Pose1" group="iiwa_arm">
+        <joint name="iiwa_joint_1" value="0" />
+        <joint name="iiwa_joint_2" value="0.2942" />
+        <joint name="iiwa_joint_3" value="0" />
+        <joint name="iiwa_joint_4" value="-2.0594" />
+        <joint name="iiwa_joint_5" value="0" />
+        <joint name="iiwa_joint_6" value="1.471" />
+        <joint name="iiwa_joint_7" value="1.5927" />
+    </group_state>
+    <group_state name="iiwa_Pose2" group="iiwa_arm">
+        <joint name="iiwa_joint_1" value="1.5788" />
+        <joint name="iiwa_joint_2" value="0.2942" />
+        <joint name="iiwa_joint_3" value="0" />
+        <joint name="iiwa_joint_4" value="-2.0594" />
+        <joint name="iiwa_joint_5" value="0" />
+        <joint name="iiwa_joint_6" value="0.7242" />
+        <joint name="iiwa_joint_7" value="1.5927" />
+    </group_state>
+    <group_state name="iiwa_Pose3" group="iiwa_arm">
+        <joint name="iiwa_joint_1" value="1.5788" />
+        <joint name="iiwa_joint_2" value="0.7242" />
+        <joint name="iiwa_joint_3" value="0" />
+        <joint name="iiwa_joint_4" value="-2.0594" />
+        <joint name="iiwa_joint_5" value="0" />
+        <joint name="iiwa_joint_6" value="0.2942" />
+        <joint name="iiwa_joint_7" value="1.5927" />
+    </group_state>
+    <group_state name="iiwa_Pose4" group="iiwa_arm">
+        <joint name="iiwa_joint_1" value="0.7733" />
+        <joint name="iiwa_joint_2" value="0.7242" />
+        <joint name="iiwa_joint_3" value="0" />
+        <joint name="iiwa_joint_4" value="-2.0594" />
+        <joint name="iiwa_joint_5" value="0" />
+        <joint name="iiwa_joint_6" value="0.2942" />
+        <joint name="iiwa_joint_7" value="2.389" />
+    </group_state>
+    <group_state name="iiwa_Pose5" group="iiwa_arm">
+        <joint name="iiwa_joint_1" value="-0.8055" />
+        <joint name="iiwa_joint_2" value="0.7242" />
+        <joint name="iiwa_joint_3" value="0" />
+        <joint name="iiwa_joint_4" value="-2.0594" />
+        <joint name="iiwa_joint_5" value="0" />
+        <joint name="iiwa_joint_6" value="0.2942" />
+        <joint name="iiwa_joint_7" value="0.6636" />
+    </group_state>
+    <group_state name="iiwa_Pose6" group="iiwa_arm">
+        <joint name="iiwa_joint_1" value="-1.5466" />
+        <joint name="iiwa_joint_2" value="0.7242" />
+        <joint name="iiwa_joint_3" value="0" />
+        <joint name="iiwa_joint_4" value="-2.0594" />
+        <joint name="iiwa_joint_5" value="0" />
+        <joint name="iiwa_joint_6" value="0.2942" />
+        <joint name="iiwa_joint_7" value="1.5263" />
+    </group_state>
+    <group_state name="iiwa_Pose7" group="iiwa_arm">
+        <joint name="iiwa_joint_1" value="-1.6433" />
+        <joint name="iiwa_joint_2" value="0.2942" />
+        <joint name="iiwa_joint_3" value="-0.1289" />
+        <joint name="iiwa_joint_4" value="-2.0594" />
+        <joint name="iiwa_joint_5" value="0.0644" />
+        <joint name="iiwa_joint_6" value="1.2673" />
+        <joint name="iiwa_joint_7" value="1.5263" />
+    </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="iiwa_eef" parent_link="iiwa_link_ee" group="iiwa_hand" parent_group="iiwa_arm" />
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->

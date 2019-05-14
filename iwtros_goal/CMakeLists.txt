@@ -39,6 +39,28 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+add_executable(ur5_async_task_node 
+  src/ur5_async_task.cpp
+)
+target_link_libraries(ur5_async_task_node 
+  ${catkin_LIBRARIES}
+)
+############## IIWA 7 ##########################
+add_executable(iiwa_sb_node 
+  src/iiwa_sb.cpp
+)
+target_link_libraries(iiwa_sb_node 
+  ${catkin_LIBRARIES}
+)
+
+add_executable(iiwa_task_handler_node
+  src/iiwa_task_handler.cpp
+)
+target_link_libraries(iiwa_task_handler_node 
+  ${catkin_LIBRARIES}
+)
+
+############### FTS Controller ################
 # create PID library
 add_library(reversePID
   src/reversePID.cpp
@@ -62,22 +84,6 @@ target_link_libraries(control_table_node
   reversePID 
 )
 
-add_executable(ur5_async_task_node 
-  src/ur5_async_task.cpp
-)
-target_link_libraries(ur5_async_task_node 
-  ${catkin_LIBRARIES}
-)
-
-add_executable(iiwa_sb_node 
-  src/iiwa_sb.cpp
-)
-target_link_libraries(iiwa_sb_node 
-  ${catkin_LIBRARIES}
-)
-
-
-############### FTS Controller ################
 add_library(fts_controller
   src/fts_controller.cpp
 )

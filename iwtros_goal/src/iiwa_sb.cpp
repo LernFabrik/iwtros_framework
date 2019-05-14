@@ -28,7 +28,7 @@ int main(int argc, char** argv){
     target_pose.pose.position.x = 0.4;
     target_pose.pose.position.y = 0.0;
     target_pose.pose.position.z = 0.4;
-    target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(0.0, 3.14, 0.0);
+    target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(M_PI, 0.0, M_PI/2);
     
     iiwa_group.setPoseTarget(target_pose);
     moveit::planning_interface::MoveGroup::Plan my_plan;
