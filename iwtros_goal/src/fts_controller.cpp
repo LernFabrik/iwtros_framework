@@ -79,6 +79,42 @@ namespace iwtros{
         }   
     }
 
+    template <class T>
+    std::vector<std::vector<T> > ftsControl::Multiply(std::vector<std::vector<T> > &a, std::vector<std::vector<T> > &b){
+        const int n = a.size();     //a rows
+        const int m = a[0].size();  //a cols     
+        const int p = b[0].size();  //b cols
+
+        std::vector<std::vector<T> > c(n, std::vector<T>(p, 0));
+        for (auto j = 0; j < p; ++j){
+            for (auto k = 0; k < m; ++k){
+                for (auto i = 0; i < n; ++i){
+                    c[i][j] += a[i][k] * b[k][j];
+                }
+            }
+        }
+        return c;
+    }
+
+    void ftsControl::rotationalMatrix(geometry_msgs::Point& poseWrtWorld, geometry_msgs::Vector3 crntTablePosition, double yaw){
+        std::vector<std::vector<double> > matrix(4, std::vector<double>(4));
+        matrix[0][0] = cos(yaw); matrix[0][1] = -sin(yaw); matrix[0][2] = 0; matrix[0][3] = crntTablePosition.x;
+        matrix[1][0] = sin(yaw); matrix[1][1] = cos(yaw); matrix[1][2] = 0; matrix[1][3] = crntTablePosition.y;
+        matrix[2][0] = 0; matrix[2][1] = 0; matrix[0][2] = 1; matrix[0][3] = crntTablePosition.z;
+        matrix[3][0] = 0; matrix[3][1] = 0; matrix[3][2] = 0; matrix[3][3] = 1;
+
+        std::vector<std::vector<double> > offset(4, std::vector<double>(1));
+        offset[0][0] = 0;
+        offset[1][0] = 1.5;
+        offset[2][0] = 0;
+        offset[3][0] = 1;
+
+        auto c = ftsControl::Multiply(matrix, offset);
+        poseWrtWorld.x = c[0][0];
+        poseWrtWorld.y = c[1][0];
+        poseWrtWorld.z = c[2][0];
+    }
+
     void ftsControl::goToTableLocation(select_table sel){
         switch (sel){
             case IIWA:
@@ -99,22 +135,13 @@ namespace iwtros{
 
         this->goal.target_pose.header.frame_id = this->worldFrame.c_str();
         this->goal.target_pose.header.stamp = ros::Time::now();
-        this->goal.target_pose.pose.position.x = this->stampedtf2Cell.transform.translation.x;
-        /* Dirty method of offsetting the y - axis because first FTS should go in front of the Standardzell
-        Here we assume that Standardzell's y-axis lies either positively in positive side of the y-axis 
-        or negetively in the negetiveside of the y-axis. If any the above condition is not met then this 
-        method will not work. Solution would be offset correction according to the orientation of the axis*/
-        if(this->stampedtf2Cell.transform.translation.y < 0) this->goal.target_pose.pose.position.y = this->stampedtf2Cell.transform.translation.y - 1.5;
-        else if(this->stampedtf2Cell.transform.translation.y >= 0) this->goal.target_pose.pose.position.y = this->stampedtf2Cell.transform.translation.y + 1.5;
-        this->goal.target_pose.pose.position.z = 0;
         ftsControl::quadToEuler(this->stampedtf2Cell.transform.rotation, this->roll, this->pitch, this->yaw);
+        ftsControl::rotationalMatrix(this->goal.target_pose.pose.position, this->stampedtf2Cell.transform.translation, this->yaw);
+        this->goal.target_pose.pose.position.z = 0;
         this->yaw += M_PI / 2;
         tf2::Quaternion q;
         q.setRPY(this->roll, this->pitch, this->yaw);
-        this->goal.target_pose.pose.orientation.x = q.x();
-        this->goal.target_pose.pose.orientation.y = q.y();
-        this->goal.target_pose.pose.orientation.z = q.z();
-        this->goal.target_pose.pose.orientation.w = q.w();
+        this->goal.target_pose.pose.orientation = tf2::toMsg(q);
 
         this->ac.sendGoal(this->goal);
         this->ac.waitForResult();

@@ -19,6 +19,7 @@
 #include <actionlib/client/terminal_state.h>
 
 #include <tf2_ros/transform_listener.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <geometry_msgs/PoseWithCovariance.h>
 #include <geometry_msgs/PoseStamped.h>
@@ -51,6 +52,10 @@ namespace iwtros{
             void ftsOdomCallback(const nav_msgs::Odometry::ConstPtr& msg);
             void ftsStartCallback(const iwtros_msgs::ftsControl::ConstPtr& msg);
         private:
+            template <class T>
+            std::vector<std::vector<T> > Multiply(std::vector<std::vector<T> > &a, std::vector<std::vector<T> > &b);
+
+            void rotationalMatrix(geometry_msgs::Point& poseWrtWorld, geometry_msgs::Vector3 crntTablePosition, double yaw);
             void setDynamicParam();
             void withTableDynamicParam();
             void resetDynamicParam();
