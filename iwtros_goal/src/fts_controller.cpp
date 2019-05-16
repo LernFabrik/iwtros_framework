@@ -71,8 +71,9 @@ namespace iwtros{
     void ftsControl::getTransforms(std::string parent, std::string child,  geometry_msgs::TransformStamped& stamped){
         ROS_INFO("Looking for the transformation parent: %s, child: %s", parent.c_str(), child.c_str());
         try{
+            this->tf2Buffer.clear();            //this will clear the old transforms and read the latest.
             stamped = this->tf2Buffer.lookupTransform(parent, child, ros::Time(0));
-            ROS_WARN("Get the transforms");
+            ROS_INFO("Got the transforms");
         }catch(tf2::TransformException &e){
             ROS_ERROR("%s", e.what());
             ros::Duration(0.1).sleep();
@@ -86,28 +87,57 @@ namespace iwtros{
         const int p = b[0].size();  //b cols
 
         std::vector<std::vector<T> > c(n, std::vector<T>(p, 0));
-        for (auto j = 0; j < p; ++j){
-            for (auto k = 0; k < m; ++k){
-                for (auto i = 0; i < n; ++i){
+        for (auto j = 0; j < p; ++j){                           //no. of cols of B Matrix = increment the cols of the matrix B
+            for (auto i = 0; i < n; ++i){                       //no. of rows of A Matrix = increment the rows ofo the matrix A
+                for (auto k = 0; k < m; ++k){                   //no. of cols of A MAtrix = col. element of the matrix A is multi. and added with row element of the matrix B
                     c[i][j] += a[i][k] * b[k][j];
                 }
+            }
+        }
+        for(auto i = 0; i < c[0].size(); ++i){
+            for(auto j = 0; j < c.size(); ++j){
+                ROS_ERROR ("%f", c[j][i]);
             }
         }
         return c;
     }
 
-    void ftsControl::rotationalMatrix(geometry_msgs::Point& poseWrtWorld, geometry_msgs::Vector3 crntTablePosition, double yaw){
+    void ftsControl::rotationalMatrix(geometry_msgs::Point& poseWrtWorld, geometry_msgs::Vector3 crntTablePosition, double yaw, double offvalue){
         std::vector<std::vector<double> > matrix(4, std::vector<double>(4));
-        matrix[0][0] = cos(yaw); matrix[0][1] = -sin(yaw); matrix[0][2] = 0; matrix[0][3] = crntTablePosition.x;
-        matrix[1][0] = sin(yaw); matrix[1][1] = cos(yaw); matrix[1][2] = 0; matrix[1][3] = crntTablePosition.y;
-        matrix[2][0] = 0; matrix[2][1] = 0; matrix[0][2] = 1; matrix[0][3] = crntTablePosition.z;
-        matrix[3][0] = 0; matrix[3][1] = 0; matrix[3][2] = 0; matrix[3][3] = 1;
+        matrix[0][0] = cos(yaw); 
+        matrix[0][1] = -sin(yaw); 
+        matrix[0][2] = 0; 
+        matrix[0][3] = crntTablePosition.x;
+        matrix[1][0] = sin(yaw); 
+        matrix[1][1] = cos(yaw); 
+        matrix[1][2] = 0; 
+        matrix[1][3] = crntTablePosition.y;
+        matrix[2][0] = 0; 
+        matrix[2][1] = 0; 
+        matrix[2][2] = 1; 
+        matrix[2][3] = crntTablePosition.z;
+        matrix[3][0] = 0; 
+        matrix[3][1] = 0; 
+        matrix[3][2] = 0; 
+        matrix[3][3] = 1;
+
+        /*for(auto i = 0; i < matrix.size(); ++i){
+            for(auto j = 0; j < matrix[0].size(); ++j){
+                ROS_WARN ("%f", matrix[i][j]);
+            }
+        }*/
 
         std::vector<std::vector<double> > offset(4, std::vector<double>(1));
         offset[0][0] = 0;
-        offset[1][0] = 1.5;
+        offset[1][0] = offvalue;
         offset[2][0] = 0;
         offset[3][0] = 1;
+
+        /*for(auto i = 0; i < offset.size(); ++i){
+            for(auto j = 0; j < offset[0].size(); ++j){
+                ROS_WARN ("%f", offset[i][j]);
+            }
+        }*/
 
         auto c = ftsControl::Multiply(matrix, offset);
         poseWrtWorld.x = c[0][0];
@@ -136,7 +166,7 @@ namespace iwtros{
         this->goal.target_pose.header.frame_id = this->worldFrame.c_str();
         this->goal.target_pose.header.stamp = ros::Time::now();
         ftsControl::quadToEuler(this->stampedtf2Cell.transform.rotation, this->roll, this->pitch, this->yaw);
-        ftsControl::rotationalMatrix(this->goal.target_pose.pose.position, this->stampedtf2Cell.transform.translation, this->yaw);
+        ftsControl::rotationalMatrix(this->goal.target_pose.pose.position, this->stampedtf2Cell.transform.translation, this->yaw, 1.5);
         this->goal.target_pose.pose.position.z = 0;
         this->yaw += M_PI / 2;
         tf2::Quaternion q;
@@ -153,7 +183,8 @@ namespace iwtros{
     void ftsControl::reverseDocking(){
         /* This function is used only after "goToTableLocation"*/
         ftsControl::setDynamicParam();
-        this->goal.target_pose.pose.position.y = this->stampedtf2Cell.transform.translation.y - 0.65;
+        ftsControl::rotationalMatrix(this->goal.target_pose.pose.position, this->stampedtf2Cell.transform.translation, this->yaw - M_PI / 2, 0.65);
+        this->goal.target_pose.pose.position.z = 0;
         this->ac.sendGoal(this->goal);
         ac.waitForResult();
         if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) ROS_INFO("Docking Reached goal");

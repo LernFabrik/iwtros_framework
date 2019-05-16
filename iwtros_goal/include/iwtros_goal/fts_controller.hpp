@@ -55,7 +55,7 @@ namespace iwtros{
             template <class T>
             std::vector<std::vector<T> > Multiply(std::vector<std::vector<T> > &a, std::vector<std::vector<T> > &b);
 
-            void rotationalMatrix(geometry_msgs::Point& poseWrtWorld, geometry_msgs::Vector3 crntTablePosition, double yaw);
+            void rotationalMatrix(geometry_msgs::Point& poseWrtWorld, geometry_msgs::Vector3 crntTablePosition, double yaw, double offvalue);
             void setDynamicParam();
             void withTableDynamicParam();
             void resetDynamicParam();
