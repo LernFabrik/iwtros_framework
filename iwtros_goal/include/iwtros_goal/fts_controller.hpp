@@ -45,21 +45,60 @@ namespace iwtros{
         public:
             ftsControl();
             ~ftsControl();
+            /** Go infornt of standardzelle
+             * \@ breif 
+             */
             void goToTableLocation(select_table sel);
+            /**
+             * 
+             */
             void reverseDocking();
+            /** 
+             * 
+            */
             void carryCellToGoal(move_base_msgs::MoveBaseGoal dropLoc);
+            /**
+             * 
+             */
             void stopRobotTask();
+            /** 
+             * 
+            */
             void ftsOdomCallback(const nav_msgs::Odometry::ConstPtr& msg);
+            /** Start the FTS Task
+            * \@breif this function is boost binded to the call back which contain the final goal location that FTS has to carry the standardzelle
+            */
             void ftsStartCallback(const iwtros_msgs::ftsControl::ConstPtr& msg);
         private:
+            /** 
+             * 
+            */
             template <class T>
             std::vector<std::vector<T> > Multiply(std::vector<std::vector<T> > &a, std::vector<std::vector<T> > &b);
 
+            /** 
+             * 
+            */
             void rotationalMatrix(geometry_msgs::Point& poseWrtWorld, geometry_msgs::Vector3 crntTablePosition, double yaw, double offvalue);
+            /** 
+             * 
+            */
             void setDynamicParam();
+            /**
+             * 
+            */
             void withTableDynamicParam();
+            /** 
+             * 
+            */
             void resetDynamicParam();
+            /** 
+             * 
+            */
             static void quadToEuler(geometry_msgs::Quaternion& q, double& roll, double& pitch, double& yaw);
+            /** 
+             * 
+            */
             void getTransforms(std::string parent, std::string child, geometry_msgs::TransformStamped& stamped);
 
             std::string iiwa_table_topic, ur5_table_topic, panda_table_topic;
