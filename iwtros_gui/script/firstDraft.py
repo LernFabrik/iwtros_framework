@@ -11,6 +11,8 @@ import sys
 import signal
 import subprocess
 from PyQt4 import QtCore, QtGui
+import rospy
+from iwtros_msgs.msg import ftsControl
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -30,6 +32,9 @@ class Ui_rosFrame(object):
     def __init__(self, rosFrame):
         self.enable_sim = True
         self.enabled_rviz = True
+        self.pub = rospy.Publisher('startFtsOperation', ftsControl, queue_size=10)
+        self.ftsmsg = ftsControl()
+        
 
     def setupUi(self, rosFrame):
         rosFrame.setObjectName(_fromUtf8("rosFrame"))
@@ -73,15 +78,21 @@ class Ui_rosFrame(object):
         ## PANDA
         self.selPanda.setObjectName(_fromUtf8("selPanda"))
         self.selPanda.setChecked(False)
-        self.selPanda.connect(lambda:self.seletionCallback(self.selPanda))
+        self.selPanda.toggled.connect(lambda:self.seletionCallback(self.selPanda))
         self.verticalLayout.addWidget(self.selPanda)
         ## IIWA
         self.selIIWA = QtGui.QRadioButton(self.ftsControlGroup)
         self.selIIWA.setObjectName(_fromUtf8("selIIWA"))
+        self.selIIWA.setChecked(False)
+        self.selIIWA.toggled.connect(lambda:self.seletionCallback(self.selIIWA))
         self.verticalLayout.addWidget(self.selIIWA)
+        ## UR5
         self.selUr5 = QtGui.QRadioButton(self.ftsControlGroup)
         self.selUr5.setObjectName(_fromUtf8("selUr5"))
+        self.selUr5.setChecked(False)
+        self.selUr5.toggled.connect(lambda:self.seletionCallback(self.selUr5))
         self.verticalLayout.addWidget(self.selUr5)
+        #
         self.horizontalLayout.addLayout(self.verticalLayout)
         self.listPosition = QtGui.QListWidget(self.ftsControlGroup)
         self.listPosition.setObjectName(_fromUtf8("listPosition"))
@@ -148,13 +159,21 @@ class Ui_rosFrame(object):
                 self.enabled_rviz = True
                 print checked.text() + " is enabled!"
     
-    def seletionCallback(self, radios):
-        if radios.isChecked() == "PANDA":
-        
-        if radios.isChecked() == "IIWA 7":
-        
-        if radios.isChecked()
-                    
+    def seletionCallback(self, toggled):
+        print " radio button selection"
+        if toggled.text() == "PANDA":
+            self.selIIWA.setChecked(False)
+            self.selUr5.setChecked(False)
+            self.ftsmsg.selRobot = 2
+        if toggled.text() == "IIWA 7":
+            self.selPanda.setChecked(False)
+            self.selUr5.setChecked(False)
+            self.selRobot = 0
+        if toggled.text() == "UR5":
+            self.selPanda.setChecked(False)
+            self.selIIWA.setChecked(False)
+            self.selRobot = 1
+ 
     def launchButtonCallback(self):
         if self.enable_sim == False:
             if self.enabled_rviz == False:
@@ -189,6 +208,7 @@ class Ui_rosFrame(object):
 
 
 if __name__ == "__main__":
+    rospy.init_node('guiControl', anonymous=False)
     app = QtGui.QApplication(sys.argv)
     rosFrame = QtGui.QDialog()
     ui = Ui_rosFrame(rosFrame)
