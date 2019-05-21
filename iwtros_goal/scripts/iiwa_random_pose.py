@@ -20,11 +20,12 @@ def iiwa_pose_place():
 
     iiwa_client = actionlib.SimpleActionClient('execute_trajectory', moveit_msgs.msg.ExecuteTrajectoryAction)
     iiwa_client.wait_for_server()
-    rospy.loginfo("Execution Trajectroy server is available for Panda")
+    rospy.loginfo("Execution Trajectroy server is available for iiwa")
 
-    rate = rospy.Rate(5.0)
+    rate = rospy.Rate(0.5)
     
     while not rospy.is_shutdown():
+        rate.sleep()
         rate.sleep()
 
         iiwa_group.set_named_target("iiwa_Pose1")
@@ -37,6 +38,7 @@ def iiwa_pose_place():
         rospy.loginfo("Go to iiwa Pose 1")
 
         rate.sleep()
+        rate.sleep()
 
         iiwa_group.set_named_target("iiwa_Pose2")
         plan = iiwa_group.plan()
@@ -47,6 +49,9 @@ def iiwa_pose_place():
         iiwa_client.wait_for_result()
         rospy.loginfo("Go to iiwa Pose 2")
 
+        rate.sleep()
+        rate.sleep()
+
         iiwa_group.set_named_target("iiwa_Pose3")
         plan = iiwa_group.plan()
         iiwa_pose = moveit_msgs.msg.ExecuteTrajectoryGoal()
@@ -56,6 +61,7 @@ def iiwa_pose_place():
         iiwa_client.wait_for_result()
         rospy.loginfo("Go to iiwa Pose 3")
 
+        rate.sleep()
         rate.sleep()
 
         iiwa_group.set_named_target("iiwa_Pose4")
@@ -68,6 +74,7 @@ def iiwa_pose_place():
         rospy.loginfo("Go to iiwa Pose 4")
 
         rate.sleep()
+        rate.sleep()
 
         iiwa_group.set_named_target("iiwa_Pose5")
         plan = iiwa_group.plan()
@@ -79,6 +86,7 @@ def iiwa_pose_place():
         rospy.loginfo("Go to iiwa Pose 5")
 
         rate.sleep()
+        rate.sleep()
 
         iiwa_group.set_named_target("iiwa_Pose6")
         plan = iiwa_group.plan()
@@ -89,6 +97,7 @@ def iiwa_pose_place():
         iiwa_client.wait_for_result()
         rospy.loginfo("Go to iiwa Pose 6")
 
+        rate.sleep()
         rate.sleep()
 
         iiwa_group.set_named_target("iiwa_Pose7")

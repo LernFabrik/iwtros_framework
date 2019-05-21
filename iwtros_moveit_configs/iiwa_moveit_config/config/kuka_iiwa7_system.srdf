@@ -62,7 +62,7 @@
         <joint name="iiwa_joint_7" value="1.5927" />
     </group_state>
     <group_state name="iiwa_Pose2" group="iiwa_arm">
-        <joint name="iiwa_joint_1" value="1.5788" />
+        <joint name="iiwa_joint_1" value="2.2232" />
         <joint name="iiwa_joint_2" value="0.2942" />
         <joint name="iiwa_joint_3" value="0" />
         <joint name="iiwa_joint_4" value="-2.0594" />
@@ -81,12 +81,12 @@
     </group_state>
     <group_state name="iiwa_Pose4" group="iiwa_arm">
         <joint name="iiwa_joint_1" value="0.7733" />
-        <joint name="iiwa_joint_2" value="0.7242" />
-        <joint name="iiwa_joint_3" value="0" />
-        <joint name="iiwa_joint_4" value="-2.0594" />
-        <joint name="iiwa_joint_5" value="0" />
-        <joint name="iiwa_joint_6" value="0.2942" />
-        <joint name="iiwa_joint_7" value="2.389" />
+        <joint name="iiwa_joint_2" value="0.2037" />
+        <joint name="iiwa_joint_3" value="-0.0644" />
+        <joint name="iiwa_joint_4" value="-1.9689" />
+        <joint name="iiwa_joint_5" value="-0.0644" />
+        <joint name="iiwa_joint_6" value="0.8373" />
+        <joint name="iiwa_joint_7" value="0.7631" />
     </group_state>
     <group_state name="iiwa_Pose5" group="iiwa_arm">
         <joint name="iiwa_joint_1" value="-0.8055" />
@@ -98,13 +98,13 @@
         <joint name="iiwa_joint_7" value="0.6636" />
     </group_state>
     <group_state name="iiwa_Pose6" group="iiwa_arm">
-        <joint name="iiwa_joint_1" value="-1.5466" />
+        <joint name="iiwa_joint_1" value="-2.1588" />
         <joint name="iiwa_joint_2" value="0.7242" />
-        <joint name="iiwa_joint_3" value="0" />
-        <joint name="iiwa_joint_4" value="-2.0594" />
-        <joint name="iiwa_joint_5" value="0" />
-        <joint name="iiwa_joint_6" value="0.2942" />
-        <joint name="iiwa_joint_7" value="1.5263" />
+        <joint name="iiwa_joint_3" value="-0.007" />
+        <joint name="iiwa_joint_4" value="-1.6973" />
+        <joint name="iiwa_joint_5" value="-0.1611" />
+        <joint name="iiwa_joint_6" value="0.9279" />
+        <joint name="iiwa_joint_7" value="0.7763" />
     </group_state>
     <group_state name="iiwa_Pose7" group="iiwa_arm">
         <joint name="iiwa_joint_1" value="-1.6433" />
