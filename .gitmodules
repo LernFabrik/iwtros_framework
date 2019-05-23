@@ -1,2 +1,5 @@
 [submodule "moveit_tutorials"]
 	url = https://github.com/ros-planning/moveit_tutorials.git
+[submodule "ira_laser_tools"]
+	path = ira_laser_tools
+	url = https://github.com/iwtros/ira_laser_tools.git
