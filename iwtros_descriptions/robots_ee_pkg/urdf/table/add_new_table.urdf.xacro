@@ -1,0 +1,91 @@
+<?xml version='1.0'?>
+<robot  xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+        xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+        xmlns:xacro="http://www.ros.org/wiki/xacro"
+        name="add_table">
+
+
+  <xacro:macro name="add_table" params="robot_arm_name table_ee parent *origin">
+
+    <joint name="world_${robot_arm_name}_table_joint" type="fixed">
+      <xacro:insert_block name="origin"/>
+      <parent link="${parent}"/>
+      <child link="${robot_arm_name}_table_base"/>
+    </joint>
+
+     <!-- BASE LINK -->
+    <link name="${robot_arm_name}_table_base">
+      <inertial>
+        <mass value="80"/>
+          <origin xyz="0 0 -${0.5}" />
+            <inertia  ixx="${80/12*(0.698*0.698+0.997*0.997)}" ixy="0.0"  ixz="0.0"  iyy="${80/12*(0.685*0.685+0.997*0.997)}"  iyz="0.0"  izz="${80/12*(0.698*0.698+0.685*0.685)}" />
+      </inertial>
+
+     <visual>
+        <!--origin rpy="0 0 0" xyz="0.0 0 -${0.99613/2}"/-->
+        <origin rpy="0 0 0" xyz="0.0 0 0"/>
+        <geometry>
+          <mesh filename="package://robots_ee_pkg/meshes/lf044_rough.dae" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="grey">
+          <color rgba="0.5 0.5 0.5 1"/>
+        </material>
+      </visual>
+
+      <collision>
+        <origin rpy="0 0 0" xyz="0.0 0 0"/>
+          <geometry>
+            <mesh filename="package://robots_ee_pkg/meshes/lf044_rough.stl" scale="0.001 0.001 0.001"/>
+          </geometry>
+      </collision>
+    </link>
+    <gazebo reference="${robot_arm_name}_table_base">
+      <material>Gazebo/Grey</material>
+      <gravity>true</gravity>
+      <selfCollide>false</selfCollide>
+      <mu1>0.3</mu1>
+      <mu2>0.3</mu2>
+    </gazebo>
+
+    <joint name="${robot_arm_name}_table_base_top_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="0.0 0 0.015"/>
+      <parent link="${robot_arm_name}_table_base"/>
+      <child link="${table_ee}"/>
+    </joint>
+
+     <!-- Table Plate LINK -->
+    <link name="${table_ee}">
+      <inertial>
+        <mass value="20"/>
+          <origin xyz="0 0 0" />
+            <inertia  ixx="3.0" ixy="0.0"  ixz="0.0"  iyy="3.0"  iyz="0.0"  izz="3.0" />
+      </inertial>
+
+     <visual>
+        <origin rpy="0 0 0" xyz="0.0 0 0"/>
+        <geometry>
+          <!--mesh filename="package://robots_ee_pkg/meshes/lf064_table.stl" scale="0.001 0.001 0.001"/-->
+        <box size="0.146 0.05 0.0735"/>
+        </geometry>
+        <material name="grey">
+          <color rgba="0.6 0.5 0.5 1"/>
+        </material>
+      </visual>
+
+      <collision>
+        <origin rpy="0 0 0" xyz="0.0 0 0"/>
+          <geometry>
+            <!--mesh filename="package://robots_ee_pkg/meshes/lf064_table.stl" scale="0.001 0.001 0.001"/-->
+            <box size="0.146 0.05 0.0735"/>
+          </geometry>
+      </collision>
+    </link>
+    <gazebo reference="${table_ee}">
+      <material>Gazebo/Black</material>
+      <turnGravityOff>true</turnGravityOff>
+      <mu1>0.5</mu1>
+      <mu2>0.4</mu2>
+    </gazebo>
+  </xacro:macro>
+</robot>

@@ -8,7 +8,7 @@
 5. `roslaunch iiwa_moveit moveit_planning_execution.launch sim:=<true|false>` to run the ros iiwa controller and move_group. False if we need to run harware. 
 
 ## Panda Hardware interface
-1. libfranka requires real-time ubunkernel](https://frankaemika.github.io/docs/installation.html#setting-up-the-real-time-kernel)
+1. libfranka requires real-time [ubuntu kernel](https://frankaemika.github.io/docs/installation.html#setting-up-the-real-time-kernel)
 2. All source code must be compiled with [`-DCMAKE_BUILD_TYPE=Release`](https://frankaemika.github.io/docs/troubleshooting.html#troubleshooting) for *libfranka* and *franka_ros*. For binary installation this is not required.
 3. Test the libfranka and FCI is properly interfaced
     * `./echo_robot_state <fci_ip>` or `rosrun libfranka echo_robot_state <fci_ip>`
