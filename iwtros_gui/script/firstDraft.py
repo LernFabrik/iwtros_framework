@@ -92,26 +92,29 @@ class Ui_rosFrame(object):
         self.selUr5.setChecked(False)
         self.selUr5.toggled.connect(lambda:self.seletionCallback(self.selUr5))
         self.verticalLayout.addWidget(self.selUr5)
-        #
+        #List of positions
         self.horizontalLayout.addLayout(self.verticalLayout)
-        self.listPosition = QtGui.QListWidget(self.ftsControlGroup)
-        self.listPosition.setObjectName(_fromUtf8("listPosition"))
-        item = QtGui.QListWidgetItem()
-        self.listPosition.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listPosition.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listPosition.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listPosition.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listPosition.addItem(item)
-        self.horizontalLayout.addWidget(self.listPosition)
+        self.verticalLayout_2 = QtGui.QVBoxLayout()
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.Pose1 = QtGui.QCheckBox(self.ftsControlGroup)
+        self.Pose1.setObjectName(_fromUtf8("Pose1"))
+        self.verticalLayout_2.addWidget(self.Pose1)
+        self.Pose1.stateChanged.connect(lambda:self.poseCallback(self.Pose1))
+        self.Pose2 = QtGui.QCheckBox(self.ftsControlGroup)
+        self.Pose2.setObjectName(_fromUtf8("Pose2"))
+        self.verticalLayout_2.addWidget(self.Pose2)
+        self.Pose2.stateChanged.connect(lambda:self.poseCallback(self.Pose2))
+        self.Pose3 = QtGui.QCheckBox(self.ftsControlGroup)
+        self.Pose3.setObjectName(_fromUtf8("Pose3"))
+        self.verticalLayout_2.addWidget(self.Pose3)
+        self.Pose3.stateChanged.connect(lambda:self.poseCallback(self.Pose3))
+        self.horizontalLayout.addLayout(self.verticalLayout_2)
         self.ftsGoButton = QtGui.QPushButton(self.ftsControlGroup)
         self.ftsGoButton.setObjectName(_fromUtf8("ftsGoButton"))
+        QtCore.QObject.connect(self.ftsGoButton, QtCore.SIGNAL("clicked()"), self.ftsGoCallback)
         self.horizontalLayout.addWidget(self.ftsGoButton)
-        self.listPosition.raise_()
         self.ftsGoButton.raise_()
+
 
         self.retranslateUi(rosFrame)
         QtCore.QMetaObject.connectSlotsByName(rosFrame)
@@ -127,19 +130,9 @@ class Ui_rosFrame(object):
         self.selPanda.setText(_translate("rosFrame", "PANDA", None))
         self.selIIWA.setText(_translate("rosFrame", "IIWA 7", None))
         self.selUr5.setText(_translate("rosFrame", "UR5", None))
-        __sortingEnabled = self.listPosition.isSortingEnabled()
-        self.listPosition.setSortingEnabled(False)
-        item = self.listPosition.item(0)
-        item.setText(_translate("rosFrame", "Position 1", None))
-        item = self.listPosition.item(1)
-        item.setText(_translate("rosFrame", "Position 2", None))
-        item = self.listPosition.item(2)
-        item.setText(_translate("rosFrame", "Position 3", None))
-        item = self.listPosition.item(3)
-        item.setText(_translate("rosFrame", "Position 4", None))
-        item = self.listPosition.item(4)
-        item.setText(_translate("rosFrame", "Position 5", None))
-        self.listPosition.setSortingEnabled(__sortingEnabled)
+        self.Pose1.setText(_translate("rosFrame", "Pose 1", None))
+        self.Pose2.setText(_translate("rosFrame", "Pose 2", None))
+        self.Pose3.setText(_translate("rosFrame", "Pose 3", None))
         self.ftsGoButton.setText(_translate("rosFrame", "GO", None))
     
     def checkBoxCallback(self, checked):
@@ -162,17 +155,20 @@ class Ui_rosFrame(object):
     def seletionCallback(self, toggled):
         print " radio button selection"
         if toggled.text() == "PANDA":
+            print "......Panda selection....."
             self.selIIWA.setChecked(False)
             self.selUr5.setChecked(False)
             self.ftsmsg.selRobot = 2
         if toggled.text() == "IIWA 7":
+            print "......iiwa selection....."
             self.selPanda.setChecked(False)
             self.selUr5.setChecked(False)
-            self.selRobot = 0
+            self.ftsmsg.selRobot = 0
         if toggled.text() == "UR5":
+            print "......ur5 selection....."
             self.selPanda.setChecked(False)
             self.selIIWA.setChecked(False)
-            self.selRobot = 1
+            self.ftsmsg.selRobot = 1
  
     def launchButtonCallback(self):
         if self.enable_sim == False:
@@ -194,18 +190,39 @@ class Ui_rosFrame(object):
     def stopButtonCallback(self):
         print sys.argv
         os.system('rosnode kill -a &')
-        os.system('killall -9 roscore &')
+        #os.system('killall -9 roscore &')
         os.system('killall -9 rosmaster &')
         self.launchEnvButton.setDisabled(False)
-
+        """
+        TODO: Complete wait message box 
+        """
         msg = QtGui.QMessageBox()
         msg.setIcon(QtGui.QMessageBox.Critical)
         msg.setText("Killing ROS Master")
         msg.setWindowTitle("Wait!")
         msg.setDetailedText("wait until ROS nodes are killed and you see the message done in the terminal")
         msg.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
-
-
+    
+    def poseCallback(self, checked):
+        print "list is selected"
+        self.ftsmsg.pose.orientation.z = 0
+        self.ftsmsg.pose.orientation.w = 1
+        self.ftsmsg.pose.position.y = -3
+        if checked.text() == "Pose 1":
+            self.Pose2.setChecked(False)
+            self.Pose3.setChecked(False)
+            self.ftsmsg.pose.position.x = -7
+        if checked.text() == "Pose 2":
+            self.Pose1.setChecked(False)
+            self.Pose3.setChecked(False)
+            self.ftsmsg.pose.position.x = -4
+        if checked.text() == "Pose 3":
+            self.Pose1.setChecked(False)
+            self.Pose2.setChecked(False)
+            self.ftsmsg.pose.position.x = -1
+    
+    def ftsGoCallback(self):
+        self.pub.publish(self.ftsmsg)
 
 if __name__ == "__main__":
     rospy.init_node('guiControl', anonymous=False)

@@ -101,33 +101,29 @@
      </layout>
     </item>
     <item>
-     <widget class="QListWidget" name="listPosition">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <property name="text">
-        <string>Position 1</string>
-       </property>
+       <widget class="QCheckBox" name="Pose1">
+        <property name="text">
+         <string>Pose 1</string>
+        </property>
+       </widget>
       </item>
       <item>
-       <property name="text">
-        <string>Position 2</string>
-       </property>
+       <widget class="QCheckBox" name="Pose2">
+        <property name="text">
+         <string>Pose 2</string>
+        </property>
+       </widget>
       </item>
       <item>
-       <property name="text">
-        <string>Position 3</string>
-       </property>
+       <widget class="QCheckBox" name="Pose3">
+        <property name="text">
+         <string>Pose 3</string>
+        </property>
+       </widget>
       </item>
-      <item>
-       <property name="text">
-        <string>Position 4</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Position 5</string>
-       </property>
-      </item>
-     </widget>
+     </layout>
     </item>
     <item>
      <widget class="QPushButton" name="ftsGoButton">
@@ -138,8 +134,8 @@
     </item>
    </layout>
    <zorder></zorder>
-   <zorder>listPosition</zorder>
    <zorder>ftsGoButton</zorder>
+   <zorder></zorder>
   </widget>
  </widget>
  <resources/>
