@@ -21,3 +21,9 @@
    * When `robot_mode = 2` then the robot is completly operational.
 6. If the robot mode changes during the collision or user pressing the button, then franka controller will go into the error mode. This can be resolved by publishing the following topic.
    * `rostopic pub -1 /franka_control/error_recovery/goal franka_control/ErrorRecoveryActionGoal "{}"`
+
+## Simualtion Test and Documentation
+1. Panda pick and place error is solved:
+    * ![Error from gazebo](Pand_Pick_Error.png) ![Action message from the Pick and Place node](Panda_pickup_msg.png)
+    ![Gripper Control manager](Panda_handa_hw_interface.png)
+   * TODO: Change the message from position control to effort control.

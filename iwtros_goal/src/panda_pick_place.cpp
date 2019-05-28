@@ -19,6 +19,9 @@ void openGripper(trajectory_msgs::JointTrajectory& posture){
     posture.points[0].positions.resize(2);
     posture.points[0].positions[0] = 0.04;
     posture.points[0].positions[1] = 0.04;
+    /*posture.points[0].effort.resize(2);
+    posture.points[0].effort[0] = 0;
+    posture.points[0].effort[1] = 0;*/
     posture.points[0].time_from_start = ros::Duration(0.5);
 }
 
@@ -32,6 +35,9 @@ void closeGripper(trajectory_msgs::JointTrajectory& posture){
     posture.points[0].positions.resize(2);
     posture.points[0].positions[0] = 0.0;
     posture.points[0].positions[1] = 0.0;
+    /*posture.points[0].effort.resize(2);
+    posture.points[0].effort[0] = 100;
+    posture.points[0].effort[1] = 100;*/
     posture.points[0].time_from_start = ros::Duration(0.5);
 }
 
@@ -160,12 +166,34 @@ int main(int argc, char** argv){
     ROS_INFO_STREAM("Current state is " << (kinematic_state->satisfiesBounds() ? "valid" : "not valid"));
     kinematic_state->enforceBounds();
     ROS_INFO_STREAM("Current state is " << (kinematic_state->satisfiesBounds() ? "valid" : "not valid"));*/
-    /******
-     * TODO: 1. Forward Kinematics
-     *       2. Inverse Kinematics
-     *       3. Get the Jacobian
-    /****************************************************************************************/
-
+    // Formward Kinematics
+    kinematic_state->setToRandomPositions(joint_model_group);
+    const Eigen::Affine3d& end_effector_state = kinematic_state->getGlobalLinkTransform("panda_link8");
+    ROS_INFO("............Forward Kinematic............");
+    ROS_INFO_STREAM("Translation: \n" << end_effector_state.translation() << "\n");
+    ROS_INFO_STREAM("Rotational: \n" << end_effector_state.rotation() << "\n");
+    // Inverse Kinematic
+    std::size_t attempts = 10;
+    double timeout = 0.1;
+    bool found_ik = kinematic_state->setFromIK(joint_model_group, end_effector_state, attempts, timeout);
+    ROS_INFO("..............Inverse Kinematic..........");
+    if(found_ik){
+        kinematic_state->copyJointGroupPositions(joint_model_group, joint_values);
+        for(std::size_t i = 0; i < joint_names.size(); ++i){
+            ROS_INFO("Joint %s: %f", joint_names[i].c_str(), joint_values[i]);
+        }
+    }
+    else{
+        ROS_INFO("Did not find IK solution");
+    }
+    // Jacobian
+    Eigen::Vector3d reference_point_positon(0.0,0.0,0.0);
+    Eigen::MatrixXd jacobian;
+    kinematic_state->getJacobian(joint_model_group, 
+                                kinematic_state->getLinkModel(joint_model_group->getLinkModelNames().back()),
+                                reference_point_positon, jacobian);
+    ROS_INFO_STREAM("Jacobian: \n" << jacobian << "\n");
+    /*******************************************************************/
     ros::WallDuration(1.0).sleep();
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
     moveit::planning_interface::MoveGroupInterface move_group("panda_arm");

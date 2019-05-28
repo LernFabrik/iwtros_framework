@@ -10,9 +10,10 @@
     <xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/panda.transmission.xacro" />
     <xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/panda.gazebo.xacro" />
     <xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/panda_hand.transmission.xacro" />
+    <xacro:include filename="$(find robots_ee_pkg)/urdf/panda_robot/panda_hand.gazebo.xacro" />
 
     <xacro:arg name="hardware_interface" default="EffortJointInterface"/>
-    <xacro:arg name="gripperHwInterface" default="EffortJointInterface"/>
+    <xacro:arg name="gripperHwInterface" default="PositionJointInterface"/>
     <xacro:arg name="arm_name" default="panda"/>
     <xacro:arg name="robot_param" default="/panda/panda_description"/>
     <xacro:arg name="origin_xyz" default="0 0 0" />
@@ -28,6 +29,7 @@
     <xacro:panda_arm_transmission arm_name="$(arg arm_name)" hardware_interface="EffortJointInterface" />
     <!-- Panda hand interface -->
     <xacro:hand ns="$(arg arm_name)" rpy="0 0 ${-pi/4}" connected_to="$(arg arm_name)_link8" />
+    <xacro:panda_hand_gazebo arm_name="$(arg arm_name)" />
     <xacro:panda_hand_transmission ns_name="$(arg arm_name)"  gripper_hardware_interface="$(arg gripperHwInterface)" />
   </xacro:macro>
 </robot>
