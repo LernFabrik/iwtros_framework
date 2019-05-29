@@ -53,7 +53,7 @@ void pick(moveit::planning_interface::MoveGroupInterface& move_group){
     orientation.setRPY(M_PI, 0, -M_PI/4);
     grasps[0].grasp_pose.pose.position.x = 0.43;
     grasps[0].grasp_pose.pose.position.y = 0;
-    grasps[0].grasp_pose.pose.position.z = 0.130;
+    grasps[0].grasp_pose.pose.position.z = 0.128;
     grasps[0].grasp_pose.pose.orientation = tf2::toMsg(orientation);
 
     // Setting pre-grasp approach
@@ -64,11 +64,11 @@ void pick(moveit::planning_interface::MoveGroupInterface& move_group){
     grasps[0].pre_grasp_approach.desired_distance = 0.115;
 
     // Setting post-grasp retreat
-    grasps[0].post_grasp_retreat.direction.header.frame_id = "panda_link8";
+    grasps[0].post_grasp_retreat.direction.header.frame_id = "panda_link0";
     /* Test this before deploying in Hardware*/
-    grasps[0].post_grasp_retreat.direction.vector.z = -1.0;
-    grasps[0].post_grasp_retreat.min_distance = 0.1;
-    grasps[0].post_grasp_retreat.desired_distance = 0.25;
+    grasps[0].post_grasp_retreat.direction.vector.z = 1.0;
+    grasps[0].post_grasp_retreat.min_distance = 0.095;
+    grasps[0].post_grasp_retreat.desired_distance = 0.15;
 
     // Setting up figure in open positon before grasp
     openGripper(grasps[0].pre_grasp_posture);
@@ -89,9 +89,9 @@ void place(moveit::planning_interface::MoveGroupInterface& move_group){
     tf2::Quaternion q;
     q.setRPY(0, 0, 0);
     place_location[0].place_pose.pose.orientation = tf2::toMsg(q);
-    place_location[0].place_pose.pose.position.x = 0.1;
-    place_location[0].place_pose.pose.position.y = -0.40;
-    place_location[0].place_pose.pose.position.z = 0.0;
+    place_location[0].place_pose.pose.position.x = 0.3;
+    place_location[0].place_pose.pose.position.y = -0.30;
+    place_location[0].place_pose.pose.position.z = 0.05;
 
 
     //Setting up pre pllace approach
@@ -127,16 +127,33 @@ void addCollisionObject(moveit::planning_interface::PlanningSceneInterface& plan
     collision_objects[0].primitives[0].type = collision_objects[0].primitives[0].CYLINDER;
     collision_objects[0].primitives[0].dimensions.resize(3);
     collision_objects[0].primitives[0].dimensions[0] = 0.01;    // height
-    collision_objects[0].primitives[0].dimensions[1] = 0.02;    // radiis
+    collision_objects[0].primitives[0].dimensions[1] = 0.0295;    // radius
 
     /* Define the pose of the table. */
     collision_objects[0].primitive_poses.resize(1);
     collision_objects[0].primitive_poses[0].position.x = 0.43;
     collision_objects[0].primitive_poses[0].position.y = 0;
-    collision_objects[0].primitive_poses[0].position.z = 0.01;
+    collision_objects[0].primitive_poses[0].position.z = 0.03;
     // END_SUB_TUTORIAL
 
     collision_objects[0].operation = collision_objects[0].ADD;
+
+    // Table
+    /*collision_objects[1].id = "Table";
+    collision_objects[1].header.frame_id = "panda_link0";
+    collision_objects[1].primitives.resize(1);
+    collision_objects[1].primitives[0].type = collision_objects[1].primitives[0].BOX;
+    collision_objects[1].primitives[0].dimensions.resize(3);
+    collision_objects[1].primitives[0].dimensions[0] = 0.75;    
+    collision_objects[1].primitives[0].dimensions[1] = 0.75;  
+    collision_objects[1].primitives[0].dimensions[2] = 0.5;  
+    collision_objects[1].primitive_poses.resize(1);
+    collision_objects[1].primitive_poses[0].position.x = 0;
+    collision_objects[1].primitive_poses[0].position.y = 0;
+    collision_objects[1].primitive_poses[0].position.z = -0.25;
+    // END_SUB_TUTORIAL
+
+    collision_objects[1].operation = collision_objects[1].ADD;*/
 
     planning_scene_interface.applyCollisionObjects(collision_objects);
 }
@@ -198,8 +215,8 @@ int main(int argc, char** argv){
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
     moveit::planning_interface::MoveGroupInterface move_group("panda_arm");
     //move_group.setPlanningTime(45.0);
-    move_group.setMaxVelocityScalingFactor(0.35);
-    move_group.setMaxAccelerationScalingFactor(0.5);
+    move_group.setMaxVelocityScalingFactor(0.1);
+    move_group.setMaxAccelerationScalingFactor(0.15);
     //add collision object with planning scene
     addCollisionObject(planning_scene_interface);
 
