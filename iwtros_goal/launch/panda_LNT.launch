@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+  <node name="panda_random" pkg="iwtros_goal" type="panda_random_pose.py" output="screen" ns="panda"/>
+</launch>
