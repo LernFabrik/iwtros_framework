@@ -1,0 +1,11 @@
+<?xml version='1.0'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="camera">
+
+    <xacro:include filename="$(find robots_ee_pkg)/urdf/camera/r200.urdf.xacro"/>
+
+    <link name="world" />
+
+    <xacro:camera_r200 parent="world">
+        <origin xyz="0 0 1" rpy="0 0 0" />
+    </xacro:camera_r200>
+</robot>
