@@ -23,8 +23,8 @@
   <xacro:include filename="$(find omronld_description)/urdf/omronld_caster.urdf.xacro" />
 
   <!-- LASER -->
-
   <xacro:include filename="$(find omronld_description)/urdf/laser/sick_lms1xx.urdf.xacro" />
+  <xacro:include filename="$(find robots_ee_pkg)/urdf/camera/r200.urdf.xacro"/>
 
   <!-- base_link origin point is center of rotation, on the floor. -->
 
@@ -70,6 +70,10 @@
   <xacro:sick_lms1xx frame="base_fake_laser" parent="base_link" topic="scanBack">
     <origin xyz="-0.2652 0.0 0.105" rpy="${M_PI} 0.0 ${M_PI}"/>
   </xacro:sick_lms1xx>
+
+  <xacro:camera_r200 parent="base_link">
+        <origin xyz="0.3 0 0.38" rpy="0 0 0" />
+    </xacro:camera_r200>
   
   <!-- GAZEBO PLUGINS--> <!-- http://wiki.ros.org/urdf/Tutorials/Using%20a%20URDF%20in%20Gazebo-->
 

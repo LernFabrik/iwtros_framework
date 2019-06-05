@@ -30,12 +30,12 @@
 
             <!-- This inertial field needs doesn't contain reliable data!! -->
             <inertial>
-            <mass value="0.564" />
+                <mass value="0.564" />
                 <origin xyz="0 0 0" />
-                <inertia ixx="0.003881243" ixy="0.0" ixz="0.0"
-                        iyy="0.000498940" iyz="0.0"
-                        izz="0.003879257" />
-            </inertial>>
+                    <inertia ixx="0.003881243" ixy="0.0" ixz="0.0"
+                            iyy="0.000498940" iyz="0.0"
+                            izz="0.003879257" />
+            </inertial>
         </link>
 
         <joint name="camera_rgb_joint" type="fixed">
