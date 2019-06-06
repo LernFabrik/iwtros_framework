@@ -1,0 +1,9 @@
+<launch>
+
+    <arg name="robot_namespace" default="/omronld" />
+
+    <param name="robot_description"
+        command="$(find xacro)/xacro --inorder '$(find omronld_description)/urdf/old_omronld.urdf.xacro'  robot_namespace:=$(arg robot_namespace)"/>
+  
+</launch>
+

@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+
+<robot name="omronld" xmlns:xacro="http://ros.org/wiki/xacro">
+  
+  <!--general-->
+
+  <xacro:arg name="robot_namespace" default="/omronld" />
+  <xacro:property name="M_PI" value="3.14159"/>
+
+  <!--wheels-->
+
+  <!-- Wheel Mounting Positions -->
+  <xacro:property name="wheelbase" value="0" />
+  <xacro:property name="track" value="0.3929777" />
+  <xacro:property name="wheel_vertical_offset" value="${0.1936863/2}" />
+
+  <!-- Wheel Properties -->
+  <xacro:property name="wheel_length" value="0.048" />
+  <xacro:property name="wheel_radius" value="${0.1936863/2}" />
+
+  <!-- Include URDF/XACRO Files -->
+  <xacro:include filename="$(find omronld_description)/urdf/omronld_wheel.urdf.xacro" />
+  <xacro:include filename="$(find omronld_description)/urdf/omronld_caster.urdf.xacro" />
+
+  <!-- LASER -->
+
+  <xacro:include filename="$(find omronld_description)/urdf/laser/old_sick_lms1xx.urdf.xacro" />
+  <xacro:arg name="laser_xyz" default="$(optenv omronld_LMS1XX_XYZ 0.2652 0.0 0.201)" />
+  <xacro:arg name="laser_rpy" default="$(optenv omronld_LMS1XX_RPY ${M_PI} 0.0 0.0)" />
+
+  <!-- base_link origin point is center of rotation, on the floor. -->
+
+  <link name="base_link">
+
+    <inertial>
+      <mass value="63.5664" /> <!-- kg -->
+      <inertia ixx="3.1802" ixy="0" ixz="0" iyy="2.9908" iyz="0" izz="2.2912" />
+    </inertial>
+
+    <visual>
+      <geometry name="base_link_visual_geom">
+        <mesh filename="package://omronld_description/meshes/omronld_visual.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <origin xyz="-0.000880947 0 ${0.0375+0.0501498}" rpy="${M_PI/2} 0 ${M_PI/2}" /> 
+    </visual>
+
+    <collision name="base_link_collision">
+      <geometry name="base_link_collision_geom">
+        <box size="0.7 0.5 0.05" />
+      </geometry>
+      <origin xyz="0 0 0.1" rpy="0 0 0" /> 
+    </collision>
+
+  </link>
+
+  <!-- omronld wheel macros -->
+
+  <xacro:omronld_wheel wheel_prefix="left">
+    <origin xyz="${wheelbase/2} ${track/2} ${wheel_vertical_offset}" rpy="0 0 0" />
+  </xacro:omronld_wheel>
+
+  <xacro:omronld_wheel wheel_prefix="right">
+    <origin xyz="${wheelbase/2} ${-track/2} ${wheel_vertical_offset}" rpy="0 0 0" />
+  </xacro:omronld_wheel>
+
+  <!-- LASER -->
+
+  <xacro:sick_lms1xx frame="base_laser" topic="scan" robot_namespace="/"/> <!-- <xacro: muesste man hier nicht mit anfuegen funktioniert auch ohne-->
+
+  <!-- GAZEBO PLUGINS--> <!-- http://wiki.ros.org/urdf/Tutorials/Using%20a%20URDF%20in%20Gazebo-->
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <legacyModeNS>false</legacyModeNS>
+      <robotNamespace>$(arg robot_namespace)</robotNamespace>
+    </plugin>
+  </gazebo>
+
+<!-- four passive caster  -->
+
+  <xacro:omronld_caster caster_prefix="r_f_caster">
+    <origin xyz="0.2076340 ${-0.2159/2} 0.0375" rpy="0 0 0" />
+  </xacro:omronld_caster>
+
+
+  <xacro:omronld_caster caster_prefix="l_f_caster">
+    <origin xyz="0.2076340 ${0.2159/2} 0.0375" rpy="0 0 0" />
+  </xacro:omronld_caster>
+
+
+  <xacro:omronld_caster caster_prefix="r_b_caster">
+    <origin xyz="-0.2287113 ${-0.3132989/2} 0.0375" rpy="0 0 0" />
+  </xacro:omronld_caster>
+
+
+  <xacro:omronld_caster caster_prefix="l_b_caster">
+    <origin xyz="-0.2287113 ${0.3132989/2} 0.0375" rpy="0 0 0" />
+  </xacro:omronld_caster>
+
+</robot>
+
