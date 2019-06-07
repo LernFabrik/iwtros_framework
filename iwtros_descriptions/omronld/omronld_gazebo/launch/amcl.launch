@@ -1,11 +1,13 @@
 <launch>
+  <arg name="name_space" default="omronld"/>
+  <arg name="robot_controller" default="omronld_velocity_controller"/>
   <arg name="use_map_topic"  default="true"/>
-  <arg name="scan_topic"     default="scan"/>
+  <arg name="scan_topic"     default="/scan"/>
   <arg name="initial_pose_x" default="0.0"/>
   <arg name="initial_pose_y" default="0.0"/>
   <arg name="initial_pose_a" default="0.0"/>
   <!--initial pose uses to initialize the guassiuan distribution -->
-  <node pkg="amcl" type="amcl" name="amcl">
+  <node pkg="amcl" type="amcl" name="amcl" output="screen">
     <param name="use_map_topic"             value="$(arg use_map_topic)"/>
     <param name="first_map_only"            value="false"/>
     <!-- Publish scans from best pose at a max of 10 Hz -->
@@ -35,8 +37,8 @@
     <param name="laser_likelihood_max_dist" value="10.0"/>
     <param name="update_min_d"              value="0.25"/>
     <param name="update_min_a"              value="0.2"/>
-    <param name="odom_frame_id"             value="odom"/>
-    <param name="base_frame_id"             value="base_link"/>
+    <param name="odom_frame_id"             value="/odom"/>
+    <param name="base_frame_id"             value="/base_link"/>
     <param name="resample_interval"         value="5"/>
     <!-- Increase tolerance because the computer can get quite busy -->
     <param name="transform_tolerance"       value="0.1"/>
@@ -48,7 +50,7 @@
     <remap from="scan"                      to="$(arg scan_topic)"/>
   </node>
 
-  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+  <!--node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <rosparam file="$(find omronld_gazebo)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find omronld_gazebo)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find omronld_gazebo)/param/local_costmap_params.yaml" command="load" />
@@ -57,5 +59,5 @@
     <rosparam file="$(find omronld_gazebo)/param/dwa_local_planner_params.yaml" command="load" />
     <rosparam file="$(find omronld_gazebo)/param/base_global_planner_params.yaml" command="load" />
     <rosparam file="$(find omronld_gazebo)/param/move_base_params.yaml" command="load" />
-  </node>
+  </node-->
 </launch>

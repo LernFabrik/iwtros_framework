@@ -14,7 +14,7 @@ omronld_velocity_controller:
 
   base_frame_id: base_link
 
-  enable_odom_tf: false
+  enable_odom_tf: true
 
   estimate_velocity_from_position: false
 
