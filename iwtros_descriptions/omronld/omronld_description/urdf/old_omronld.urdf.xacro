@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 
 <robot name="omronld" xmlns:xacro="http://ros.org/wiki/xacro">
-
+  
   <!--general-->
 
-  <xacro:arg name="robot_description" default="robot_description" />
+  <xacro:arg name="robot_namespace" default="/omronld" />
   <xacro:property name="M_PI" value="3.14159"/>
 
   <!--wheels-->
@@ -24,7 +24,9 @@
 
   <!-- LASER -->
 
-  <xacro:include filename="$(find omronld_description)/urdf/laser/sick_lms1xx.urdf.xacro" />
+  <xacro:include filename="$(find omronld_description)/urdf/laser/old_sick_lms1xx.urdf.xacro" />
+  <xacro:arg name="laser_xyz" default="$(optenv omronld_LMS1XX_XYZ 0.2652 0.0 0.201)" />
+  <xacro:arg name="laser_rpy" default="$(optenv omronld_LMS1XX_RPY ${M_PI} 0.0 0.0)" />
 
   <!-- base_link origin point is center of rotation, on the floor. -->
 
@@ -39,43 +41,38 @@
       <geometry name="base_link_visual_geom">
         <mesh filename="package://omronld_description/meshes/omronld_visual.stl" scale="0.001 0.001 0.001" />
       </geometry>
-      <origin xyz="-0.000880947 0 ${0.0375+0.0501498}" rpy="${M_PI/2} 0 ${M_PI/2}" />
+      <origin xyz="-0.000880947 0 ${0.0375+0.0501498}" rpy="${M_PI/2} 0 ${M_PI/2}" /> 
     </visual>
 
     <collision name="base_link_collision">
       <geometry name="base_link_collision_geom">
         <box size="0.7 0.5 0.05" />
       </geometry>
-      <origin xyz="0 0 0.1" rpy="0 0 0" />
+      <origin xyz="0 0 0.1" rpy="0 0 0" /> 
     </collision>
 
   </link>
 
   <!-- omronld wheel macros -->
 
-  <xacro:omronld_wheel wheel_prefix="l_wheel">
+  <xacro:omronld_wheel wheel_prefix="left">
     <origin xyz="${wheelbase/2} ${track/2} ${wheel_vertical_offset}" rpy="0 0 0" />
   </xacro:omronld_wheel>
 
-  <xacro:omronld_wheel wheel_prefix="r_wheel">
+  <xacro:omronld_wheel wheel_prefix="right">
     <origin xyz="${wheelbase/2} ${-track/2} ${wheel_vertical_offset}" rpy="0 0 0" />
   </xacro:omronld_wheel>
 
   <!-- LASER -->
 
-  <xacro:sick_lms1xx frame="base_laser" parent="base_link" topic="scanFront">
-    <origin xyz="0.2652 0.0 0.201" rpy="${M_PI} 0.0 0.0"/>
-  </xacro:sick_lms1xx>
-
-  <xacro:sick_lms1xx frame="base_fake_laser" parent="base_link" topic="scanBack">
-    <origin xyz="-0.2652 0.0 0.105" rpy="${M_PI} 0.0 ${M_PI}"/>
-  </xacro:sick_lms1xx>
+  <xacro:sick_lms1xx frame="base_laser" topic="scan" robot_namespace="/"/> <!-- <xacro: muesste man hier nicht mit anfuegen funktioniert auch ohne-->
 
   <!-- GAZEBO PLUGINS--> <!-- http://wiki.ros.org/urdf/Tutorials/Using%20a%20URDF%20in%20Gazebo-->
 
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>$(arg robot_description)</robotNamespace>
+      <legacyModeNS>false</legacyModeNS>
+      <robotNamespace>$(arg robot_namespace)</robotNamespace>
     </plugin>
   </gazebo>
 
@@ -101,3 +98,4 @@
   </xacro:omronld_caster>
 
 </robot>
+

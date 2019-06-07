@@ -27,3 +27,8 @@
     * ![Error from gazebo](Pand_Pick_Error.png) ![Action message from the Pick and Place node](Panda_pickup_msg.png)
     ![Gripper Control manager](Panda_handa_hw_interface.png)
    * TODO: Change the message from position control to effort control.
+2. Sensor fusion
+    * New Omron urdf is create and instead of writing the gazebo plugin for differential drive simulation I have written the differential drive controller using control manager
+    * Howver the there exist the problem where AMCL is not broadcasting the map->odom 
+    * The problem is narrow down to the scan topic published by the gazebo contains the namespace and in the tf tree there is no namespace
+    * Hence this problem has to be solved before the implementation of move_base.

@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+
+<launch>
+    <arg name="robot_namespace" default="/omronld"/>
+    <arg name="sim" default="true"/>
+
+    <arg name="x" default="0.0"/>
+    <arg name="y" default="-1.5"/>
+    <arg name="z" default="0.0"/>
+    <arg name="yaw" default="0.0"/>
+
+    <arg if="$(arg sim)" name="map_file" default="$(find iwtros_gazebo)/map/test6.yaml"/>
+
+    <include file="$(find omronld_description)/launch/new_description.launch">
+        <remap from="robot_description" to="$(arg robot_description)/robot_description"/>
+    </include>
+
+    <group ns="$(arg robot_namespace)">
+        <!-- Load robot description -->
+        
+
+        <!--to publish the state of a robot to tf from urdf-->
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+        <!-- Spawn robot in gazebo -->
+        <node name="spawn_omronld_model" pkg="gazebo_ros" type="spawn_model"
+            args="-x $(arg x)
+                -y $(arg y)
+                -z $(arg z)
+                -Y $(arg yaw)
+                -unpause
+                -urdf
+                -param robot_description
+                -model $(arg robot_namespace)" />
+
+        <!--controll data for controller_manager-->
+        <rosparam command="load" file="$(find omronld_gazebo)/config/control.yaml" />
+
+        <!--The controller manager provides the infrastructure to interact with controllers-->
+        <node name="base_controller_spawner" pkg="controller_manager" type="spawner" args="omronld_joint_publisher omronld_velocity_controller"/>
+
+        <!--Provides nonlinear state estimation through sensor fusion of an abritrary number of sensors-->
+        <!--node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
+            <rosparam command="load" file="$(find omronld_gazebo)/config/localization.yaml" />
+        </node-->
+
+        <!--Interactive Marker for RVIZ to control the robot-->
+        <node pkg="interactive_marker_twist_server" type="marker_server" name="twist_marker_server" output="screen"/>
+
+        <!--When there are more than a single source to move a robot with a geometry_msgs::Twist message-->
+        <node pkg="twist_mux" type="twist_mux" name="twist_mux">
+            <rosparam command="load" file="$(find omronld_gazebo)/config/twist_mux.yaml" />
+            <remap from="cmd_vel_out" to="omronld_velocity_controller/cmd_vel"/>
+        </node>
+
+    </group>
+
+        <!-- Start the AMCL-->
+        <node if="$(arg sim)" name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+        <include if="$(arg sim)" file="$(find omronld_gazebo)/launch/amcl.launch" >
+            <arg name="name_space" value="$(arg robot_namespace)"/>
+            <arg name="robot_controller" value="omronld_velocity_controller"/>
+            <arg name="initial_pose_x" value="0"/>
+            <arg name="initial_pose_y" value="-1.5"/>
+        </include>
+</launch>

@@ -123,6 +123,9 @@ void LaserscanMerger::scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan,
 	sensor_msgs::PointCloud tmpCloud1,tmpCloud2;
 	sensor_msgs::PointCloud2 tmpCloud3;
 
+	/* std::string frame = scan->header.frame_id.c_str();
+	std::string newFrame = frame.erase(0, 8);
+	ROS_WARN(newFrame.c_str());*/
     // Verify that TF knows how to transform from the received scan to the destination scan frame
 	tfListener_.waitForTransform(scan->header.frame_id.c_str(), destination_frame.c_str(), scan->header.stamp, ros::Duration(1));
 
