@@ -145,7 +145,7 @@ bool incrementSrv(wsg_50_common::Incr::Request &req, wsg_50_common::Incr::Respon
 	if (req.direction == "open"){
 
 		if (!objectGraspped){
-
+      ROS_INFO("Opening...");
 			float currentWidth = getOpening();
 			float nextWidth = currentWidth + req.increment;
 			if ( (currentWidth < GRIPPER_MAX_OPEN) && nextWidth < GRIPPER_MAX_OPEN ){
@@ -163,9 +163,9 @@ bool incrementSrv(wsg_50_common::Incr::Request &req, wsg_50_common::Incr::Respon
 			objectGraspped = false;
 		}
 	}else if (req.direction == "close"){
-
+    ROS_INFO("Got close request");
 		if (!objectGraspped){
-
+      ROS_INFO("Beginning to close..");
 			float currentWidth = getOpening();
 			float nextWidth = currentWidth - req.increment;
 
@@ -178,6 +178,7 @@ bool incrementSrv(wsg_50_common::Incr::Request &req, wsg_50_common::Incr::Respon
 				move(GRIPPER_MIN_OPEN,1, true);
 				currentWidth = GRIPPER_MIN_OPEN;
 			}
+			ROS_INFO("Current width: %f", currentWidth);
 		}
 	}
 	return true;
@@ -591,9 +592,10 @@ int main( int argc, char **argv )
             g_pub_moving = nh.advertise<std_msgs::Bool>("moving", 10);
 
 		ROS_INFO("Ready to use. Homing and taring now...");
+        ack_fault();
 		homing();
         ros::Duration(0.5).sleep();
-        doTare();
+        //doTare();
 
 		if (grasping_force > 0.0) {
 			ROS_INFO("Setting grasping force limit to %5.1f", grasping_force);

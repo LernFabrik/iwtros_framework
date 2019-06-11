@@ -1,6 +1,5 @@
-<?xml version='1.0'?>
 <launch>
-  <arg name="com_mode" default="script" /><!-- or auto_update, polling -->
+  <arg name="com_mode" default="auto_update" /><!-- or auto_update, polling -->
   <arg name="remap" default="false" /><!-- Remap joint_states topic. e.g. for joint_state_publisher -->
   <arg name="force" default="10" />
 

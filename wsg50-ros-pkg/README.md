@@ -1,6 +1,3 @@
-# Modification from WSG-50 Gripper
-For my thesis
-
 # ROS package for Schunk WSG-50 Gripper
 Forked from: [https://code.google.com/p/wsg50-ros-pkg](https://code.google.com/p/wsg50-ros-pkg)
 

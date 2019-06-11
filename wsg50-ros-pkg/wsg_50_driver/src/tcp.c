@@ -60,7 +60,7 @@
 // Macros
 //------------------------------------------------------------------------
 
-#define TCP_RCV_TIMEOUT_SEC					60
+#define TCP_RCV_TIMEOUT_SEC					600
 
 //------------------------------------------------------------------------
 // Typedefs, enums, structs
@@ -132,7 +132,7 @@ int tcp_open( const void *params )
 
     res = connect( conn.sock, (struct sockaddr *) &conn.si_server, sizeof(conn.si_server) );
     if ( res < 0 ) return -1;
-
+	printf("Open TCP socket is SUCESSFUL\n");
     return 0;
 }
 

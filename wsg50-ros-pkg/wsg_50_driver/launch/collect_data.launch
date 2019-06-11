@@ -1,0 +1,22 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+  <arg name="hand_config" default="$(find wsg_50_driver)/config/hand0.yaml" />
+  <rosparam file="$(arg hand_config)" command="load" />
+
+  <node pkg="wsg_50_driver" type="collect_data" name="collect_data" output="screen">
+    <param name="data_path" type="string" value="/home/patrick/weiss_ws/src/wsg50-ros-pkg/wsg_50_driver/data/bare/dist" />
+    <param name="devices" type="int" value="8" />
+<!--
+    <param name="start_width" type="double" value="12.5" />
+    <param name="end_width" type="double" value="9.9" /> 
+-->
+    <param name="start_width" type="double" value="64.0" />
+    <param name="end_width" type="double" value="1.9" />
+    <param name="delta_width" type="double" value="2.0" />
+    <param name="samples_per_width" type="int" value="100" />
+    <param name="load_finger0_calibration" type="bool" value="true" />
+    <param name="load_finger1_calibration" type="bool" value="false" />
+
+  </node>
+
+</launch>
