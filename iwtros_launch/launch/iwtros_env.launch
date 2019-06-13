@@ -29,7 +29,7 @@
 
   <!-- Hardware spwaner-->
   <include unless="$(arg sim)" file="$(find iwtros_launch)/launch/robot_hw/iiwa_hw_controller.launch"/>
-  <include unless="$(arg sim)" file="$(find iwtros_launch)/launch/robot_hw/panda_hw_controller.launch"/>
+  <!--include unless="$(arg sim)" file="$(find iwtros_launch)/launch/robot_hw/panda_hw_controller.launch"/-->
     
   <!-- Start the AMCL-->
   <arg if="$(arg sim)" name="map_file" default="$(find iwtros_gazebo)/map/test6.yaml"/>
