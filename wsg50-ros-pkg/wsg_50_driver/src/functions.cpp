@@ -135,7 +135,7 @@ int homing( void )
 /** \brief  Send move command (0x21) to gripper
  *  \param  ignore_response Do not read back response from gripper. (Must be read elsewhere, for auto update.)
  */
-int move( float width, float speed, bool stop_on_block, bool ignore_response)
+bool move( float width, float speed, bool stop_on_block, bool ignore_response)
 {
 
 	status_t status;
@@ -159,7 +159,7 @@ int move( float width, float speed, bool stop_on_block, bool ignore_response)
         {
             dbgPrint( "Response payload length doesn't match (is %d, expected 2)\n", res );
             if ( res > 0 ) free( resp );
-            return 0;
+            return true;
         }
 
         // Check response status
@@ -168,7 +168,7 @@ int move( float width, float speed, bool stop_on_block, bool ignore_response)
         if ( status != E_SUCCESS )
         {
             dbgPrint( "Command MOVE not successful: %s\n", status_to_str( status ) );
-            return -1;
+            return false;
         }
     } else {
         // Submit command, do not wait for response
@@ -177,11 +177,11 @@ int move( float width, float speed, bool stop_on_block, bool ignore_response)
         res = msg_send(&msg);
         if (res <= 0) {
             dbgPrint("Failed to send command MOVE\n");
-            return -1;
+            return false;
         }
     }
 
-	return 0;
+	return true;
 }
 
 
@@ -263,7 +263,7 @@ int ack_fault( void )
 }
 
 
-int grasp( float objWidth, float speed )
+bool grasp( float objWidth, float speed )
 {
 	status_t status;
 	int res;
@@ -281,7 +281,7 @@ int grasp( float objWidth, float speed )
 	{
 		dbgPrint( "Response payload length doesn't match (is %d, expected 2)\n", res );
 		if ( res > 0 ) free( resp );
-		return 0;
+		return true;
 	}
 
 	// Check response status
@@ -290,10 +290,10 @@ int grasp( float objWidth, float speed )
 	if ( status != E_SUCCESS )
 	{
 		dbgPrint( "Command GRASP not successful: %s\n", status_to_str( status ) );
-		return -1;
+		return false;
 	}
 
-	return( 0 );
+	return( true );
 }
 
 
