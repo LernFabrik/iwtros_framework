@@ -29,6 +29,5 @@
         <include file="$(find iwtros_launch)/launch/robot_hw/iiwa_hw.launch" >
             <arg name="hardware_interface" value="$(arg hardware_interface)" />
         </include>
-        
     </group>
 </launch>

@@ -11,10 +11,10 @@ controller_list:
       - iiwa_joint_5
       - iiwa_joint_6
       - iiwa_joint_7
-  - name: EffortJointInterface_wsg50_gripper_trajectory_controller
+  - name: wsg50_gripper
     action_ns: follow_joint_trajectory
     type: FollowJointTrajectory
     default: true
     joints:
-      - wsg50_gripper_left_joint
-      - wsg50_gripper_right_joint
+      - wsg50_finger_left_joint
+      - wsg50_finger_right_joint

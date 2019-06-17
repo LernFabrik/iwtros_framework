@@ -76,11 +76,11 @@ namespace iwtros{
         _nh.param("ip", ip, std::string("172.31.1.160"));
         _nh.param("port", port, 1000);
         _nh.param("local_port", local_port, 1501);
-        _nh.param("protocol", protocol, std::string(""));
-        _nh.param("com_mode", com_mode, std::string(""));
-        _nh.param("rate", rate, 1.0); // With custom script, up to 30Hz are possible
-        _nh.param("grasping_force", grasping_force, 0.0);
-        _nh.param("speed", speed, 1.0);
+        _nh.param("protocol", protocol, std::string("tcp"));
+        _nh.param("com_mode", com_mode, std::string("auto_update"));
+        _nh.param("rate", rate, 50.0); // With custom script, up to 30Hz are possible
+        _nh.param("grasping_force", grasping_force, 40.0);
+        _nh.param("speed", speed, 40.0);
 
         if (protocol == "udp")
             use_udp = true;
@@ -109,11 +109,11 @@ namespace iwtros{
             /*Initialize the action handlers */
             
             auto homming_handler = [this](auto&& goal){return this->hommingAction(goal);};
-            auto stop_handler = [=](auto&& goal){return this->stopAction(goal);};
-            auto move_handler = [=](auto&& goal){return this->moveAction(goal);};
-            auto grasp_handler = [=](auto&& goal){return this->graspAction(goal);};
+            auto stop_handler = [this](auto&& goal){return this->stopAction(goal);};
+            auto move_handler = [this](auto&& goal){return this->moveAction(goal);};
+            auto grasp_handler = [this](auto&& goal){return this->graspAction(goal);};
             /*Start the action servers */
-            if(g_mode_script || g_mode_polling){
+            if(g_mode_script || g_mode_polling || g_mode_periodic){
                 actionlib::SimpleActionServer<wsg_50_common::HommingAction> homming_action_server(
                     _nh, "homming", 
                     [=, &homming_action_server](auto&& goal){
@@ -148,12 +148,14 @@ namespace iwtros{
                 grasp_action_server.start();
 
                 actionlib::SimpleActionServer<control_msgs::GripperCommandAction> gripper_command_action_server(
-                    _nh, "gripper_action",
+                    _nh, "wsg50_gripper",
                     [=, &gripper_command_action_server](auto&& goal){
+                        ROS_ERROR("Gripper commander server ----");
                         return this->gripperCommandExecution<control_msgs::GripperCommandAction, control_msgs::GripperCommandGoalConstPtr,
                                                                 control_msgs::GripperCommandResult>(speed, &gripper_command_action_server, goal);
                     }, false);
-                gripper_command_action_server.start();  
+                gripper_command_action_server.start(); 
+                ROS_WARN("Gripper Command is Started"); 
             }
 
             // Subscribers
@@ -161,7 +163,7 @@ namespace iwtros{
             if(g_mode_script)_sub_speed = _nh.subscribe<std_msgs::Float32>("goal_speed", 5, boost::bind(&wsg50::speedCallback, this, _1));
             //Publisher
             _pub_state = _nh.advertise<wsg_50_common::Status>("status", 1000);
-            _pub_joint = _nh.advertise<sensor_msgs::JointState>("/joint_states", 10);
+            _pub_joint = _nh.advertise<sensor_msgs::JointState>("joint_states", 10);
             if(g_mode_script || g_mode_periodic)
                 _pub_moving = _nh.advertise<std_msgs::Bool>("moving", 10);
             
@@ -207,7 +209,7 @@ namespace iwtros{
         g_goal_position = msg->pos;
         if(g_mode_periodic){
             stop(true);
-            if(move(g_goal_position, g_speed, false, true) != 0) ROS_INFO("Failed to send Move command");
+            if(move(g_goal_position, g_speed, false, true) != false) ROS_INFO("Failed to send Move command");
         }
     }
 
@@ -309,7 +311,7 @@ namespace iwtros{
         status_msg.status = "UNKNOWN";
 
         sensor_msgs::JointState joint_states;
-        joint_states.header.frame_id = "wsg50_base_link";
+        joint_states.header.frame_id = "";
         joint_states.name.push_back("wsg50_finger_left_joint");
         joint_states.name.push_back("wsg50_finger_right_joint");
         joint_states.position.resize(2);
@@ -475,7 +477,7 @@ namespace iwtros{
 
 int main(int argc, char** argv){
     ros::init(argc, argv, "wsg50");
-    ros::NodeHandle nh("~");
+    ros::NodeHandle nh;
 
     iwtros::wsg50 wsg(nh);
 
