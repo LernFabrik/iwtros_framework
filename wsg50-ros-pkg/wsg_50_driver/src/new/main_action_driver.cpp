@@ -11,12 +11,12 @@
 namespace iwtros{
 
     template<typename T_action, typename T_goal, typename T_result>
-    void handleError(actionlib::SimpleActionServer<T_action>* server,
-                        std::function<int(const T_goal&)> handler,
+    void wsg50::handleError(actionlib::SimpleActionServer<T_action>* server,
+                        std::function<bool(const T_goal&)> handler,
                         const T_goal& goal){
         T_result result;
         try{
-            result.error = handler(goal);
+            result.success = handler(goal);
             server->setSucceeded(result);
         }catch(int e){
             ROS_ERROR_STREAM("Error handling error" << e);
@@ -24,6 +24,52 @@ namespace iwtros{
             result.error = e;
             server->setAborted(result);
         }
+    }
+
+    template<typename T_action, typename T_controller, typename T_controllerResult>
+    void wsg50::gripperCommandExecution(double default_speed,
+                                actionlib::SimpleActionServer<T_action>* action_server,
+                                const T_controller& goal){
+        gripper_response gripperRespose;
+        auto gripper_command_handler = [goal, default_speed, &gripperRespose](){
+            /*HACK: Gripper motion given by the MoveIt is for one 
+            finger and other should mimic respectively.
+            For the single gripper position is from the midway*/
+            double target_width = 2*goal->command.position;
+            gripperRespose.position = getOpening();             //complete width between the finger
+            if(target_width > GRIPPER_MAX_OPEN || target_width < 0.0){
+                ROS_ERROR_STREAM("GripperServer: Commanding out of range with max_dith= " << GRIPPER_MAX_OPEN << "command = " << target_width);
+                return false;
+            }
+            constexpr double kSamplePositionThreshold = 1e-4;
+            if(std::abs(target_width - gripperRespose.position/1000) < kSamplePositionThreshold){
+                return true;
+            }
+            if(target_width >= gripperRespose.position/1000){
+                return move(target_width, default_speed, false, false);
+            }
+            return grasp(target_width, default_speed);
+
+        };
+
+        try{
+            if(!gripper_command_handler()){
+                gripper_response response;
+                response.position = getOpening();
+                T_controllerResult result;
+                result.effort = 0.0;
+                result.position = response.position/1000;
+                result.reached_goal = static_cast<decltype(result.reached_goal)>(true);
+                result.stalled = static_cast<decltype(result.stalled)>(false);
+                action_server->setSucceeded(result);
+                return;
+            }
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+        action_server->setAborted();
     }
         
     wsg50::wsg50(ros::NodeHandle& nh):_nh(nh){
@@ -34,6 +80,7 @@ namespace iwtros{
         _nh.param("com_mode", com_mode, std::string(""));
         _nh.param("rate", rate, 1.0); // With custom script, up to 30Hz are possible
         _nh.param("grasping_force", grasping_force, 0.0);
+        _nh.param("speed", speed, 1.0);
 
         if (protocol == "udp")
             use_udp = true;
@@ -61,44 +108,52 @@ namespace iwtros{
 
             /*Initialize the action handlers */
             
-            auto homming_handler = [](auto&& goal){return hommingAction(goal);};
-            auto stop_handler = [](auto&& goal){return stopAction(goal);};
-            auto move_handler = [](auto&& goal){return moveAction(goal);};
-            auto grasp_handler = [](auto&& goal){return graspAction(goal);};
+            auto homming_handler = [this](auto&& goal){return this->hommingAction(goal);};
+            auto stop_handler = [=](auto&& goal){return this->stopAction(goal);};
+            auto move_handler = [=](auto&& goal){return this->moveAction(goal);};
+            auto grasp_handler = [=](auto&& goal){return this->graspAction(goal);};
             /*Start the action servers */
             if(g_mode_script || g_mode_polling){
                 actionlib::SimpleActionServer<wsg_50_common::HommingAction> homming_action_server(
                     _nh, "homming", 
                     [=, &homming_action_server](auto&& goal){
-                        return handleError<wsg_50_common::HommingAction, wsg_50_common::HommingGoalConstPtr,
+                        return this->handleError<wsg_50_common::HommingAction, wsg_50_common::HommingGoalConstPtr,
                                             wsg_50_common::HommingResult>(&homming_action_server, homming_handler, goal);
                     }, false);
                 
                 actionlib::SimpleActionServer<wsg_50_common::StopAction> stop_action_server(
                     _nh, "stop",
                     [=, &stop_action_server](auto&& goal){
-                        return handleError<wsg_50_common::StopAction, wsg_50_common::StopGoalConstPtr,
+                        return this->handleError<wsg_50_common::StopAction, wsg_50_common::StopGoalConstPtr,
                                                 wsg_50_common::StopResult>(&stop_action_server, stop_handler, goal);
                     }, false);
 
                 actionlib::SimpleActionServer<wsg_50_common::MoveAction> move_action_server(
                     _nh, "move",
                     [=, &move_action_server](auto&& goal){
-                        return handleError<wsg_50_common::MoveAction, wsg_50_common::MoveGoalConstPtr,
+                        return this->handleError<wsg_50_common::MoveAction, wsg_50_common::MoveGoalConstPtr,
                                                 wsg_50_common::MoveResult>(&move_action_server, move_handler, goal);
                     }, false);
                 
                 actionlib::SimpleActionServer<wsg_50_common::GraspAction> grasp_action_server(
                     _nh, "grasp",
                     [=, &grasp_action_server](auto&& goal){
-                        return handleError<wsg_50_common::GraspAction, wsg_50_common::GraspGoalConstPtr,
+                        return this->handleError<wsg_50_common::GraspAction, wsg_50_common::GraspGoalConstPtr,
                                                 wsg_50_common::GraspResult>(&grasp_action_server, grasp_handler, goal);
                     }, false);
                 
                 homming_action_server.start();
                 stop_action_server.start();
                 move_action_server.start();
-                grasp_action_server.start();  
+                grasp_action_server.start();
+
+                actionlib::SimpleActionServer<control_msgs::GripperCommandAction> gripper_command_action_server(
+                    _nh, "gripper_action",
+                    [=, &gripper_command_action_server](auto&& goal){
+                        return this->gripperCommandExecution<control_msgs::GripperCommandAction, control_msgs::GripperCommandGoalConstPtr,
+                                                                control_msgs::GripperCommandResult>(speed, &gripper_command_action_server, goal);
+                    }, false);
+                gripper_command_action_server.start();  
             }
 
             // Subscribers

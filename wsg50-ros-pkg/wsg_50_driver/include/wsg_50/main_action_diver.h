@@ -28,6 +28,7 @@
 #include "wsg_50_common/MoveAction.h"
 #include "wsg_50_common/StopAction.h"
 #include <actionlib/server/simple_action_server.h>
+#include <control_msgs/GripperCommandAction.h>
 
 #define GRIPPER_MAX_OPEN 110.0
 #define GRIPPER_MIN_OPEN 0.0
@@ -48,7 +49,7 @@ namespace iwtros{
         float g_goal_position = NAN, g_goal_speed = NAN, g_speed = 10.0;
         std::string ip, protocol, com_mode;
         int port, local_port;
-        double rate, grasping_force;
+        double rate, speed, grasping_force;
         bool use_udp = false;
 
         ros::NodeHandle _nh;
@@ -85,6 +86,20 @@ namespace iwtros{
          * @return: Currently incompatible with error handle function
          */
         int stopAction(const wsg_50_common::StopGoalConstPtr& goal);
+        /**Handles the action server and execute the action goal
+         * @param 
+         */
+        template<typename T_action, typename T_goal, typename T_result>
+        void handleError(actionlib::SimpleActionServer<T_action>* server,
+                            std::function<bool(const T_goal&)> handler,
+                            const T_goal& goal);
+        /**MoveIt controller action callback
+         * @breif execute the control managere action server
+         */
+        template<typename T_action, typename T_controller, typename T_controllerResult>
+        void gripperCommandExecution(double default_speed,
+                                    actionlib::SimpleActionServer<T_action>* action_server,
+                                    const T_controller& goal);
     };
     
 }

@@ -67,9 +67,9 @@ typedef struct {
 
 float convert(unsigned char *b);
 int homing( void );
-int move(float width, float speed, bool stop_on_block, bool ignore_response = false);
+bool move(float width, float speed, bool stop_on_block, bool ignore_response = false);
 int stop( bool ignore_response = false );
-int grasp( float objWidth, float speed );
+bool grasp( float objWidth, float speed );
 int release( float width, float speed );
 int ack_fault( void );
 

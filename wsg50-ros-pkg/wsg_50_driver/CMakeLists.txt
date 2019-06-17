@@ -9,13 +9,16 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   std_srvs
   wsg_50_common
+  actionlib
+  actionlib_msgs
+  control_msgs
   #  serial
 )
 
 catkin_package(
    INCLUDE_DIRS include
   LIBRARIES hand_lib optical_weiss_finger_lib fmf_weiss_finger_lib
-  CATKIN_DEPENDS roscpp std_msgs std_srvs wsg_50_common
+  CATKIN_DEPENDS roscpp std_msgs std_srvs wsg_50_common actionlib_msgs
 #  DEPENDS system_lib
 )
 
