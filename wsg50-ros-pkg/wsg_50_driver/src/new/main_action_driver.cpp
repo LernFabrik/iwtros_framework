@@ -27,23 +27,21 @@ namespace iwtros{
     }
 
     void wsg50::gripperCommandExecution(const control_msgs::GripperCommandGoalConstPtr& goal){
-        gripper_response gripperRespose;
-        auto gripper_command_handler = [goal, &gripperRespose](auto default_speed){
+        auto gripper_command_handler = [goal, this](auto default_speed){
             /*HACK: Gripper motion given by the MoveIt is for one 
             finger and other should mimic respectively.
             For the single gripper position is from the midway*/
-            double target_width = 2*goal->command.position;
-            gripperRespose.position = getOpening();             //complete width between the finger
+            double target_width = std::abs(2000*goal->command.position);
             if(target_width > GRIPPER_MAX_OPEN || target_width < 0.0){
                 ROS_ERROR_STREAM("GripperServer: Commanding out of range with max_dith= " << GRIPPER_MAX_OPEN << "command = " << target_width);
                 return false;
             }
             constexpr double kSamplePositionThreshold = 1e-4;
-            if(std::abs(target_width - gripperRespose.position/1000) < kSamplePositionThreshold){
+            if(std::abs(target_width - this->status_msg.width/1000) < kSamplePositionThreshold){
                 return true;
             }
-            if(target_width >= gripperRespose.position/1000){
-                ROS_WARN_STREAM("Executing move command current = " << gripperRespose.position/1000 << " width");
+            if(target_width >= this->status_msg.width/1000){
+                ROS_WARN_STREAM("Executing move command current = " <<  this->status_msg.width/1000 << " width");
                 return move(target_width, default_speed, false, false);
             }
             return grasp(target_width, default_speed);
@@ -52,27 +50,25 @@ namespace iwtros{
 
         try{
             if(gripper_command_handler(this->speed)){
-                ROS_WARN("Successful gripper action ");
-                gripper_response response;
-                response.position = getOpening();
-                control_msgs::GripperCommandResult result;
-                result.effort = 0.0;
-                result.position = response.position/1000;
-                result.reached_goal = static_cast<decltype(result.reached_goal)>(true);
-                result.stalled = static_cast<decltype(result.stalled)>(false);
-                gs_.setSucceeded(result);
-                return;
-            }else{
-                gs_.setAborted();
+                if(this->status == E_SUCCESS){
+                    ROS_WARN("Successful gripper action ");
+                    control_msgs::GripperCommandResult result;
+                    result.effort = 0.0;
+                    result.position = this->status_msg.width/1000;
+                    result.reached_goal = static_cast<decltype(result.reached_goal)>(true);
+                    result.stalled = static_cast<decltype(result.stalled)>(false);
+                    gs_.setSucceeded(result);
+                    return;
+                }
             }
-        }
-        catch(const std::exception& e){
+        }catch(const std::exception& e){
             std::cerr << e.what() << '\n';
             ROS_ERROR("Failed to move the gripper");
         }
+        gs_.setAborted();
     }
         
-    wsg50::wsg50(ros::NodeHandle& nh):gs_(nh, "wsg50_gripper", boost::bind(&wsg50::gripperCommandExecution, this, _1), false), _nh(nh){
+    wsg50::wsg50(ros::NodeHandle& nh):gs_(nh, "gripper_action", boost::bind(&wsg50::gripperCommandExecution, this, _1), false), _nh(nh){
         _nh.param("ip", ip, std::string("172.31.1.160"));
         _nh.param("port", port, 1000);
         _nh.param("local_port", local_port, 1501);
@@ -305,7 +301,6 @@ namespace iwtros{
 
     void wsg50::read_thread(int interval_ms){
         ROS_INFO("Thread started");
-        status_t status;
         int res;
         bool pub_state = false;
 
@@ -313,7 +308,6 @@ namespace iwtros{
         std::string names[3] = { "opening", "speed", "force" };
 
         // Prepare messages
-        wsg_50_common::Status status_msg;
         status_msg.status = "UNKNOWN";
 
         sensor_msgs::JointState joint_states;
@@ -480,8 +474,8 @@ namespace iwtros{
 
 
 int main(int argc, char** argv){
-    ros::init(argc, argv, "wsg50");
-    ros::NodeHandle nh;
+    ros::init(argc, argv, "wsg50_gripper");
+    ros::NodeHandle nh("~");
 
     iwtros::wsg50 wsg(nh);
 

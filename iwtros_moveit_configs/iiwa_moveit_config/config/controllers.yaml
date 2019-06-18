@@ -12,8 +12,8 @@ controller_list:
       - iiwa_joint_6
       - iiwa_joint_7
   - name: wsg50_gripper
-    action_ns: follow_joint_trajectory
-    type: FollowJointTrajectory
+    action_ns: gripper_action
+    type: GripperCommand
     default: true
     joints:
       - wsg50_finger_left_joint

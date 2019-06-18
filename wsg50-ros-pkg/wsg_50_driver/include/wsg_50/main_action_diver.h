@@ -48,6 +48,8 @@ namespace iwtros{
         int port, local_port;
         double rate, speed, grasping_force;
         bool use_udp = false;
+        wsg_50_common::Status status_msg;
+        status_t status;
 
         ros::NodeHandle _nh;
         ros::Subscriber _sub_position, _sub_speed;
