@@ -84,7 +84,9 @@ namespace iwtros{
          */
         int stopAction(const wsg_50_common::StopGoalConstPtr& goal);
         /**Handles the action server and execute the action goal
-         * @param 
+         * @breif currently this function is not used because action server
+         * exepected to come up are not working because of the which not executed 
+         * under the class!!
          */
         template<typename T_action, typename T_goal, typename T_result>
         void handleError(actionlib::SimpleActionServer<T_action>* server,
@@ -93,10 +95,8 @@ namespace iwtros{
         /**MoveIt controller action callback
          * @breif execute the control managere action server
          */
-        template<typename T_action, typename T_controller, typename T_controllerResult>
-        void gripperCommandExecution(double default_speed,
-                                    actionlib::SimpleActionServer<T_action>* action_server,
-                                    const T_controller& goal);
+        void gripperCommandExecution(const control_msgs::GripperCommandGoalConstPtr& goal);
+
         protected:
             Gripper gs_;
     };

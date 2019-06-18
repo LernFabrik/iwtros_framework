@@ -26,12 +26,9 @@ namespace iwtros{
         }
     }
 
-    template<typename T_action, typename T_controller, typename T_controllerResult>
-    void wsg50::gripperCommandExecution(double default_speed,
-                                actionlib::SimpleActionServer<T_action>* action_server,
-                                const T_controller& goal){
+    void wsg50::gripperCommandExecution(const control_msgs::GripperCommandGoalConstPtr& goal){
         gripper_response gripperRespose;
-        auto gripper_command_handler = [goal, default_speed, &gripperRespose](){
+        auto gripper_command_handler = [goal, &gripperRespose](auto default_speed){
             /*HACK: Gripper motion given by the MoveIt is for one 
             finger and other should mimic respectively.
             For the single gripper position is from the midway*/
@@ -46,6 +43,7 @@ namespace iwtros{
                 return true;
             }
             if(target_width >= gripperRespose.position/1000){
+                ROS_WARN_STREAM("Executing move command current = " << gripperRespose.position/1000 << " width");
                 return move(target_width, default_speed, false, false);
             }
             return grasp(target_width, default_speed);
@@ -53,28 +51,28 @@ namespace iwtros{
         };
 
         try{
-            if(!gripper_command_handler()){
+            if(gripper_command_handler(this->speed)){
+                ROS_WARN("Successful gripper action ");
                 gripper_response response;
                 response.position = getOpening();
-                T_controllerResult result;
+                control_msgs::GripperCommandResult result;
                 result.effort = 0.0;
                 result.position = response.position/1000;
                 result.reached_goal = static_cast<decltype(result.reached_goal)>(true);
                 result.stalled = static_cast<decltype(result.stalled)>(false);
-                action_server->setSucceeded(result);
+                gs_.setSucceeded(result);
                 return;
+            }else{
+                gs_.setAborted();
             }
         }
-        catch(const std::exception& e)
-        {
+        catch(const std::exception& e){
             std::cerr << e.what() << '\n';
+            ROS_ERROR("Failed to move the gripper");
         }
-        action_server->setAborted();
     }
         
-    wsg50::wsg50(ros::NodeHandle& nh):gs_(nh, "wsg50_gripper", [=, &gs_, this](auto&& goal){
-        return this->gripperCommandExecution(this->speed, &gs_, goal);
-    }, false), _nh(nh){
+    wsg50::wsg50(ros::NodeHandle& nh):gs_(nh, "wsg50_gripper", boost::bind(&wsg50::gripperCommandExecution, this, _1), false), _nh(nh){
         _nh.param("ip", ip, std::string("172.31.1.160"));
         _nh.param("port", port, 1000);
         _nh.param("local_port", local_port, 1501);
@@ -145,10 +143,10 @@ namespace iwtros{
                                                 wsg_50_common::GraspResult>(&grasp_action_server, grasp_handler, goal);
                     }, false);
                 
-                homming_action_server.start();
+                /*homming_action_server.start();
                 stop_action_server.start();
                 move_action_server.start();
-                grasp_action_server.start();
+                grasp_action_server.start();*/
 
                 /*actionlib::SimpleActionServer<control_msgs::GripperCommandAction> gripper_command_action_server(
                     _nh, "wsg50_gripper",
@@ -160,6 +158,7 @@ namespace iwtros{
                 gripper_command_action_server.start();*/
                 ROS_WARN("Gripper Command is Started"); 
                 /*The proper way to initialize the action server in class*/ 
+                gs_.start();
             }
 
             // Subscribers
@@ -183,8 +182,11 @@ namespace iwtros{
             ROS_INFO("Init done. Starting timer/thread with target rate %.1f.", rate);
             std::thread th;
             ros::Timer tmr;
-            if(g_mode_polling || g_mode_script) tmr = _nh.createTimer(ros::Duration(1.0/rate), boost::bind(&wsg50::timerCallback, this, _1));
-            if(g_mode_periodic) th = std::thread(boost::bind(&wsg50::read_thread, this, _1), (int)(1000.0/rate));
+            //if(g_mode_polling || g_mode_script) tmr = _nh.createTimer(ros::Duration(1.0/rate), boost::bind(&wsg50::timerCallback, this, _1));
+            if(g_mode_periodic){
+                ROS_INFO("Initializing threading");
+                th = std::thread(boost::bind(&wsg50::read_thread, this, _1), (int)(1000.0/rate));
+            }
 
             ros::spin();
 
@@ -448,8 +450,6 @@ namespace iwtros{
                 ROS_DEBUG_STREAM((info + " expected: " + std::to_string((int)rate_exp) + "Hz").c_str());
                 cnt[0] = 0; cnt[1] = 0; cnt[2] = 0;
             }
-
-
         }
 
         // Disable automatic updates
