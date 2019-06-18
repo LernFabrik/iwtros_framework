@@ -72,7 +72,9 @@ namespace iwtros{
         action_server->setAborted();
     }
         
-    wsg50::wsg50(ros::NodeHandle& nh):_nh(nh){
+    wsg50::wsg50(ros::NodeHandle& nh):gs_(nh, "wsg50_gripper", [=, &gs_, this](auto&& goal){
+        return this->gripperCommandExecution(this->speed, &gs_, goal);
+    }, false), _nh(nh){
         _nh.param("ip", ip, std::string("172.31.1.160"));
         _nh.param("port", port, 1000);
         _nh.param("local_port", local_port, 1501);
@@ -114,6 +116,7 @@ namespace iwtros{
             auto grasp_handler = [this](auto&& goal){return this->graspAction(goal);};
             /*Start the action servers */
             if(g_mode_script || g_mode_polling || g_mode_periodic){
+                /*Bellow action server is not coming up!*/
                 actionlib::SimpleActionServer<wsg_50_common::HommingAction> homming_action_server(
                     _nh, "homming", 
                     [=, &homming_action_server](auto&& goal){
@@ -147,15 +150,16 @@ namespace iwtros{
                 move_action_server.start();
                 grasp_action_server.start();
 
-                actionlib::SimpleActionServer<control_msgs::GripperCommandAction> gripper_command_action_server(
+                /*actionlib::SimpleActionServer<control_msgs::GripperCommandAction> gripper_command_action_server(
                     _nh, "wsg50_gripper",
                     [=, &gripper_command_action_server](auto&& goal){
                         ROS_ERROR("Gripper commander server ----");
                         return this->gripperCommandExecution<control_msgs::GripperCommandAction, control_msgs::GripperCommandGoalConstPtr,
                                                                 control_msgs::GripperCommandResult>(speed, &gripper_command_action_server, goal);
                     }, false);
-                gripper_command_action_server.start(); 
+                gripper_command_action_server.start();*/
                 ROS_WARN("Gripper Command is Started"); 
+                /*The proper way to initialize the action server in class*/ 
             }
 
             // Subscribers

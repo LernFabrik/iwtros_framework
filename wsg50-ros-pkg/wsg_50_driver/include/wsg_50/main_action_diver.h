@@ -35,10 +35,7 @@
 
 namespace iwtros{
 
-    template<typename T_action, typename T_goal, typename T_result>
-    void handleError(actionlib::SimpleActionServer<T_action>* server,
-                        std::function<bool(const T_goal&)> handler,
-                        const T_goal& goal);
+    typedef actionlib::SimpleActionServer<control_msgs::GripperCommandAction> Gripper;
 
     class wsg50{
     private:
@@ -100,6 +97,8 @@ namespace iwtros{
         void gripperCommandExecution(double default_speed,
                                     actionlib::SimpleActionServer<T_action>* action_server,
                                     const T_controller& goal);
+        protected:
+            Gripper gs_;
     };
     
 }
