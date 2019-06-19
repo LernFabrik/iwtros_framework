@@ -5,7 +5,8 @@
 2. Configure the robot and IIWA IP address and should be in the same network.
 3. Also configure the `ROS_IP` and `ROS_MASTER_URI`
 4. Before lauching the iiwa control run `roscore`to set `/iiwa/publishJointStates` is `true`in the parameter server. Or edit the launch file to do the same.
-5. `roslaunch iiwa_moveit moveit_planning_execution.launch sim:=<true|false>` to run the ros iiwa controller and move_group. False if we need to run harware. 
+5. `roslaunch iiwa_moveit moveit_planning_execution.launch sim:=<true|false>` to run the ros iiwa controller and move_group. False if we need to run harware.
+6. Created and tested new gripper package for WSG 50 Shunk gripper. Launch file is integrated with iiwa hardware launch
 
 ## Panda Hardware interface
 1. libfranka requires real-time [ubuntu kernel](https://frankaemika.github.io/docs/installation.html#setting-up-the-real-time-kernel)
