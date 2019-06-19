@@ -1,0 +1,6 @@
+uint8 finger_idx
+uint8 cmd
+uint8[] tx_data
+---
+uint8[] rx_data
+bool success

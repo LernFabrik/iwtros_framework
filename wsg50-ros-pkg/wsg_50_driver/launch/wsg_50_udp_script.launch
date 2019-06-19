@@ -5,8 +5,8 @@
 
   <remap from="/joint_states" to="/joint_states_gripper" if="$(arg remap)"/>
   
-  <node  name="wsg_50_driver"  pkg="wsg_50_driver" type="wsg_50_ip" output="screen">
-	  <param name="ip" type="string" value="172.31.1.160"/>
+  <node  name="wsg_50_driver"  pkg="wsg_50_driver" type="wsg_50_ip" output="screen" launch-prefix="gdb --args">
+	  <param name="ip" type="string" value="192.168.20.2"/>
 	  <param name="port" type="int" value="1500"/>
 	  <param name="local_port" type="int" value="5501"/>
     <param name="protocol" type="string" value="udp"/>

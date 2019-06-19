@@ -1,0 +1,19 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+  <arg name="hand_config" default="$(find wsg_50_driver)/config/hand0.yaml" />
+  <rosparam file="$(arg hand_config)" command="load" />
+
+  <node pkg="wsg_50_driver" type="collect_dist_force" name="collect_dist_force" output="screen">
+    <param name="data_path" type="string" value="/home/patrick/weiss_ws/src/wsg50-ros-pkg/wsg_50_driver/data/rounded/force" />
+    <param name="devices" type="int" value="8" />
+    <param name="start_width" type="double" value="20" />
+    <param name="dist_delta_width" type="double" value="1.0" />
+    <param name="force_delta" type="double" value="1.0" />
+    <param name="end_force" type="double" value="10.0" />
+    <param name="samples_per_step" type="int" value="100" />
+    <param name="load_finger0_calibration" type="bool" value="true" />
+    <param name="load_finger1_calibration" type="bool" value="true" />
+
+  </node>
+
+</launch>

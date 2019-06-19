@@ -1,7 +1,7 @@
 wsg_50_gl:
-  type: effort_controllers/JointPositionController
-  joint: wsg50_gripper_left_joint
-  pid: {p: 100, i: 0.5, d: 10.0}
-  # type: position_controllers/GripperActionController
-  # joint: wsg50_gripper_left_joint
-  # pid: {p: 100, i: 0.5, d: 10.0}
+  type: robot_mechanism_controllers/JointPositionController
+  joint: base_joint_gripper_left
+  pid:
+    p: 100.0
+    d: 10.0
+

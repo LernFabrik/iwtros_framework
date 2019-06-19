@@ -24,12 +24,16 @@
   
   <!-- Spawn the URDF objects into Gazebo -->
   <include file="$(find iwtros_gazebo)/launch/spawn_static_world_object.launch"/>
-  <include if="$(arg sim)" file="$(find iwtros_launch)/launch/spawn_robots.launch"/>
+  <include if="$(arg sim)" file="$(find iwtros_launch)/launch/spawn_robots.launch">
+      <arg name="sim" value="$(arg sim)"/>
+  </include>
   <!--include if="$(arg sim)" file="$(find iwtros_gazebo)/launch/spawn_omronld.launch"/-->
   <include if="$(arg sim)" file="$(find iwtros_gazebo)/launch/spawn_new_omronld.launch"/>
 
   <!-- Hardware spwaner-->
-  <include unless="$(arg sim)" file="$(find iwtros_launch)/launch/robot_hw/iiwa_hw_controller.launch"/>
+  <include unless="$(arg sim)" file="$(find iwtros_launch)/launch/robot_hw/iiwa_hw_controller.launch">
+      <arg name="sim" value="$(arg sim)"/>
+  </include>
   <include unless="$(arg sim)" file="$(find iwtros_launch)/launch/robot_hw/panda_hw_controller.launch"/>
     
   <!-- Start the AMCL-->

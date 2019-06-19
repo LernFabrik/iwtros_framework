@@ -1,34 +1,48 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="sim" default="true"/>
+    <arg name="sim" default="false"/>
     <arg name="hardware_interface" default="PositionJointInterface"/>
     <arg name="robot_name" default="iiwa"/>
     <arg name="model" default="iiwa7"/>
-    
+    <!--GRIPPER -->
+    <arg name="com_mode" default="auto_update" /><!-- or auto_update, polling -->
+    <arg name="remap" default="false" /><!-- Remap joint_states topic. e.g. for joint_state_publisher -->
+    <arg name="force" default="40" />
+    <remap from="/joint_states" to="/joint_states_gripper" if="$(arg remap)"/>
+
+    <node  name="wsg50_gripper"  pkg="wsg_50_driver" type="wsg_50_ip" output="screen" ns="iiwa">
+        <param name="ip" type="string" value="172.31.1.160"/>
+        <param name="port" type="int" value="1000"/>
+        <param name="protocol" type="string" value="tcp"/>
+        <param name="com_mode" type="string" value="$(arg com_mode)"/>
+        <param name="rate" type="double" value="50"/> <!-- WSG50 HW revision 2: up to 30 Hz with script; 140Hz with auto_update -->
+        <param name="grasping_force" type="double" value="$(arg force)"/>
+    </node>
     
     <group ns="iiwa">
+        <node name="joint_state_publisher" type="joint_state_publisher" pkg="joint_state_publisher">
+            <rosparam param="source_list">[joint_hw_states, wsg50_gripper/joint_states] </rosparam>
+            <param name="rate" value="50"/>
+            <remap from="joint_states" to="joint_desired_states"/>
+        </node>
+
         <include file="$(find iiwa_moveit_config)/launch/move_group.launch">
             <arg name="capabilities" default="true"/>
             <arg name="disable_capabilities" default="true"/>
+            <arg name="sim" value="$(arg sim)"/>
         </include>
-    </group>
 
-    <!-- HARDWARE -->
-    <!-- Working with the real robot.  -->
-    <group ns="iiwa">
-        
-        <!-- Load controllers accordingly to parameters -->
-        <include file="$(find iiwa_control)/launch/iiwa_control.launch">
-            <arg name="hardware_interface" value="$(arg hardware_interface)" />
-            <arg name="controllers" value="joint_state_controller $(arg hardware_interface)_trajectory_controller" />
-            <arg name="robot_name" value="$(arg robot_name)" />
-            <arg name="model" value="$(arg model)" />
-        </include>
+        <!-- Loads joint controller configurations from YAML file to parameter server -->
+        <rosparam file="$(find iwtros_launch)/config/$(arg robot_name)_control.yaml" command="load" />
+        <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+            output="screen" args="joint_state_controller $(arg hardware_interface)_trajectory_controller --shutdown-timeout 2" />
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+            <remap from="joint_states" to="joint_desired_states"/>
+        </node>
         
         <!-- Robot interface -->
         <include file="$(find iwtros_launch)/launch/robot_hw/iiwa_hw.launch" >
             <arg name="hardware_interface" value="$(arg hardware_interface)" />
         </include>
-        
     </group>
 </launch>

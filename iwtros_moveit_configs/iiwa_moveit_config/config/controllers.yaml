@@ -16,5 +16,5 @@ controller_list:
     type: FollowJointTrajectory
     default: true
     joints:
-      - wsg50_gripper_left_joint
-      - wsg50_gripper_right_joint
+      - wsg50_finger_left_joint
+      - wsg50_finger_right_joint

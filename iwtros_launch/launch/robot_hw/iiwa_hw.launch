@@ -15,6 +15,7 @@
     
     <!-- the real hardware interface /-->
     <node name="iiwa_hw" pkg="iiwa_hw" type="iiwa_hw-bin" respawn="false" output="screen">
+        <remap from="joint_states" to="joint_hw_states"/>
     </node>
 
     <!-- Harware interface setting

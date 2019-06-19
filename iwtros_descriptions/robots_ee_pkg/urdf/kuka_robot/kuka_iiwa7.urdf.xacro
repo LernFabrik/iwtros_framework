@@ -31,7 +31,7 @@
   <!-- iiwa7 additional gazebo plugins -->
   <xacro:iiwa_system_gazebo robot_name="$(arg robot_name)" robot_parameter_name="$(arg robot_param)"/>
   <!-- schunck greifer -->
-  <xacro:wsg_50_xacro name="wsg50" parent="$(arg robot_name)_link_ee" gripperHwInterface="$(arg gripperHwInterface)">
+  <xacro:wsg_50_xacro name="wsg50" parent="$(arg robot_name)_link_ee" finger_length="0.023" finger_tip="0">
     <origin xyz="0 0 0" rpy="0 0 0" />
   </xacro:wsg_50_xacro>
 </xacro:macro>
