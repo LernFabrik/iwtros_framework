@@ -33,3 +33,8 @@
     * Howver the there exist the problem where AMCL is not broadcasting the map->odom 
     * The problem is narrow down to the scan topic published by the gazebo contains the namespace and in the tf tree there is no namespace
     * Hence this problem has to be solved before the implementation of move_base.
+
+## TODO!
+1. After the new intergration of updated wsg50 package, the simulation could not find hardware interface to respective finger joint.
+2. Because in the new version finger joint name is changed
+3. Check this again!
