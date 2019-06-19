@@ -4,7 +4,7 @@
 
   <!--general-->
 
-  <xacro:arg name="robot_description" default="omronld_description" />
+  <xacro:arg name="robot_namespace" default="/omronld" />
   <xacro:property name="M_PI" value="3.14159"/>
 
   <!--wheels-->
@@ -63,11 +63,11 @@
 
   <!-- LASER -->
 
-  <xacro:sick_lms1xx frame="base_laser" parent="base_link" topic="scanFront" >
+  <xacro:sick_lms1xx frame="base_laser" parent="base_link" topic="scanFront" robot_namespace="$(arg robot_namespace)">
     <origin xyz="0.2652 0.0 0.201" rpy="${M_PI} 0.0 0.0"/>
   </xacro:sick_lms1xx>
 
-  <xacro:sick_lms1xx frame="base_fake_laser" parent="base_link" topic="scanBack">
+  <xacro:sick_lms1xx frame="base_fake_laser" parent="base_link" topic="scanBack" robot_namespace="$(arg robot_namespace)">
     <origin xyz="-0.2652 0.0 0.105" rpy="${M_PI} 0.0 ${M_PI}"/>
   </xacro:sick_lms1xx>
 
@@ -80,7 +80,7 @@
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
       <legacyModeNS>false</legacyModeNS>
-      <robotNamespace>$(arg robot_namespace)</robotNamespace>
+      <robotNamespace>/$(arg robot_namespace)</robotNamespace>
     </plugin>
   </gazebo>
 
