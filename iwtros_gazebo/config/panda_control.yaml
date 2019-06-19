@@ -33,7 +33,7 @@
     state_publish_rate: 25
   
   franka_gripper:
-    type: position_controllers/JointTrajectoryController
+    type: effort_controllers/JointTrajectoryController
     joints:
       - panda_finger_joint1
       - panda_finger_joint2

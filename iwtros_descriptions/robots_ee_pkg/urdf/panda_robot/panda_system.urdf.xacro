@@ -2,7 +2,7 @@
 <robot name="panda_system" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <!-- Kuka robot system to spawn in in the gazebo -->
   <xacro:arg name="hardware_interface" default="EffortJointInterface"/>
-  <xacro:arg name="gripperHwInterface" default="PositionJointInterface"/>
+  <xacro:arg name="gripperHwInterface" default="EffortJointInterface"/>
   <xacro:arg name="arm_name" default="panda"/>
   <xacro:arg name="robot_param" default="/panda/panda_description"/>
   <xacro:arg name="workcell_parent" default="world_interface"/>

@@ -14,7 +14,7 @@ omronld_velocity_controller:
 
   base_frame_id: base_link
 
-  enable_odom_tf: true
+  enable_odom_tf: false
 
   estimate_velocity_from_position: false
 
@@ -27,7 +27,7 @@ omronld_velocity_controller:
   linear:
     x:
       has_velocity_limits    : true
-      max_velocity           : 1.8   # m/s
+      max_velocity           : 2.5   # m/s
       has_acceleration_limits: true
       max_acceleration       : 2.0   # m/s^2
   angular:
