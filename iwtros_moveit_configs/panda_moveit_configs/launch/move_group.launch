@@ -1,5 +1,6 @@
 <launch>
   <arg name="load_robot_description" default="false"/>
+  <arg name="sim" default="true"/>
   <include file="$(find panda_moveit_configs)/launch/planning_context.launch">
     <arg name="load_robot_description" value="$(arg load_robot_description)"/>
   </include>
@@ -50,6 +51,7 @@
     <arg name="moveit_manage_controllers" value="true" />
     <arg name="moveit_controller_manager" value="panda_system" unless="$(arg fake_execution)"/>
     <arg name="moveit_controller_manager" value="fake" if="$(arg fake_execution)"/>
+    <arg name="sim" value="$(arg sim)"/>
   </include>
 
   <!-- Sensors Functionality -->
