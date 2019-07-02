@@ -2,6 +2,7 @@
 <launch>
     <arg name="robot_ip" default="172.16.0.2"/>
     <arg name="robot_name" default="panda"/>
+    <arg name="sim" default="false"/>
     <group ns="panda">
         <param name="robot_description"
             command="$(find xacro)/xacro --inorder '$(find robots_ee_pkg)/urdf/panda_robot/panda_system.urdf.xacro' robot_name:=$(arg robot_name) robot_param:=robot_description workcell_parent:=$(arg robot_name)_interface" />
@@ -10,6 +11,7 @@
         </include>
         <include file="$(find iwtros_launch)/launch/robot_hw/panda_controller.launch">
             <arg name="robot_ip" value="$(arg robot_ip)"/>
+            <arg name="sim" value="$(arg sim)"/>
         </include>
     </group>
 </launch>
