@@ -178,11 +178,11 @@ int main(int argc, char** argv){
         ROS_INFO("Joint %s: %f", joint_names[i].c_str(), joint_values[i]);
     }
     // Set joint limits
-    /*joint_values[0] = 5.57;
+    joint_values[1] = 1.4;
     kinematic_state->setJointGroupPositions(joint_model_group, joint_values);
     ROS_INFO_STREAM("Current state is " << (kinematic_state->satisfiesBounds() ? "valid" : "not valid"));
     kinematic_state->enforceBounds();
-    ROS_INFO_STREAM("Current state is " << (kinematic_state->satisfiesBounds() ? "valid" : "not valid"));*/
+    ROS_INFO_STREAM("Current state is " << (kinematic_state->satisfiesBounds() ? "valid" : "not valid"));
     // Formward Kinematics
     kinematic_state->setToRandomPositions(joint_model_group);
     const Eigen::Affine3d& end_effector_state = kinematic_state->getGlobalLinkTransform("panda_link8");
@@ -215,18 +215,17 @@ int main(int argc, char** argv){
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
     moveit::planning_interface::MoveGroupInterface move_group("panda_arm");
     //move_group.setPlanningTime(45.0);
-    move_group.setMaxVelocityScalingFactor(0.1);
-    move_group.setMaxAccelerationScalingFactor(0.15);
+    move_group.setMaxVelocityScalingFactor(0.08);
+    move_group.setMaxAccelerationScalingFactor(0.1);
     //add collision object with planning scene
     addCollisionObject(planning_scene_interface);
-
-    ros::WallDuration(1.0).sleep();
-
-    pick(move_group);
-
-    ros::WallDuration(1.0).sleep();
-
-    place(move_group);
+    
+    while (ros::ok()){
+        ros::WallDuration(2.0).sleep();
+        pick(move_group);
+        ros::WallDuration(1.0).sleep();
+        place(move_group);
+    }
 
     ros::waitForShutdown();
     return 0;

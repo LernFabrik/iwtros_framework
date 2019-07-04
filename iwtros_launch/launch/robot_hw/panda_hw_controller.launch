@@ -7,11 +7,11 @@
         <param name="robot_description"
             command="$(find xacro)/xacro --inorder '$(find robots_ee_pkg)/urdf/panda_robot/panda_system.urdf.xacro' robot_name:=$(arg robot_name) robot_param:=robot_description workcell_parent:=$(arg robot_name)_interface" />
         <include file="$(find panda_moveit_configs)/launch/move_group.launch">
-            <arg name="load_robot_description" default="false"/>    
+            <arg name="load_robot_description" default="false"/>
+            <arg name="sim" value="$(arg sim)"/>    
         </include>
         <include file="$(find iwtros_launch)/launch/robot_hw/panda_controller.launch">
             <arg name="robot_ip" value="$(arg robot_ip)"/>
-            <arg name="sim" value="$(arg sim)"/>
         </include>
     </group>
 </launch>
