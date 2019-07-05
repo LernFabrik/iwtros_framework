@@ -16,6 +16,12 @@
     <rosparam command="load" file="$(find iiwa_moveit_config)/config/joint_limits.yaml"/>
   </group>
 
+  <!-- Load updated joint limits (override information from URDF) -->
+  <!--group ns="$(arg robot_description)_planning">
+    <rosparam command="load" file="$(find panda_moveit_configs)/config/cartesian_limits.yaml"/>
+  </group-->
+  <rosparam command="load" file="$(find iiwa_moveit_config)/config/cartesian_limits.yaml"/>
+
   <!-- Load default settings for kinematics; these settings are overridden by settings in a node's namespace -->
   <group ns="$(arg robot_description)_kinematics">
     <rosparam command="load" file="$(find iiwa_moveit_config)/config/kinematics.yaml"/>
