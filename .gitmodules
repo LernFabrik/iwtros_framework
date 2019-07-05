@@ -9,3 +9,6 @@
 [submodule "franka_ros"]
 	path = franka_ros
 	url = https://github.com/iwtros/franka_ros.git
+[submodule "pilz_robots"]
+	path = pilz_robots
+	url = https://github.com/lernfabrik/pilz_robots.git
