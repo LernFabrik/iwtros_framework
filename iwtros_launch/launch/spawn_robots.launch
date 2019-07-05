@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="sim" default="true"/>
+    <arg name="pipeline" default="command_planner" />
     <arg name="hardware_interface" default="PositionJointInterface"/>
     <!-- these are the arguments you can pass this launch file, for example paused:=true -->
     <arg name="paused" default="false"/>
@@ -36,6 +37,8 @@
         <include file="$(find iwtros_gazebo)/launch/spawn_panda.launch" />
     </group>
     <group ns="panda">
-        <include file="$(find panda_moveit_configs)/launch/move_group.launch"/>
+        <include file="$(find panda_moveit_configs)/launch/move_group.launch">
+            <arg name="pipeline" value="$(arg pipeline)" />
+        </include>
     </group>
 </launch>
