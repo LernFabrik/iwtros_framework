@@ -37,7 +37,6 @@
     <disable_collisions link1="iiwa_link_1" link2="iiwa_table_base" reason="Never" />
     <disable_collisions link1="iiwa_link_1" link2="iiwa_table_ee" reason="Never" />
     <disable_collisions link1="iiwa_link_1" link2="wsg50_base_link" reason="Never" />
-    <disable_collisions link1="iiwa_link_1" link2="wsg50_finger_left" reason="Never" />
     <disable_collisions link1="iiwa_link_1" link2="wsg50_gripper_left" reason="Never" />
     <disable_collisions link1="iiwa_link_1" link2="wsg50_gripper_right" reason="Never" />
     <disable_collisions link1="iiwa_link_2" link2="iiwa_link_3" reason="Adjacent" />
@@ -90,9 +89,13 @@
     <disable_collisions link1="iiwa_link_7" link2="wsg50_gripper_left" reason="Never" />
     <disable_collisions link1="iiwa_link_7" link2="wsg50_gripper_right" reason="Never" />
     <disable_collisions link1="iiwa_table_base" link2="iiwa_table_ee" reason="Adjacent" />
+    <disable_collisions link1="wsg50_base_link" link2="wsg50_finger_left" reason="Never" />
     <disable_collisions link1="wsg50_base_link" link2="wsg50_finger_right" reason="Never" />
     <disable_collisions link1="wsg50_base_link" link2="wsg50_gripper_left" reason="Adjacent" />
     <disable_collisions link1="wsg50_base_link" link2="wsg50_gripper_right" reason="Adjacent" />
+    <disable_collisions link1="wsg50_finger_left" link2="wsg50_gripper_left" reason="Adjacent" />
     <disable_collisions link1="wsg50_finger_left" link2="wsg50_gripper_right" reason="Never" />
+    <disable_collisions link1="wsg50_finger_right" link2="wsg50_gripper_left" reason="Never" />
+    <disable_collisions link1="wsg50_finger_right" link2="wsg50_gripper_right" reason="Adjacent" />
     <disable_collisions link1="wsg50_gripper_left" link2="wsg50_gripper_right" reason="Never" />
 </robot>

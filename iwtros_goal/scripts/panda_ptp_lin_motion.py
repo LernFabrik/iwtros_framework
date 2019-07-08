@@ -23,7 +23,7 @@ def start_programme():
 
     start_pose = [0.45, -0.054, 0.308, -3.127, -0.014, -0.798]
     pick_pose = Pose(position=Point(0.45, -0.05, 0.3), orientation=from_euler(math.radians(-180), math.radians(180), math.radians(45)))
-    Place_pose = Pose(position=Point(0.0, -0.3, 0.25), orientation=from_euler(math.radians(-180), math.radians(180), math.radians(0)))
+    Place_pose = Pose(position=Point(0.2, -0.3, 0.25), orientation=from_euler(math.radians(-180), math.radians(180), math.radians(0)))
     #Other_pose = Pose(position=Point(), orientation=from_euler(math.radians(0), math.radians(180), math.radians(90)))
 
     # move to start point joint values to avoid random trajectory

@@ -217,6 +217,7 @@ int main(int argc, char** argv){
     //move_group.setPlanningTime(45.0);
     move_group.setMaxVelocityScalingFactor(0.08);
     move_group.setMaxAccelerationScalingFactor(0.1);
+    move_group.setPlannerId("PTP");
     //add collision object with planning scene
     addCollisionObject(planning_scene_interface);
     
