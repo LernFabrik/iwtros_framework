@@ -10,116 +10,15 @@
     <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
     <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
     <group name="iiwa_arm">
-        <joint name="iiwa_joint_1" />
-        <joint name="iiwa_joint_2" />
-        <joint name="iiwa_joint_3" />
-        <joint name="iiwa_joint_4" />
-        <joint name="iiwa_joint_5" />
-        <joint name="iiwa_joint_6" />
-        <joint name="iiwa_joint_7" />
-        <joint name="iiwa_joint_ee" />
+        <chain base_link="iiwa_link_0" tip_link="iiwa_link_ee" />
     </group>
-    <group name="iiwa_hand">
+    <group name="iiwa_gripper">
         <joint name="wsg50_finger_right_joint" />
         <joint name="wsg50_finger_left_joint" />
         <joint name="wsg50_anterior_gripper_joint" />
-        <joint name="wsg50_center_joint" />
-        <joint name="wsg50_guide_joint_finger_left" />
-        <joint name="wsg50_guide_joint_finger_right" />
     </group>
-    <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
-    <group_state name="iiwa_Home" group="iiwa_arm">
-        <joint name="iiwa_joint_1" value="1.611" />
-        <joint name="iiwa_joint_2" value="-0.92" />
-        <joint name="iiwa_joint_3" value="-0.2255" />
-        <joint name="iiwa_joint_4" value="1.6973" />
-        <joint name="iiwa_joint_5" value="-0.0644" />
-        <joint name="iiwa_joint_6" value="-0.3395" />
-        <joint name="iiwa_joint_7" value="1.5263" />
-    </group_state>
-    <group_state name="iiwa_Pick" group="iiwa_arm">
-        <joint name="iiwa_joint_1" value="1.3533" />
-        <joint name="iiwa_joint_2" value="0.7921" />
-        <joint name="iiwa_joint_3" value="0" />
-        <joint name="iiwa_joint_4" value="-2" />
-        <joint name="iiwa_joint_5" value="-0.2255" />
-        <joint name="iiwa_joint_6" value="0.3168" />
-        <joint name="iiwa_joint_7" value="1.6258" />
-    </group_state>
-    <group_state name="iiwa_Place" group="iiwa_arm">
-        <joint name="iiwa_joint_1" value="-1.5144" />
-        <joint name="iiwa_joint_2" value="0.8373" />
-        <joint name="iiwa_joint_3" value="-0.0644" />
-        <joint name="iiwa_joint_4" value="-1.7652" />
-        <joint name="iiwa_joint_5" value="-2.9321" />
-        <joint name="iiwa_joint_6" value="-0.5658" />
-        <joint name="iiwa_joint_7" value="1.5263" />
-    </group_state>
-    <group_state name="iiwa_Pose1" group="iiwa_arm">
-        <joint name="iiwa_joint_1" value="0" />
-        <joint name="iiwa_joint_2" value="0.2942" />
-        <joint name="iiwa_joint_3" value="0" />
-        <joint name="iiwa_joint_4" value="-2.0594" />
-        <joint name="iiwa_joint_5" value="0" />
-        <joint name="iiwa_joint_6" value="1.471" />
-        <joint name="iiwa_joint_7" value="1.5927" />
-    </group_state>
-    <group_state name="iiwa_Pose2" group="iiwa_arm">
-        <joint name="iiwa_joint_1" value="2.2232" />
-        <joint name="iiwa_joint_2" value="0.2942" />
-        <joint name="iiwa_joint_3" value="0" />
-        <joint name="iiwa_joint_4" value="-2.0594" />
-        <joint name="iiwa_joint_5" value="0" />
-        <joint name="iiwa_joint_6" value="0.7242" />
-        <joint name="iiwa_joint_7" value="1.5927" />
-    </group_state>
-    <group_state name="iiwa_Pose3" group="iiwa_arm">
-        <joint name="iiwa_joint_1" value="1.5788" />
-        <joint name="iiwa_joint_2" value="0.7242" />
-        <joint name="iiwa_joint_3" value="0" />
-        <joint name="iiwa_joint_4" value="-2.0594" />
-        <joint name="iiwa_joint_5" value="0" />
-        <joint name="iiwa_joint_6" value="0.2942" />
-        <joint name="iiwa_joint_7" value="1.5927" />
-    </group_state>
-    <group_state name="iiwa_Pose4" group="iiwa_arm">
-        <joint name="iiwa_joint_1" value="0.7733" />
-        <joint name="iiwa_joint_2" value="0.2037" />
-        <joint name="iiwa_joint_3" value="-0.0644" />
-        <joint name="iiwa_joint_4" value="-1.9689" />
-        <joint name="iiwa_joint_5" value="-0.0644" />
-        <joint name="iiwa_joint_6" value="0.8373" />
-        <joint name="iiwa_joint_7" value="0.7631" />
-    </group_state>
-    <group_state name="iiwa_Pose5" group="iiwa_arm">
-        <joint name="iiwa_joint_1" value="-0.8055" />
-        <joint name="iiwa_joint_2" value="0.7242" />
-        <joint name="iiwa_joint_3" value="0" />
-        <joint name="iiwa_joint_4" value="-2.0594" />
-        <joint name="iiwa_joint_5" value="0" />
-        <joint name="iiwa_joint_6" value="0.2942" />
-        <joint name="iiwa_joint_7" value="0.6636" />
-    </group_state>
-    <group_state name="iiwa_Pose6" group="iiwa_arm">
-        <joint name="iiwa_joint_1" value="-2.1588" />
-        <joint name="iiwa_joint_2" value="0.7242" />
-        <joint name="iiwa_joint_3" value="-0.007" />
-        <joint name="iiwa_joint_4" value="-1.6973" />
-        <joint name="iiwa_joint_5" value="-0.1611" />
-        <joint name="iiwa_joint_6" value="0.9279" />
-        <joint name="iiwa_joint_7" value="0.7763" />
-    </group_state>
-    <group_state name="iiwa_Pose7" group="iiwa_arm">
-        <joint name="iiwa_joint_1" value="-1.6433" />
-        <joint name="iiwa_joint_2" value="0.2942" />
-        <joint name="iiwa_joint_3" value="-0.1289" />
-        <joint name="iiwa_joint_4" value="-2.0594" />
-        <joint name="iiwa_joint_5" value="0.0644" />
-        <joint name="iiwa_joint_6" value="1.2673" />
-        <joint name="iiwa_joint_7" value="1.5263" />
-    </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
-    <end_effector name="iiwa_eef" parent_link="iiwa_link_ee" group="iiwa_hand" />
+    <end_effector name="iiwa_eef" parent_link="iiwa_link_ee" group="iiwa_gripper" />
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
     <virtual_joint name="iiwa_virtual_joint" type="fixed" parent_frame="world" child_link="iiwa_link_0" />
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
@@ -138,6 +37,7 @@
     <disable_collisions link1="iiwa_link_1" link2="iiwa_table_base" reason="Never" />
     <disable_collisions link1="iiwa_link_1" link2="iiwa_table_ee" reason="Never" />
     <disable_collisions link1="iiwa_link_1" link2="wsg50_base_link" reason="Never" />
+    <disable_collisions link1="iiwa_link_1" link2="wsg50_finger_left" reason="Never" />
     <disable_collisions link1="iiwa_link_1" link2="wsg50_gripper_left" reason="Never" />
     <disable_collisions link1="iiwa_link_1" link2="wsg50_gripper_right" reason="Never" />
     <disable_collisions link1="iiwa_link_2" link2="iiwa_link_3" reason="Adjacent" />
@@ -190,13 +90,9 @@
     <disable_collisions link1="iiwa_link_7" link2="wsg50_gripper_left" reason="Never" />
     <disable_collisions link1="iiwa_link_7" link2="wsg50_gripper_right" reason="Never" />
     <disable_collisions link1="iiwa_table_base" link2="iiwa_table_ee" reason="Adjacent" />
-    <disable_collisions link1="wsg50_base_link" link2="wsg50_finger_left" reason="Never" />
     <disable_collisions link1="wsg50_base_link" link2="wsg50_finger_right" reason="Never" />
     <disable_collisions link1="wsg50_base_link" link2="wsg50_gripper_left" reason="Adjacent" />
     <disable_collisions link1="wsg50_base_link" link2="wsg50_gripper_right" reason="Adjacent" />
-    <disable_collisions link1="wsg50_finger_left" link2="wsg50_gripper_left" reason="Adjacent" />
     <disable_collisions link1="wsg50_finger_left" link2="wsg50_gripper_right" reason="Never" />
-    <disable_collisions link1="wsg50_finger_right" link2="wsg50_gripper_left" reason="Never" />
-    <disable_collisions link1="wsg50_finger_right" link2="wsg50_gripper_right" reason="Adjacent" />
     <disable_collisions link1="wsg50_gripper_left" link2="wsg50_gripper_right" reason="Never" />
 </robot>
