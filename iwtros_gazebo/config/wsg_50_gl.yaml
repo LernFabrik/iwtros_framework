@@ -9,7 +9,8 @@ EffortJointInterface_wsg50_gripper_trajectory_controller:
     - wsg50_finger_right_joint
     - wsg50_finger_left_joint
   gains:
-    wsg50_gripper_left_joint: {p: 100, i: 0.5, d: 10.0}
+    wsg50_finger_right_joint: {p: 100, i: 0.5, d: 10.0}
+    wsg50_finger_left_joint: {p: 100, i: 0.5, d: 10.0}
   # type: position_controllers/GripperActionController
   # joint: wsg50_gripper_left_joint
   # pid: {p: 100, i: 0.5, d: 10.0}

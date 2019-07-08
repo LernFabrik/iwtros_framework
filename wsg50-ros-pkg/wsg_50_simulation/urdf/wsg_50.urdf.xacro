@@ -73,11 +73,23 @@
      <limit effort="100" velocity="100"/>
   </joint>
 
-  <transmission name="${name}_base_trans_left" type="pr2_mechanism_model/SimpleTransmission">
+  <!--transmission name="${name}_base_trans_left" type="pr2_mechanism_model/SimpleTransmission">
      <actuator name="${name}_base_motor_left" />
-     <joint name="${name}_base_joint_gripper_left" />
+     <joint name="${name}_finger_left_joint" />
      <mechanicalReduction>1</mechanicalReduction>
      <motorTorqueConstant>1</motorTorqueConstant>
+     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </transmission-->
+   <transmission name="${name}_base_trans_left">	  
+     <type>transmission_interface/SimpleTransmission</type>	     
+     <actuator name="${name}_base_motor_left">	     
+       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>	    
+       <mechanicalReduction>1</mechanicalReduction>	     
+       <!--motorTorqueConstant>1</motorTorqueConstant-->	
+     </actuator>	
+     <joint name="${name}_finger_left_joint">	
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>	
+     </joint>	
   </transmission>
 
   <link name="${name}_gripper_left">
@@ -172,11 +184,23 @@
      <limit effort="100" velocity="100"/>
   </joint>
 
-  <transmission name="${name}_base_trans_right" type="pr2_mechanism_model/SimpleTransmission">
+  <!--transmission name="${name}_base_trans_right" type="pr2_mechanism_model/SimpleTransmission">
      <actuator name="${name}_base_motor_right" />
-     <joint name="${name}_base_joint_gripper_right" />
+     <joint name="${name}_finger_right_joint" />
      <mechanicalReduction>1</mechanicalReduction>
      <motorTorqueConstant>1</motorTorqueConstant>
+     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </transmission-->
+  <transmission name="${name}_base_trans_left">	  
+     <type>transmission_interface/SimpleTransmission</type>	     
+     <actuator name="${name}_base_motor_left">	     
+       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>	    
+       <mechanicalReduction>1</mechanicalReduction>	     
+       <!--motorTorqueConstant>1</motorTorqueConstant-->	
+     </actuator>	
+     <joint name="${name}_finger_right_joint">	
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>	
+     </joint>	
   </transmission>
 	
     <link name="${name}_gripper_right">
