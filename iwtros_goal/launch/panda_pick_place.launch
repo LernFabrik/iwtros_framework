@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <launch>
-  <!--node name="pick_place" pkg="iwtros_goal" type="panda_pick_place_node" output="screen" ns="panda"/-->
-  <node name="pick_place" pkg="iwtros_goal" type="panda_ptp_lin_motion.py" output="screen" ns="panda">
+  <node name="pick_place" pkg="iwtros_goal" type="panda_pick_place_node" output="screen" ns="panda"/>
+  <!--node name="pick_place" pkg="iwtros_goal" type="panda_ptp_lin_motion.py" output="screen" ns="panda">
     <param name="planning_group" value="panda_arm" />
     <param name="target_link" value="panda_link8" />
-  </node>  
+  </node-->  
 </launch>

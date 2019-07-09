@@ -215,9 +215,12 @@ int main(int argc, char** argv){
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
     moveit::planning_interface::MoveGroupInterface move_group("panda_arm");
     //move_group.setPlanningTime(45.0);
+    move_group.setPlannerId("PTP");
+    move_group.setNamedTarget("panda_Pick");
+    move_group.setStartStateToCurrentState();
+    move_group.move();
     move_group.setMaxVelocityScalingFactor(0.08);
     move_group.setMaxAccelerationScalingFactor(0.1);
-    move_group.setPlannerId("PTP");
     //add collision object with planning scene
     addCollisionObject(planning_scene_interface);
     

@@ -6,6 +6,7 @@
 # that no jerk limits will be violated. More precisely, applying Euler differentiation in the worst case (from min accel
 # to max accel in 1 ms) the acceleration limits are the ones that satisfy
 # max_jerk = (max_acceleration - min_acceleration) / 0.001
+# https://frankaemika.github.io/docs/control_parameters.html
 
 joint_limits:
   panda_joint1:
