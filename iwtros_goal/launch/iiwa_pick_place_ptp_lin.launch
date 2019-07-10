@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+  <!--node name="pick_place" pkg="iwtros_goal" type="panda_pick_place_node" output="screen" ns="panda"/-->
+  <node name="iiwa_pick_place" pkg="iwtros_goal" type="iiwa_ptp_lin_motion.py" output="screen" ns="iiwa">
+    <param name="planning_group" value="iiwa_arm" />
+    <param name="target_link" value="iiwa_link_ee" />
+  </node>  
+</launch>
