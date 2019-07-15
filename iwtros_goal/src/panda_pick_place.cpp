@@ -1,6 +1,7 @@
 #include <ros/ros.h>
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 #include <moveit/move_group_interface/move_group_interface.h>
+#include <moveit_msgs/MotionPlanRequest.h>
 
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
@@ -214,13 +215,26 @@ int main(int argc, char** argv){
     ros::WallDuration(1.0).sleep();
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
     moveit::planning_interface::MoveGroupInterface move_group("panda_arm");
+    moveit_msgs::MotionPlanRequest motion_planning;
+    motion_planning.planner_id = "PTP";
+    motion_planning.group_name = "panda_arm";
+    motion_planning.max_velocity_scaling_factor = 0.2;
+    motion_planning.max_acceleration_scaling_factor = 0.2;
+    motion_planning.start_state.is_diff = true;
     //move_group.setPlanningTime(45.0);
     move_group.setPlannerId("PTP");
     move_group.setNamedTarget("panda_Pick");
+    move_group.setMaxVelocityScalingFactor(0.2);
+    move_group.setMaxAccelerationScalingFactor(0.2);
     move_group.setStartStateToCurrentState();
-    move_group.move();
-    move_group.setMaxVelocityScalingFactor(0.08);
-    move_group.setMaxAccelerationScalingFactor(0.1);
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    moveit::planning_interface::MoveItErrorCode eCode = move_group.plan(my_plan);
+    ROS_ERROR("Planning the motion is: %s", eCode?"succuss":"failed");
+    if(eCode){
+        std::stringstream strr;
+        strr << eCode;
+        ROS_ERROR("Unable to move: ");
+    }
     //add collision object with planning scene
     addCollisionObject(planning_scene_interface);
     

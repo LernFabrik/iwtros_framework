@@ -15,8 +15,7 @@ __REQUIRED_API_VERSION__ = "1"
 __ROBOT_VELOCITY__ = 0.1
 __ROBOT_VELOCITY_LIN__ = 0.07
 __ROBOT_ACCELERATION_LIN__ = 0.08
-_DEFAULT_PLANNING_GROUP = "iiwa_arm"
-PLANNING_GROUP_NAME = "iiwa_arm"
+
 
 def start_programme():
     rospy.loginfo("Start the program")
@@ -61,4 +60,5 @@ if __name__ == "__main__":
 
     r = Robot(__REQUIRED_API_VERSION__)
     #sequence = Sequence()
+
     start_programme()
