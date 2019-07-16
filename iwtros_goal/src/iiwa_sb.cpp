@@ -37,6 +37,7 @@ int main(int argc, char** argv){
     ROS_INFO("plan: %s", success?"SUCCESS":"FAIL");
     if(success){
         ROS_INFO("Moving......");
+        
         iiwa_group.move();
     }
 
