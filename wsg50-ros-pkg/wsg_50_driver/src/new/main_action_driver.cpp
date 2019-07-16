@@ -169,6 +169,7 @@ namespace iwtros{
             ROS_INFO("Ready to use. Homing now....");
             ack_fault();
             homing();
+            grasp(0.0, 50);
             ros::Duration(0.5).sleep();
             if(grasping_force > 0){
                 ROS_INFO("Setting grasping force limit to %5.1f", grasping_force);

@@ -16,7 +16,8 @@ int main(int argc, char** argv){
     //moveit::planning_interface::MoveGroupInterface iiwa_group("manipulator");
     iiwa_group.setMaxVelocityScalingFactor(1.0);
 
-    iiwa_group.setPlannerId("RRTConnectkConfigDefault");                    //Specify planner to be used for the further planning
+    //iiwa_group.setPlannerId("RRTConnectkConfigDefault");                    //Specify planner to be used for the further planning
+    iiwa_group.setPlannerId("PTP");                                          //Specify planner to be used for the further planning
     iiwa_group.setPoseReferenceFrame("iiwa_link_0");                        //Specify which reference frame to assume for poses specified without a reference frame
     iiwa_group.setStartStateToCurrentState();                               //Ste the starting state for plannig to be that reported by the robot's joint state publicatioin
     ROS_INFO("Planning refence frame:%s", iiwa_group.getPlanningFrame().c_str());

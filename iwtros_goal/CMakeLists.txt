@@ -60,6 +60,13 @@ target_link_libraries(iiwa_task_handler_node
   ${catkin_LIBRARIES}
 )
 
+add_executable(iiwa_pick_place_node 
+  src/iiwa_pick_and_place.cpp
+)
+target_link_libraries(iiwa_pick_place_node 
+  ${catkin_LIBRARIES}
+)
+
 ############### FTS Controller ################
 # create PID library
 add_library(reversePID
