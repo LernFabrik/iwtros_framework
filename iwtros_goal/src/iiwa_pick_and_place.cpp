@@ -12,8 +12,8 @@
 
 void openGripper(trajectory_msgs::JointTrajectory& posture){
     posture.joint_names.resize(2);
-    posture.joint_names[0] = "panda_finger_joint1";
-    posture.joint_names[1] = "panda_finger_joint2";
+    posture.joint_names[0] = "wsg50_finger_left_joint";
+    posture.joint_names[1] = "wsg50_finger_right_joint";
 
     // Set as open, wide enough if panda robot;
     posture.points.resize(1);
@@ -28,8 +28,8 @@ void openGripper(trajectory_msgs::JointTrajectory& posture){
 
 void closeGripper(trajectory_msgs::JointTrajectory& posture){
     posture.joint_names.resize(2);
-    posture.joint_names[0] = "panda_finger_joint1";
-    posture.joint_names[1] = "panda_finger_joint2";
+    posture.joint_names[0] = "wsg50_finger_left_joint";
+    posture.joint_names[1] = "wsg50_finger_right_joint";
 
     // Set them as closed;
     posture.points.resize(1);
@@ -49,7 +49,7 @@ void pick(moveit::planning_interface::MoveGroupInterface& move_group){
     grasps.resize(1);
 
     //Setting up grasp pose
-    grasps[0].grasp_pose.header.frame_id = "iiwa_link_ee";
+    grasps[0].grasp_pose.header.frame_id = "iiwa_link_0";
     tf2::Quaternion orientation;
     orientation.setRPY(M_PI, 0, -M_PI/4);
     grasps[0].grasp_pose.pose.position.x = 0.43;
@@ -58,14 +58,14 @@ void pick(moveit::planning_interface::MoveGroupInterface& move_group){
     grasps[0].grasp_pose.pose.orientation = tf2::toMsg(orientation);
 
     // Setting pre-grasp approach
-    grasps[0].pre_grasp_approach.direction.header.frame_id = "iiwa_link_ee";
+    grasps[0].pre_grasp_approach.direction.header.frame_id = "iiwa_link_0";
     /*Direction is set to positive z axis*/
     grasps[0].pre_grasp_approach.direction.vector.z = -1.0;
     grasps[0].pre_grasp_approach.min_distance = 0.095;
     grasps[0].pre_grasp_approach.desired_distance = 0.115;
 
     // Setting post-grasp retreat
-    grasps[0].post_grasp_retreat.direction.header.frame_id = "iiwa_link_ee";
+    grasps[0].post_grasp_retreat.direction.header.frame_id = "iiwa_link_0";
     /* Test this before deploying in Hardware*/
     grasps[0].post_grasp_retreat.direction.vector.z = 1.0;
     grasps[0].post_grasp_retreat.min_distance = 0.095;
@@ -86,7 +86,7 @@ void place(moveit::planning_interface::MoveGroupInterface& move_group){
     place_location.resize(1);
 
     // Setting up place location pose
-    place_location[0].place_pose.header.frame_id = "iiwa_link_ee";
+    place_location[0].place_pose.header.frame_id = "iiwa_link_0";
     tf2::Quaternion q;
     q.setRPY(0, 0, 0);
     place_location[0].place_pose.pose.orientation = tf2::toMsg(q);
@@ -96,14 +96,14 @@ void place(moveit::planning_interface::MoveGroupInterface& move_group){
 
 
     //Setting up pre pllace approach
-    place_location[0].pre_place_approach.direction.header.frame_id = "iiwa_link_ee";
+    place_location[0].pre_place_approach.direction.header.frame_id = "iiwa_link_0";
     // Direction is set to positive z direction
     place_location[0].pre_place_approach.direction.vector.z = -1.0;
     place_location[0].pre_place_approach.min_distance = 0.095;
     place_location[0].pre_place_approach.desired_distance = 0.115;
 
     // Setting post grasp retreat
-    place_location[0].post_place_retreat.direction.header.frame_id = "iiwa_link_ee";
+    place_location[0].post_place_retreat.direction.header.frame_id = "iiwa_link_0";
     place_location[0].post_place_retreat.direction.vector.z = 1.0;
     place_location[0].post_place_retreat.min_distance = 0.1;
     place_location[0].post_place_retreat.desired_distance = 0.25;
@@ -175,11 +175,11 @@ int main(int argc, char** argv){
     motion_planning.start_state.is_diff = true;
     //move_group.setPlanningTime(45.0);
     move_group.setPlannerId("PTP");
-    move_group.setNamedTarget("iiwa_Pose1");
+    //move_group.setNamedTarget("iiwa_Pose1");
     move_group.setMaxVelocityScalingFactor(0.2);
     move_group.setMaxAccelerationScalingFactor(0.2);
-    move_group.setStartStateToCurrentState();
     move_group.setPoseReferenceFrame("iiwa_link_0");
+    move_group.setEndEffector("iiwa_link_ee");
     
     ROS_INFO("Planning refence frame:%s", move_group.getPlanningFrame().c_str());
     ROS_INFO("End effector reference frame: %s", move_group.getEndEffectorLink().c_str());
@@ -194,13 +194,16 @@ int main(int argc, char** argv){
     // }
     // ROS_INFO("Reached Pose1");
 
+    //move_group.setStartStateToCurrentState();
+
     geometry_msgs::PoseStamped target_pose;
     target_pose.header.frame_id = "iiwa_link_0";
     target_pose.header.stamp = ros::Time::now() + ros::Duration(2.1);
-    target_pose.pose.position.x = 0.5;
+    target_pose.pose.position.x = 0.4;
     target_pose.pose.position.y = 0.0;
     target_pose.pose.position.z = 0.2;
-    target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(M_PI, 0.0, M_PI/2);
+    geometry_msgs::Quaternion quad = tf::createQuaternionMsgFromRollPitchYaw(M_PI, 0.0, -M_PI/2);
+    target_pose.pose.orientation = quad;
     move_group.setPoseTarget(target_pose);
     moveit::planning_interface::MoveGroupInterface::Plan my_plan2;
     moveit::planning_interface::MoveItErrorCode eCode2 = move_group.plan(my_plan2);
