@@ -32,7 +32,7 @@
 
   <!-- Planning Functionality -->
   <include ns="move_group" file="$(find iiwa_moveit)/launch/planning_pipeline.launch.xml">
-    <arg name="pipeline" value="ompl" />
+    <arg name="pipeline" value="command_planner" />
   </include>
 
   <!-- Trajectory Execution Functionality -->

@@ -93,7 +93,7 @@ int main(int argc, char** argv){
     target_pose.header.stamp = ros::Time::now();
     target_pose.pose.position.x = 0.4;
     target_pose.pose.position.y = 0;
-    target_pose.pose.position.z = 0.4;
+    target_pose.pose.position.z = 1.4;
     target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(0, 0, 0);
 
     /**
@@ -110,19 +110,34 @@ int main(int argc, char** argv){
     planning_req.allowed_planning_time = 1.0;
     planning_req.start_state.is_diff = true;
 
-    moveit_msgs::Constraints planning_contr;
-    moveit_msgs::PositionConstraint poseContr;
-    moveit_msgs::OrientationConstraint orienContr;
-    _to_orin_contr(orienContr, target_pose.pose, iiwa_group.getPlanningFrame(), iiwa_group.getEndEffectorLink());
-    _to_pose_contr(poseContr,target_pose.pose, iiwa_group.getPlanningFrame(), iiwa_group.getEndEffectorLink());
-    //planning_contr.orientation_constraints.resize(1);
-    planning_contr.orientation_constraints.push_back(orienContr);
-    planning_contr.position_constraints.push_back(poseContr);
-    planning_req.goal_constraints.push_back(planning_contr);
+    planning_req.goal_constraints.resize(1);
+    planning_req.goal_constraints[0].orientation_constraints.resize(1);
+    planning_req.goal_constraints[0].orientation_constraints[0].link_name = "iiwa_link_ee";
+    planning_req.goal_constraints[0].orientation_constraints[1].header.frame_id = "iiwa_link_0";
+    planning_req.goal_constraints[0].orientation_constraints[0].orientation = target_pose.pose.orientation;
+    // planning_req.goal_constraints[0].orientation_constraints[0].absolute_x_axis_tolerance = 1e-5;
+    // planning_req.goal_constraints[0].orientation_constraints[0].absolute_y_axis_tolerance = 1e-5;
+    // planning_req.goal_constraints[0].orientation_constraints[0].absolute_z_axis_tolerance = 1e-5;
+    planning_req.goal_constraints[0].orientation_constraints[0].weight = 1;
+
+    planning_req.goal_constraints[0].position_constraints.resize(1);
+    planning_req.goal_constraints[0].position_constraints[0].header.frame_id = "iiwa_link_0";
+    planning_req.goal_constraints[0].position_constraints[0].link_name = "iiwa_link_ee";
+    planning_req.goal_constraints[0].position_constraints[0].constraint_region.primitive_poses.resize(1);
+    planning_req.goal_constraints[0].position_constraints[0].constraint_region.primitive_poses[0].position = target_pose.pose.position;
+    planning_req.goal_constraints[0].position_constraints[0].weight = 1;
+    
+    shape_msgs::SolidPrimitive region;
+    region.type = shape_msgs::SolidPrimitive::SPHERE;
+    region.dimensions.resize(1);
+    region.dimensions[0] = 2e-3;
+    planning_req.goal_constraints[0].position_constraints[0].constraint_region.primitives.resize(1);
+    planning_req.goal_constraints[0].position_constraints[0].constraint_region.primitives[0] = region;
 
     iiwa_group.constructMotionPlanRequest(planning_req);
 
     //iiwa_group.setPoseTarget(target_pose);
+
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     moveit::planning_interface::MoveItErrorCode eCode = iiwa_group.plan(my_plan);
     ROS_INFO("Motion planning is: %s", eCode?"Success":"Failed");
