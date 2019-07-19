@@ -41,8 +41,8 @@ def start_programme():
     rospy.loginfo("Start pick and place loop....--->")
     while not rospy.is_shutdown():
         #Pick pose
-        hand_group.(0.2, end_effector_link="panda_rightfinger")
-        hand_group.go()
+        #hand_group.(0.2, end_effector_link="panda_rightfinger")
+        #hand_group.go()
         rospy.loginfo("move the robot to Place position")
         r.move(Ptp(goal=Place_pose,  vel_scale=0.2, acc_scale=0.2, reference_frame="panda_link0", planning_group="panda_arm", target_link="panda_link8"))
         Pick_and_Place()
