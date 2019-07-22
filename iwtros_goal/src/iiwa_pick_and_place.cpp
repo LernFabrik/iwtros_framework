@@ -75,8 +75,10 @@ int main(int argc, char** argv){
     sppinner.start();
     
     robotSetupChecker();
+    
+    static std::string PLANNING_GROUP = "iiwa_arm";
 
-    moveit::planning_interface::MoveGroupInterface iiwa_group("iiwa_arm");
+    moveit::planning_interface::MoveGroupInterface iiwa_group(PLANNING_GROUP);
     iiwa_group.setPlannerId("PTP");
     iiwa_group.setMaxVelocityScalingFactor(0.2);
     iiwa_group.setMaxAccelerationScalingFactor(0.2);
@@ -93,50 +95,43 @@ int main(int argc, char** argv){
     target_pose.header.stamp = ros::Time::now();
     target_pose.pose.position.x = 0.4;
     target_pose.pose.position.y = 0;
-    target_pose.pose.position.z = 1.4;
+    target_pose.pose.position.z = 0.4;
     target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(0, 0, 0);
 
     /**
      * Predifined pose is working however the problem occurs during the cartesian pose
      * @solution: Currently problem is narrow down to motion planning request
      * detailed decoding the code :) found in ($PROJECT)/pilz_industrial_motion/pilz_robot_programming/src/commands.py (200)
+     * @Failed: the planning interdace function "contructMotionPlanningRequest" is failed to generate the respective mmoveit_msgs
+     * @Solution2: https://ros-planning.github.io/moveit_tutorials/doc/move_group_interface/move_group_interface_tutorial.html?highlight=planning%20path%20constraints#planning-with-path-constraints
      */
 
-    moveit_msgs::MotionPlanRequest planning_req;
-    planning_req.planner_id = "PTP";
-    planning_req.group_name = "iiwa_arm";
-    planning_req.max_velocity_scaling_factor = 0.2;
-    planning_req.max_acceleration_scaling_factor = 0.2;
-    planning_req.allowed_planning_time = 1.0;
-    planning_req.start_state.is_diff = true;
+    const robot_state::JointModelGroup* joint_model_group = 
+                                iiwa_group.getCurrentState()->getJointModelGroup(PLANNING_GROUP);
 
-    planning_req.goal_constraints.resize(1);
-    planning_req.goal_constraints[0].orientation_constraints.resize(1);
-    planning_req.goal_constraints[0].orientation_constraints[0].link_name = "iiwa_link_ee";
-    planning_req.goal_constraints[0].orientation_constraints[1].header.frame_id = "iiwa_link_0";
-    planning_req.goal_constraints[0].orientation_constraints[0].orientation = target_pose.pose.orientation;
-    // planning_req.goal_constraints[0].orientation_constraints[0].absolute_x_axis_tolerance = 1e-5;
-    // planning_req.goal_constraints[0].orientation_constraints[0].absolute_y_axis_tolerance = 1e-5;
-    // planning_req.goal_constraints[0].orientation_constraints[0].absolute_z_axis_tolerance = 1e-5;
-    planning_req.goal_constraints[0].orientation_constraints[0].weight = 1;
+    moveit_msgs::OrientationConstraint oriCon;
+    oriCon.header.frame_id = "iiwa_link_0";
+    oriCon.link_name = "iiwa_link_ee";
+    oriCon.orientation = target_pose.pose.orientation;
+    oriCon.absolute_x_axis_tolerance = 1e-5;
+    oriCon.absolute_y_axis_tolerance = 1e-5;
+    oriCon.absolute_z_axis_tolerance = 1e-5;
+    oriCon.weight = 1;
 
-    planning_req.goal_constraints[0].position_constraints.resize(1);
-    planning_req.goal_constraints[0].position_constraints[0].header.frame_id = "iiwa_link_0";
-    planning_req.goal_constraints[0].position_constraints[0].link_name = "iiwa_link_ee";
-    planning_req.goal_constraints[0].position_constraints[0].constraint_region.primitive_poses.resize(1);
-    planning_req.goal_constraints[0].position_constraints[0].constraint_region.primitive_poses[0].position = target_pose.pose.position;
-    planning_req.goal_constraints[0].position_constraints[0].weight = 1;
+    moveit_msgs::Constraints planConstraints;
+    planConstraints.orientation_constraints.push_back(oriCon);
+    iiwa_group.setPathConstraints(planConstraints);
+
+    robot_state::RobotState start_State(*iiwa_group.getCurrentState());
+    geometry_msgs::Pose startPose;
+    startPose.orientation = target_pose.pose.orientation;
+    startPose.position.x = 0.4;
+    startPose.position.y = 0;
+    startPose.position.z = 0.7;
+    start_State.setFromIK(joint_model_group, startPose);
+    iiwa_group.setStartState(start_State);
     
-    shape_msgs::SolidPrimitive region;
-    region.type = shape_msgs::SolidPrimitive::SPHERE;
-    region.dimensions.resize(1);
-    region.dimensions[0] = 2e-3;
-    planning_req.goal_constraints[0].position_constraints[0].constraint_region.primitives.resize(1);
-    planning_req.goal_constraints[0].position_constraints[0].constraint_region.primitives[0] = region;
-
-    iiwa_group.constructMotionPlanRequest(planning_req);
-
-    //iiwa_group.setPoseTarget(target_pose);
+    iiwa_group.setPoseTarget(target_pose);
 
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     moveit::planning_interface::MoveItErrorCode eCode = iiwa_group.plan(my_plan);
