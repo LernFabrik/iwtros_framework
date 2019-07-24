@@ -12,6 +12,10 @@
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_state/robot_state.h>
 
+#include <pilz_msgs/MotionSequenceRequest.h>
+
+static std::string PLANNING_GROUP = "iiwa_arm";
+
 void robotSetupChecker(){
     robot_model_loader::RobotModelLoader robot_model_loader("robot_description");
     robot_model::RobotModelPtr kinematic_model = robot_model_loader.getModel();
@@ -39,32 +43,60 @@ void robotSetupChecker(){
     }
 }
 
-template <typename T_pose, typename T_ref, typename T_targ>
-void _to_orin_contr(moveit_msgs::OrientationConstraint& oriCon, T_pose goal_pose, T_ref referenceFrame, T_targ targetFrame){
-    //moveit_msgs::OrientationConstraint oriCon;
-    oriCon.header.frame_id = referenceFrame;
-    oriCon.link_name = targetFrame;
-    oriCon.orientation = goal_pose.orientation;
-    oriCon.absolute_x_axis_tolerance = 1e-5;
-    oriCon.absolute_y_axis_tolerance = 1e-5;
-    oriCon.absolute_z_axis_tolerance = 1e-5;
-    oriCon.weight = 1;
-    //return oriCon;
-}
 
-template <typename T_pose, typename T_ref, typename T_targ>
-void _to_pose_contr(moveit_msgs::PositionConstraint& poseCon,  T_pose goal_pose, T_ref referenceFrame, T_targ targetFrame){
-    //moveit_msgs::PositionConstraint poseCon;
-    poseCon.header.frame_id = referenceFrame;
-    poseCon.link_name = targetFrame;
-    poseCon.constraint_region.primitive_poses.push_back(goal_pose);
-    poseCon.weight = 1;
-    
-    shape_msgs::SolidPrimitive region;
-    region.type = shape_msgs::SolidPrimitive::SPHERE;
-    region.dimensions.push_back(2e-3);
-    poseCon.constraint_region.primitives.push_back(region);
-    //return poseCon;
+void ExecutePose(moveit::planning_interface::MoveGroupInterface& iiwa_group, geometry_msgs::PoseStamped target_pose){
+    const robot_state::JointModelGroup* joint_model_group = 
+                                iiwa_group.getCurrentState()->getJointModelGroup(PLANNING_GROUP);
+
+    moveit_msgs::OrientationConstraint oriCon;
+    oriCon.header.frame_id = "/iiwa_interface";
+    oriCon.link_name = "iiwa_link_ee";
+    oriCon.orientation = target_pose.pose.orientation;
+    oriCon.absolute_x_axis_tolerance = 0.01;
+    oriCon.absolute_y_axis_tolerance = 0.01;
+    oriCon.absolute_z_axis_tolerance = 0.01;
+    oriCon.weight = 1.0;
+
+    moveit_msgs::Constraints planConstraints;
+    planConstraints.orientation_constraints.push_back(oriCon);
+    //iiwa_group.setPathConstraints(planConstraints);
+
+    robot_state::RobotState start_State(*iiwa_group.getCurrentState());
+    geometry_msgs::PoseStamped getPose = iiwa_group.getCurrentPose("iiwa_link_ee");
+    geometry_msgs::Pose startPose;
+    ROS_INFO("Robot ee pose: %f", getPose.pose.position.z);
+    startPose.orientation = getPose.pose.orientation;
+    startPose.position = getPose.pose.position;
+    start_State.setFromIK(joint_model_group, startPose);
+    iiwa_group.setStartState(start_State);                    // Optional setting: If set not woring fine
+
+    moveit_msgs::TrajectoryConstraints motionReq;
+    motionReq.constraints.resize(1);
+    motionReq.constraints[0].orientation_constraints.push_back(oriCon);
+    motionReq.constraints[0].position_constraints.resize(1);
+    motionReq.constraints[0].position_constraints[0].header.frame_id = "/iiwa_interface";
+    motionReq.constraints[0].position_constraints[0].link_name = "iiwa_link_ee";
+    motionReq.constraints[0].position_constraints[0].constraint_region.primitive_poses.resize(1);
+    motionReq.constraints[0].position_constraints[0].constraint_region.primitive_poses[0] = target_pose.pose;
+    motionReq.constraints[0].position_constraints[0].constraint_region.primitives.resize(1);
+    motionReq.constraints[0].position_constraints[0].constraint_region.primitives[0].type = shape_msgs::SolidPrimitive::SPHERE;
+    motionReq.constraints[0].position_constraints[0].constraint_region.primitives[0].dimensions.push_back(2e-3);
+
+    iiwa_group.setTrajectoryConstraints(motionReq);
+
+    iiwa_group.setPoseTarget(target_pose);
+
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    moveit::planning_interface::MoveItErrorCode eCode = iiwa_group.plan(my_plan);
+    ROS_INFO("Motion planning is: %s", eCode?"Success":"Failed");
+    if(eCode){
+        iiwa_group.execute(my_plan);
+    }
+
+    iiwa_group.clearPathConstraints();
+    iiwa_group.clearPoseTarget();
+    iiwa_group.clearPoseTargets();
+    iiwa_group.clearTrajectoryConstraints();
 }
 
 
@@ -74,16 +106,15 @@ int main(int argc, char** argv){
     ros::AsyncSpinner sppinner(1);
     sppinner.start();
     
-    robotSetupChecker();
+    // robotSetupChecker();
     
-    static std::string PLANNING_GROUP = "iiwa_arm";
-
     moveit::planning_interface::MoveGroupInterface iiwa_group(PLANNING_GROUP);
     iiwa_group.setPlannerId("PTP");
     iiwa_group.setMaxVelocityScalingFactor(0.2);
     iiwa_group.setMaxAccelerationScalingFactor(0.2);
     iiwa_group.setPoseReferenceFrame("iiwa_link_0");
     iiwa_group.setEndEffectorLink("iiwa_link_ee");
+    iiwa_group.setNumPlanningAttempts(10);
     
     ROS_WARN("IIWA reference frame: %s", iiwa_group.getPlanningFrame().c_str());
     //ROS_WARN("IIWA end effector: %s", iiwa_group.getEndEffector().c_str());
@@ -91,53 +122,28 @@ int main(int argc, char** argv){
 
     //iiwa_group.setNamedTarget("iiwa_Pose1");
     geometry_msgs::PoseStamped target_pose;
-    target_pose.header.frame_id = "iiwa_link_0";
-    target_pose.header.stamp = ros::Time::now();
+    target_pose.header.frame_id = "/iiwa_interface";
+    target_pose.header.stamp = ros::Time::now()+ros::Duration(2.1);
     target_pose.pose.position.x = 0.4;
     target_pose.pose.position.y = 0;
-    target_pose.pose.position.z = 0.4;
-    target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(0, 0, 0);
+    target_pose.pose.position.z = 1.4;
+    target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(M_PI, 0, M_PI/2);
 
-    /**
-     * Predifined pose is working however the problem occurs during the cartesian pose
-     * @solution: Currently problem is narrow down to motion planning request
-     * detailed decoding the code :) found in ($PROJECT)/pilz_industrial_motion/pilz_robot_programming/src/commands.py (200)
-     * @Failed: the planning interdace function "contructMotionPlanningRequest" is failed to generate the respective mmoveit_msgs
-     * @Solution2: https://ros-planning.github.io/moveit_tutorials/doc/move_group_interface/move_group_interface_tutorial.html?highlight=planning%20path%20constraints#planning-with-path-constraints
-     */
+    geometry_msgs::PoseStamped target_pose2;
+    target_pose2.header.frame_id = "/iiwa_interface";
+    target_pose2.header.stamp = ros::Time::now() + ros::Duration(2.1);
+    target_pose2.pose.position.x = -0.4;
+    target_pose2.pose.position.y = 0.2;
+    target_pose2.pose.position.z = 1.4;
+    target_pose2.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(M_PI, 0, 0);
 
-    const robot_state::JointModelGroup* joint_model_group = 
-                                iiwa_group.getCurrentState()->getJointModelGroup(PLANNING_GROUP);
-
-    moveit_msgs::OrientationConstraint oriCon;
-    oriCon.header.frame_id = "iiwa_link_0";
-    oriCon.link_name = "iiwa_link_ee";
-    oriCon.orientation = target_pose.pose.orientation;
-    oriCon.absolute_x_axis_tolerance = 1e-5;
-    oriCon.absolute_y_axis_tolerance = 1e-5;
-    oriCon.absolute_z_axis_tolerance = 1e-5;
-    oriCon.weight = 1;
-
-    moveit_msgs::Constraints planConstraints;
-    planConstraints.orientation_constraints.push_back(oriCon);
-    iiwa_group.setPathConstraints(planConstraints);
-
-    robot_state::RobotState start_State(*iiwa_group.getCurrentState());
-    geometry_msgs::Pose startPose;
-    startPose.orientation = target_pose.pose.orientation;
-    startPose.position.x = 0.4;
-    startPose.position.y = 0;
-    startPose.position.z = 0.7;
-    start_State.setFromIK(joint_model_group, startPose);
-    iiwa_group.setStartState(start_State);
-    
-    iiwa_group.setPoseTarget(target_pose);
-
-    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-    moveit::planning_interface::MoveItErrorCode eCode = iiwa_group.plan(my_plan);
-    ROS_INFO("Motion planning is: %s", eCode?"Success":"Failed");
-    if(eCode){
-        iiwa_group.execute(my_plan);
+    /* Refere the Readme*/
+    while (ros::ok())
+    {
+        ExecutePose(iiwa_group, target_pose);
+        ros::Duration(0.5).sleep();
+        ExecutePose(iiwa_group, target_pose2);
+        ros::Duration(0.5).sleep();
     }
     ros::waitForShutdown();
     return 0;
