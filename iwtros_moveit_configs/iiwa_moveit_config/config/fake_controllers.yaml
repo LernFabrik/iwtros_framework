@@ -1,4 +1,8 @@
 controller_list:
+  - name: fake_iiwa_gripper_controller
+    joints:
+      - wsg50_finger_left_joint
+      - wsg50_finger_right_joint
   - name: fake_iiwa_arm_controller
     joints:
       - iiwa_joint_1
@@ -8,7 +12,3 @@ controller_list:
       - iiwa_joint_5
       - iiwa_joint_6
       - iiwa_joint_7
-  - name: fake_iiwa_gripper_controller
-    joints:
-      - wsg50_finger_left_joint
-      - wsg50_finger_right_joint

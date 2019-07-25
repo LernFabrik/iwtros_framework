@@ -60,7 +60,8 @@ void ExecutePose(moveit::planning_interface::MoveGroupInterface& iiwa_group, geo
     moveit_msgs::Constraints planConstraints;
     planConstraints.orientation_constraints.push_back(oriCon);
     //iiwa_group.setPathConstraints(planConstraints);
-
+    robotSetupChecker();
+    
     robot_state::RobotState start_State(*iiwa_group.getCurrentState());
     geometry_msgs::PoseStamped getPose = iiwa_group.getCurrentPose("iiwa_link_ee");
     geometry_msgs::Pose startPose;
@@ -68,7 +69,7 @@ void ExecutePose(moveit::planning_interface::MoveGroupInterface& iiwa_group, geo
     startPose.orientation = getPose.pose.orientation;
     startPose.position = getPose.pose.position;
     start_State.setFromIK(joint_model_group, startPose);
-    iiwa_group.setStartState(start_State);                    // Optional setting: If set not woring fine
+    iiwa_group.setStartState(start_State);                    // Optional setting: If set not woring fines
 
     moveit_msgs::TrajectoryConstraints motionReq;
     motionReq.constraints.resize(1);
