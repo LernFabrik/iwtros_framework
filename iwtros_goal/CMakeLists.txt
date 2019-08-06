@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_ros_planning_interface
   moveit_msgs
   iwtros_msgs
+  moveit_visual_tools
 )
 
 #catkin_python_setup()
