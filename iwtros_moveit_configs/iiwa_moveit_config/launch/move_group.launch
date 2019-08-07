@@ -25,8 +25,8 @@
   <arg name="jiggle_fraction" default="0.05" />
   <arg name="publish_monitored_planning_scene" default="true"/>
 
-  <arg name="capabilities" default="false"/>
-  <arg name="disable_capabilities" default="false"/>
+  <arg name="capabilities" default=""/>
+  <arg name="disable_capabilities" default=""/>
   
   <arg name="_capabilities" value="$(arg capabilities)" unless="$(eval arg('pipeline')=='command_planner')" />
   <arg name="_capabilities"
@@ -67,7 +67,7 @@
     <param name="allow_trajectory_execution" value="$(arg allow_trajectory_execution)"/>
     <param name="max_safe_path_cost" value="$(arg max_safe_path_cost)"/>
     <param name="jiggle_fraction" value="$(arg jiggle_fraction)" />
-    <param name="capabilities" value="$(arg capabilities)"/>
+    <param name="capabilities" value="$(arg _capabilities)"/>
     <param name="disable_capabilities" value="$(arg disable_capabilities)"/>
 
 

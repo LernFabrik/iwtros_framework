@@ -18,8 +18,7 @@
     </group>
     <group ns="iiwa">
         <include file="$(find iiwa_moveit_config)/launch/move_group.launch">
-            <arg name="capabilities" default="true"/>
-            <arg name="disable_capabilities" default="true"/>
+             <arg name="pipeline" value="$(arg pipeline)" />
             <arg name="sim" value="$(arg sim)"/>
         </include>
     </group>
